@@ -1,0 +1,105 @@
+01;Chèques payés;D;CHK;Cheques;D
+02;Remises de chèques;C;CLR;Cash letters/Cheques remittance;C
+03;Chèques impayés;D;RTI;Returned item;D
+04;Versements espèces;C;MSC;Miscellaneous;C
+05;Virements reçus;C;TRF;Transfer;C
+06;Virements émis;D;TRF;Transfer;D
+07;LCR/BOR domiciliés;D;BOE;Bill of exchange;D
+08;Prélèvements, TIP et Télérèglements domiciliés;D;DDT;Direct Debit Item;D
+09;Prélèvements, TIP et Télérèglements émis;C;DDT;Direct Debit Item;C
+10;Prélèvements, TIP et Télérèglements rejetés/impayés;D/C;RTI;Returned item;D/C
+11;Factures cartes de paiement/DAB-GAB;C/D;MSC;Miscellaneous;C/D
+12;Rejet/retour de virement;C;RTI;Returned item;C
+13;Virements de trésorerie reçus;C;TRF;Transfer;C
+14;Virements de trésorerie émis;D;TRF;Transfer;D
+15;Remises de chèques sur caisse;C;CLR;Cash letters/Cheques remittance;C
+18;Autres virements reçus;C;TRF;Transfer;C
+21;Autres virements émis;D;TRF;Transfer;D
+22;TIP domiciliés;D;DDT;Direct Debit Item;D
+24;TIP émis;C;DDT;Direct Debit Item;C
+26;TIP rejetés / impayés;D;RTI;Returned item;D
+27;Prélèvements rejetés / impayés;D/C;RTI;Returned item;D/C
+28;Factures cartes payées;D;MSC;Miscellaneous;D
+29;Retrait DAB-GAB;D;MSC;Miscellaneous;D
+30;Factures cartes remises;C;MSC;Miscellaneous;C
+31;Remises d'effets à l'encaissement;C;BOE;Bill of exchange;C
+32;Remises à l'escompte (papier commercial / chèques);C;BOE;Bill of exchange;C
+33;Effets impayés;D;RTI;Returned item;D
+34;Incidents sur effets;C/D;RTI;Returned item;C/D
+35;Remises de LCR/BOR à l'encaissement;C;BOE;Bill of exchange;C
+36;Remise de facture CB crédit;D;MSC;Miscellaneous;D
+37;Remises de LCR/BOR à l'escompte;C;BOE;Bill of exchange;C
+38;Facture CB impayée / rejetée;D;MSC;Miscellaneous;D
+39;Virements d'Origine Extérieur (VOE) reçus;C;TRF;Transfer;C
+41;Transferts vers/en provenance de l'étranger;D/C;TRF;Transfer;D/C
+42;Achats/Ventes de devises;D/C;FEX;Foreign exchange;D/C
+43;Autres opérations avec l'étranger;D/C;MSC;Miscellaneous;D/C
+44;Virements internationaux émis;D;TRF;Transfer;D
+45;Virements internationaux reçus;C;TRF;Transfer;C
+46;Achats de devises au comptant;D;FEX;Foreign exchange;D
+47;Ventes de devises au comptant;C;FEX;Foreign exchange;C
+48;Levée sur achat à terme;D;FEX;Foreign exchange;D
+49;Livraisons sur vente à terme;C;FEX;Foreign exchange;C
+51;Achats et Ventes de titres;D/C;SEC;Securities (used when entering a principal amount);D/C
+52;Diverses opérations sur titres;D/C;SEC;Securities (used when entering a principal amount);D/C
+53;Achats/Souscriptions VM/BF;D;SEC;Securities (used when entering a principal amount);D
+54;Ventes de VM/BF;C;SEC;Securities (used when entering a principal amount);C
+55;Solde de liquidation - BF;C/D;SEC;Securities (used when entering a principal amount);C/D
+56;Achats OPCVM;D;SEC;Securities (used when entering a principal amount);D
+57;Ventes OPCVM;C;SEC;Securities (used when entering a principal amount);C
+58;Achats TCN;D;SEC;Securities (used when entering a principal amount);D
+59;Ventes TCN;C;SEC;Securities (used when entering a principal amount);C
+61;Agios;D/C;INT;Interest;D/C
+62;Commissions et frais divers, dont intérêts compensatoires;D;COM;Commission;D
+63;Produits financiers;C;INT;Interest;C
+64;Commissions y compris taxes;D;COM;Commission;D
+65;Commissions hors taxes;D;COM;Commission;D
+66;Commissions non taxables;D;COM;Commission;D
+67;Taxes;D;SEC;Securities (used when entering a principal amount);D
+68;Autres opérations avec l'étranger - Débit;D;MSC;Miscellaneous;D
+69;Autres opérations avec l'étranger - Crédit;C;MSC;Miscellaneous;C
+70;Charges financières;D;INT;Interets;D
+71;Tirage de crédits;C;LDP;Loan deposit;C
+72;Echéance crédits;D;MSC;Miscellaneous;D
+73;Emission de valeurs mobilières;C;SEC;Securities (used when entering a principal amount);C
+74;Emission de titres de créances;C;SEC;Securities (used when entering a principal amount);C
+75;Remboursement;D;MSC;Miscellaneous;D
+76;Dépôt à terme;D;MSC;Miscellaneous;D
+77;Echéance dépôt à terme;C;MSC;Miscellaneous;C
+80;Achats autres TC;D;SEC;Securities (used when entering a principal amount);D
+81;Ventes autres TC;C;SEC;Securities (used when entering a principal amount);C
+82;Contrats;C/D;SEC;Securities (used when entering a principal amount);C/D
+83;Options;C/D;SEC;Securities (used when entering a principal amount);C/D
+84;Achats Bourses Etrangères;D;SEC;Securities (used when entering a principal amount);D
+85;Ventes Bourses Etrangères;C;SEC;Securities (used when entering a principal amount);C
+86;Opérations sur titres;C/D;SEC;Securities (used when entering a principal amount);C/D
+87;Revenus sur titres;C;SEC;Securities (used when entering a principal amount);C
+88;Commissions et droits de garde;D;COM;Commission;D
+89;Remboursement impôts étrangers;C;REC;Tax reclaim;C
+90;Facture Acceptée à Echéance émise;D;TRF;Transfer;D
+91;Opérations diverses;C;MSC;Miscellaneous;C
+92;Centralisation de recettes;C/D;CMI;Cash Management item - No detail;C/D
+93;Centralisation de dépenses;C/D;CMI;Cash Management item - No detail;C/D
+94;Centralisation de trésorerie - Crédit;C;CMI;Cash Management item - No detail;C
+95;Centralisation de trésorerie - Débit;D;CMI;Cash Management item - No detail;D
+96;Télérèglements domiciliés;D;DDT;Direct Debit Item;D
+97;Télérèglements émis;C;DDT;Direct Debit Item;C
+98;Télérèglements rejetés/impayés;D;RTI;Returned item;D
+99;Annulations et régularisations;C/D;MSC;Miscellaneous;C/D
+A1;Prélèvements SEPA émis;C;DDT;Direct Debit Item;C
+A2;Prélèvements SEPA interentreprises émis;C;DDT;Direct Debit Item;C
+A3;Prélèvements SEPA rejetés/impayés (émis par le débiteur ou sa banque);C;RTI;Returned item;C
+A4;Prélèvements SEPA interentreprises rejetés/impayés (émis par le débiteur ou sa banque);C;RTI;Returned item;C
+A5;Prélèvements SEPA interentreprises – reversements émis (par le créancier ou sa banque);D;MSC;Miscellaneous;D
+A6;Prélèvements SEPA interentreprises – reversements émis (par le créancier ou sa banque);D;MSC;Miscellaneous;D
+B1;Prélèvements SEPA domiciliés;D;DDT;Direct Debit Item;D
+B2;Prélèvements SEPA interentreprises domiciliés;D;DDT;Direct Debit Item;D
+B3;Prélèvements SEPA rejetés/impayés reçus (par le créancier);D;RTI;Returned item;D
+B4;Prélèvements SEPA interentreprises rejetés/impayés reçus (par le créancier);D;RTI;Returned item;D
+B5;Prélèvements SEPA – reversements reçus (par le débiteur);C;MSC;Miscellaneous;C
+B6;Prélèvements SEPA interentreprises – reversements reçus (par le débiteur);C;MSC;Miscellaneous;C
+C1;Virement SEPA instantané émis;D;TRF;Transfer;D
+C2;Virement SEPA instantané reçu;C;TRF;Transfer;C
+C3;Crédit suite à demande de retour de fonds (« recall ») d’un virement SEPA instantané émise (par le donneur d’ordre);C;RTI;Returned item;C
+C4;Débit suite à demande de retour de fonds (« recall ») d’un virement SEPA instantané reçue (par le bénéficiaire);D;MSC;Miscellaneous;D
+C5;Recrédit du Donneur d’Ordre;C;RTI;Returned item;C
