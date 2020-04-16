@@ -15,11 +15,11 @@ jobs:
                 php: ['7.4', '7.3', '7.2']
 
         steps:
-            - name: Clone repository
+            - name: Checkout
               uses: actions/checkout@v2
 
             - name: Install Dependencies
-              run: composer install --dev --prefer-dist
+              run: composer install --prefer-dist --no-progress --no-suggest
 
             - name: Run tests
               run: ./vendor/bin/phpunit
