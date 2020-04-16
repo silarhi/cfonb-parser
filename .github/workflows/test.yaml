@@ -1,0 +1,36 @@
+name: Tests
+on: [push, pull_request]
+env:
+    CI: true
+
+jobs:
+    run:
+        name: PHP ${{ matrix.php }} on ${{ matrix.os }}
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest, macos-latest]
+                php: ['7.4', '7.3', '7.2']
+
+        steps:
+            - name: Clone repository
+              uses: actions/checkout@v2
+
+            - name: Get Composer Cache Directory
+              id: composer-cache
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            - name: Cache dependencies
+              uses: actions/cache@v1
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: ${{ runner.os }}-composer-
+
+            - name: Install Dependencies
+              run: composer install --dev --prefer-dist
+
+            - name: Run tests
+              run: ./vendor/bin/phpunit
