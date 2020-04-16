@@ -3,7 +3,7 @@
     "description": "A PHP Parser for CFONB transactions",
     "license": "MIT",
     "type": "library",
-    "keywords": ["cfonb", "parser", "etabac"],
+    "keywords": ["cfonb", "parser", "etebac", "swift"],
     "authors": [
         {
             "name": "Guillaume Sainthillier",
