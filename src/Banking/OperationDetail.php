@@ -31,7 +31,7 @@ class OperationDetail
     /** @var string */
     private $code;
 
-    /** @var \DateTimeInterface */
+    /** @var \DateTimeImmutable */
     private $date;
 
     /** @var string */
@@ -112,12 +112,12 @@ class OperationDetail
         return $this;
     }
 
-    public function getDate(): \DateTimeInterface
+    public function getDate(): \DateTimeImmutable
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(\DateTimeImmutable $date): self
     {
         $this->date = $date;
 

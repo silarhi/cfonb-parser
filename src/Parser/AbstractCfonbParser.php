@@ -97,11 +97,11 @@ abstract class AbstractCfonbParser implements ParserInterface
     /**
      * @param $date
      *
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
     protected function parseDate($date)
     {
-        $datetime = \DateTime::createFromFormat('dmy', $date);
+        $datetime = \DateTimeImmutable::createFromFormat('dmy', $date);
         if (false === $datetime) {
             throw new ParseException(sprintf('Unable to parse date "%s"', $date));
         }

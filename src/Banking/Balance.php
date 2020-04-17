@@ -79,12 +79,12 @@ class Balance
         return $this;
     }
 
-    public function getDate(): \DateTime
+    public function getDate(): \DateTimeImmutable
     {
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): self
+    public function setDate(\DateTimeImmutable $date): self
     {
         $this->date = $date;
 

@@ -31,13 +31,13 @@ class Operation
     /** @var string */
     private $code;
 
-    /** @var \DateTimeInterface */
+    /** @var \DateTimeImmutable */
     private $date;
 
     /** @var string|null */
     private $rejectCode;
 
-    /** @var \DateTimeInterface */
+    /** @var \DateTimeImmutable */
     private $valueDate;
 
     /** @var string */
@@ -60,9 +60,6 @@ class Operation
         return $this->bankCode;
     }
 
-    /**
-     * @return Operation
-     */
     public function setBankCode(string $bankCode): self
     {
         $this->bankCode = $bankCode;
@@ -75,9 +72,6 @@ class Operation
         return $this->internalCode;
     }
 
-    /**
-     * @return Operation
-     */
     public function setInternalCode(?string $internalCode): self
     {
         $this->internalCode = $internalCode;
@@ -90,9 +84,6 @@ class Operation
         return $this->deskCode;
     }
 
-    /**
-     * @return Operation
-     */
     public function setDeskCode(string $deskCode): self
     {
         $this->deskCode = $deskCode;
@@ -105,9 +96,6 @@ class Operation
         return $this->currencyCode;
     }
 
-    /**
-     * @return Operation
-     */
     public function setCurrencyCode(?string $currencyCode): self
     {
         $this->currencyCode = $currencyCode;
@@ -120,9 +108,6 @@ class Operation
         return $this->accountNumber;
     }
 
-    /**
-     * @return Operation
-     */
     public function setAccountNumber(string $accountNumber): self
     {
         $this->accountNumber = $accountNumber;
@@ -135,9 +120,6 @@ class Operation
         return $this->code;
     }
 
-    /**
-     * @return Operation
-     */
     public function setCode(string $code): self
     {
         $this->code = $code;
@@ -145,15 +127,12 @@ class Operation
         return $this;
     }
 
-    public function getDate(): \DateTimeInterface
+    public function getDate(): \DateTimeImmutable
     {
         return $this->date;
     }
 
-    /**
-     * @return Operation
-     */
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(\DateTimeImmutable $date): self
     {
         $this->date = $date;
 
@@ -165,9 +144,6 @@ class Operation
         return $this->rejectCode;
     }
 
-    /**
-     * @return Operation
-     */
     public function setRejectCode(?string $rejectCode): self
     {
         $this->rejectCode = $rejectCode;
@@ -175,15 +151,12 @@ class Operation
         return $this;
     }
 
-    public function getValueDate(): \DateTimeInterface
+    public function getValueDate(): \DateTimeImmutable
     {
         return $this->valueDate;
     }
 
-    /**
-     * @return Operation
-     */
-    public function setValueDate(\DateTimeInterface $valueDate): self
+    public function setValueDate(\DateTimeImmutable $valueDate): self
     {
         $this->valueDate = $valueDate;
 
@@ -195,9 +168,6 @@ class Operation
         return $this->label;
     }
 
-    /**
-     * @return Operation
-     */
     public function setLabel(string $label): self
     {
         $this->label = $label;
@@ -210,9 +180,6 @@ class Operation
         return $this->reference;
     }
 
-    /**
-     * @return Operation
-     */
     public function setReference(string $reference): self
     {
         $this->reference = $reference;
@@ -225,9 +192,6 @@ class Operation
         return $this->exemptCode;
     }
 
-    /**
-     * @return Operation
-     */
     public function setExemptCode(string $exemptCode): self
     {
         $this->exemptCode = $exemptCode;
@@ -240,9 +204,6 @@ class Operation
         return $this->amount;
     }
 
-    /**
-     * @return Operation
-     */
     public function setAmount(float $amount): self
     {
         $this->amount = $amount;
