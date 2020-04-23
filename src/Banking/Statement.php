@@ -22,17 +22,6 @@ class Statement
     /** @var Operation[] */
     private $operations = [];
 
-    public function getOperation($internalCode): ?Operation
-    {
-        foreach ($this->operations as $operation) {
-            if ($operation->getInternalCode() === $internalCode) {
-                return $operation;
-            }
-        }
-
-        return null;
-    }
-
     public function addOperation(Operation $operation): self
     {
         $this->operations[] = $operation;

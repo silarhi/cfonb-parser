@@ -45,6 +45,9 @@ class Cfonb120Reader extends AbstractReader
         }
 
         $statement = new Statement();
+
+        /** @var Operation|null $lastOperation */
+        $lastOperation = null;
         foreach ($lines as $line) {
             foreach ($this->parsers as $parser) {
                 if (!$parser->supports($line)) {
@@ -53,6 +56,7 @@ class Cfonb120Reader extends AbstractReader
 
                 $result = $parser->parse($line);
                 if ($result instanceof Balance) {
+                    $lastOperation = null;
                     if (null === $statement->getOldBalance()) {
                         $statement->setOldBalance($result);
                     } else {
@@ -61,17 +65,17 @@ class Cfonb120Reader extends AbstractReader
                         $statement = new Statement();
                     }
                 } elseif ($result instanceof Operation) {
+                    $lastOperation = $result;
                     $statement->addOperation($result);
                 } elseif ($result instanceof OperationDetail) {
-                    $operation = $statement->getOperation($result->getInternalCode());
-                    if (null === $operation) {
+                    if (null === $lastOperation) {
                         throw new ParseException(sprintf('Unable to attach a detail for operation with internal code %s', $result->getInternalCode()));
                     }
-                    if (null !== $operation->getDetails()) {
+                    if (null !== $lastOperation->getDetails()) {
                         throw new ParseException(sprintf('The operation with internal code %s already have a detail!', $result->getInternalCode()));
                     }
 
-                    $operation->setDetails($result);
+                    $lastOperation->setDetails($result);
                 }
 
                 continue 2;
