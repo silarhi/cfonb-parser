@@ -43,7 +43,7 @@ class Operation
     /** @var string */
     private $label;
 
-    /** @var string */
+    /** @var string|null */
     private $reference;
 
     /** @var string */
@@ -187,12 +187,12 @@ class Operation
         return $this;
     }
 
-    public function getExemptCode(): string
+    public function getExemptCode(): ?string
     {
         return $this->exemptCode;
     }
 
-    public function setExemptCode(string $exemptCode): self
+    public function setExemptCode(?string $exemptCode): self
     {
         $this->exemptCode = $exemptCode;
 
