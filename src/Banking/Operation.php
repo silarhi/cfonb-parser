@@ -4,6 +4,7 @@
  * This file is part of the CFONB Parser package.
  *
  * (c) Guillaume Sainthillier <hello@silarhi.fr>
+ * (c) @fezfez <demonchaux.stephane@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -213,7 +214,7 @@ class Operation
 
     public function getDetails(): ?OperationDetail
     {
-        return count($this->details) > 0 ? $this->details[0] : null;
+        return \count($this->details) > 0 ? $this->details[0] : null;
     }
 
     public function setDetails(?OperationDetail $details): self
