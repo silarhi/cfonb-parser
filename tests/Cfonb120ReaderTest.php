@@ -50,7 +50,7 @@ class Cfonb120ReaderTest extends TestCase
 
         $statements = $reader->getStatements();
 
-        $this->assertCount(7, $statements);
+        $this->assertCount(8, $statements);
 
         //Test first statement
         $statement = $statements[0];
@@ -137,6 +137,12 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertEquals(11484.75, $statement->getOldBalance()->getAmount());
         $this->assertCount(0, $statement->getOperations());
         $this->assertEquals(11484.75, $statement->getNewBalance()->getAmount());
+
+        //8th statement
+        $statement = $statements[7];
+        $this->assertEquals(584353.02, $statement->getOldBalance()->getAmount());
+        $this->assertCount(0, $statement->getOperations());
+        $this->assertEquals(584353.02, $statement->getNewBalance()->getAmount());
     }
 
     private function loadFixture($file)

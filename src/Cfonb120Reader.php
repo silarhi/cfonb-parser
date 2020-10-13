@@ -25,10 +25,6 @@ class Cfonb120Reader extends AbstractReader
 {
     /** @var Statement[] */
     private $statements = [];
-    private const IGNORE_LINES = [
-        '------------------------------',
-        '** PAS DE MOUVEMENT CE JOUR **',
-    ];
 
     public function __construct()
     {
@@ -55,11 +51,6 @@ class Cfonb120Reader extends AbstractReader
         foreach ($lines as $line) {
             if (empty($line)) {
                 continue;
-            }
-            foreach (self::IGNORE_LINES as $toIgnore) {
-                if (strpos(strtolower($line), strtolower($toIgnore))) {
-                    continue 2;
-                }
             }
 
             foreach ($this->parsers as $parser) {
