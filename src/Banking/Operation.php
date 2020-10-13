@@ -54,7 +54,7 @@ class Operation
     private $amount;
 
     /** @var OperationDetail[] */
-    private $details = [];
+    private $details;
 
     public function __construct(
         string $bankCode,
@@ -84,7 +84,7 @@ class Operation
         $this->currencyCode = $currencyCode;
         $this->rejectCode = $rejectCode;
         $this->exemptCode = $exemptCode;
-        $this->details = null;
+        $this->details = [];
     }
 
     public function getBankCode(): string
@@ -158,7 +158,18 @@ class Operation
         return \count($this->details) > 0 ? $this->details[0] : null;
     }
 
-    public function setDetails(?OperationDetail $details): self
+    public function getDetailsOrThrowException(): OperationDetail
+    {
+        $detail = $this->getDetails();
+
+        if ($detail === null) {
+            throw new \RuntimeException('detail is null');
+        }
+
+        return $detail;
+    }
+
+    public function setDetails(OperationDetail $details): self
     {
         $this->details[] = $details;
 

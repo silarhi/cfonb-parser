@@ -41,6 +41,15 @@ class Statement
         return $this->oldBalance;
     }
 
+    public function getOldBalanceOrThrowException(): Balance
+    {
+        if ($this->oldBalance === null) {
+            throw new \RuntimeException('old balance is null');
+        }
+
+        return $this->oldBalance;
+    }
+
     public function setOldBalance(Balance $oldBalance): self
     {
         $this->oldBalance = $oldBalance;
@@ -50,6 +59,15 @@ class Statement
 
     public function getNewBalance(): ?Balance
     {
+        return $this->newBalance;
+    }
+
+    public function getNewBalanceOrThrowException(): Balance
+    {
+        if ($this->newBalance === null) {
+            throw new \RuntimeException('new balance is null');
+        }
+
         return $this->newBalance;
     }
 
