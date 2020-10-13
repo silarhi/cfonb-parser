@@ -25,6 +25,10 @@ class Cfonb120Reader extends AbstractReader
 {
     /** @var Statement[] */
     private $statements = [];
+    private const IGNORE_LINES = [
+        '------------------------------',
+        '** PAS DE MOUVEMENT CE JOUR **',
+    ];
 
     public function __construct()
     {
@@ -49,6 +53,15 @@ class Cfonb120Reader extends AbstractReader
         /** @var Operation|null $lastOperation */
         $lastOperation = null;
         foreach ($lines as $line) {
+            if (empty($line)) {
+                continue;
+            }
+            foreach (self::IGNORE_LINES as $toIgnore) {
+                if (strpos(strtolower($line), strtolower($toIgnore))) {
+                    continue 2;
+                }
+            }
+
             foreach ($this->parsers as $parser) {
                 if (!$parser->supports($line)) {
                     continue;
@@ -72,15 +85,15 @@ class Cfonb120Reader extends AbstractReader
                         throw new ParseException(sprintf('Unable to attach a detail for operation with internal code %s', $result->getInternalCode()));
                     }
                     if (null !== $lastOperation->getDetails()) {
-                        throw new ParseException(sprintf('The operation with internal code %s already have a detail!', $result->getInternalCode()));
+                        $lastOperation->addSubDetails($result);
+                    } else {
+                        $lastOperation->setDetails($result);
                     }
-
-                    $lastOperation->setDetails($result);
                 }
 
                 continue 2;
             }
-            throw new ParseException(sprintf("Unable to find a parser for the line :\n###%s###", $line));
+            throw new ParseException(sprintf("Unable to find a parser for the line :\n\"%s\"", $line));
         }
     }
 

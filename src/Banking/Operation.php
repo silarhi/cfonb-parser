@@ -55,6 +55,9 @@ class Operation
     /** @var OperationDetail|null */
     private $details;
 
+    /** @var OperationDetail[] */
+    private $subDetails = [];
+
     public function getBankCode(): string
     {
         return $this->bankCode;
@@ -219,6 +222,19 @@ class Operation
     public function setDetails(?OperationDetail $details): self
     {
         $this->details = $details;
+
+        return $this;
+    }
+
+    /** @return OperationDetail[] */
+    public function getSubDetails(): array
+    {
+        return $this->subDetails;
+    }
+
+    public function addSubDetails(?OperationDetail $details): self
+    {
+        $this->subDetails[] = $details;
 
         return $this;
     }

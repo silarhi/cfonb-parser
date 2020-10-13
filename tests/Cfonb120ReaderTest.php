@@ -128,6 +128,7 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertEquals('PRLV SEPA OVH SAS', $operation->getLabel());
         $this->assertNotNull($operation->getDetails());
         $this->assertEquals('PAYMENT ORDER 124359169', $operation->getDetails()->getAdditionalInformations());
+        $this->assertCount(1, $operation->getSubDetails());
 
         $this->assertEquals(11484.75, $statement->getNewBalance()->getAmount());
 
