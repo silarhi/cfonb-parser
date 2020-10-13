@@ -25,4 +25,14 @@ foreach($reader->parse('My Content') as $statement) {
   
   echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
 }
+
+//Gets all statements day by day
+foreach($reader->parse('My Other Content') as $statement) {
+  echo sprintf("Old balance : %f\n", $statement->getOldBalance()->getAmount());
+  foreach($statement->getOperations() as $operation) {
+      //Gets all statement operations
+  }
+  
+  echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
+}
 ```

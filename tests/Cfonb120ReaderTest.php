@@ -17,9 +17,60 @@ use Silarhi\Cfonb\Banking\Balance;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Cfonb120Reader;
+use Silarhi\Cfonb\Exceptions\ParseException;
 
 class Cfonb120ReaderTest extends TestCase
 {
+    /** @return void */
+    public function testEmpty()
+    {
+        $reader = new Cfonb120Reader();
+
+        $this->assertCount(0, $reader->parse(''));
+    }
+
+    /** @return void */
+    public function testFailUnknowLine()
+    {
+        $reader = new Cfonb120Reader();
+
+        self::expectException(ParseException::class);
+        self::expectExceptionMessage('Unable to find a parser for the line :
+"abc "');
+        $reader->parse('abc ');
+    }
+
+    /** @return void */
+    public function testFailCauseNoOperation()
+    {
+        $reader = new Cfonb120Reader();
+
+        self::expectException(ParseException::class);
+        self::expectExceptionMessage('Unable to attach a detail for operation with internal code 6772');
+        $reader->parse('0510556677202204EUR2 00012345603B1070420     LIBDEDIBOX 3706114                                                         ');
+    }
+
+    public function provideMalformedLine(): array
+    {
+        return [
+            'dateMalformed' => ['0110278    02204EUR2 00012345603  YYYYYY                                                  0000000166956E060420070420    '],
+            'amountMalformed' => ['0110278    02204EUR2 00012345603  101020                                                  0000000166956Y060420070420    ']
+        ];
+    }
+
+    /**
+     * @dataProvider provideMalformedLine
+     * @return void
+     */
+    public function testMalformedLine(string $line)
+    {
+        $reader = new Cfonb120Reader();
+
+        self::expectException(ParseException::class);
+        self::expectExceptionMessage('Regex does not match the line');
+        $reader->parse($line);
+    }
+
     /** @return void */
     public function testSimpleTest()
     {

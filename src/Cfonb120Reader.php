@@ -39,12 +39,7 @@ class Cfonb120Reader extends AbstractReader
     {
         $statementList = [];
         $lines         = explode("\n", $content);
-
-        if (0 === \count($lines)) {
-            return $statementList;
-        }
-
-        $statement = new Statement();
+        $statement     = new Statement();
 
         /** @var Operation|null $lastOperation */
         $lastOperation = null;

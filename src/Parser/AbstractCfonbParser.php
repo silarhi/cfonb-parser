@@ -106,24 +106,4 @@ abstract class AbstractCfonbParser implements ParserInterface
     }
 
     abstract protected function getSupportedCode(): string;
-
-    protected function getNumericalValue(string $content, int $position, int $length): int
-    {
-        return (int) ltrim($this->getValue($content, $position, $length), '0');
-    }
-
-    protected function getAlphabeticalValue(string $content, int $position, int $length): string
-    {
-        return $this->getAlphanumericalValue($content, $position, $length);
-    }
-
-    protected function getAlphanumericalValue(string $content, int $position, int $length): string
-    {
-        return rtrim($this->getValue($content, $position, $length));
-    }
-
-    private function getValue(string $content, int $position, int $length): string
-    {
-        return substr($content, $position - 1, $length);
-    }
 }

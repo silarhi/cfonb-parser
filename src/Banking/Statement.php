@@ -85,14 +85,4 @@ class Statement
     {
         return $this->operations;
     }
-
-    /**
-     * @param Operation[] $operations
-     */
-    public function setOperations(array $operations): self
-    {
-        $this->operations = $operations;
-
-        return $this;
-    }
 }
