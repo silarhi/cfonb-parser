@@ -52,8 +52,8 @@ class Operation
     /** @var float */
     private $amount;
 
-    /** @var OperationDetail|null */
-    private $details;
+    /** @var OperationDetail[] */
+    private $details = [];
 
     public function getBankCode(): string
     {
@@ -213,13 +213,19 @@ class Operation
 
     public function getDetails(): ?OperationDetail
     {
-        return $this->details;
+        return count($this->details) > 0 ? $this->details[0] : null;
     }
 
     public function setDetails(?OperationDetail $details): self
     {
-        $this->details = $details;
+        $this->details[] = $details;
 
         return $this;
+    }
+
+    /** @return OperationDetail[] */
+    public function getAllDetails(): array
+    {
+        return $this->details;
     }
 }

@@ -28,7 +28,7 @@ class Line01Parser extends AbstractCfonb120Parser
             'account_nb' => [self::ALPHANUMERIC, 11],
             '_unused_3' => [self::BLANK, 2],
             'date' => [self::NUMERIC, 6],
-            '_unused_4' => [self::BLANK, 50],
+            '_unused_4' => [self::ALL, 50],
             'amount' => [self::AMOUNT, 14],
             '_unused_5' => [self::ALL, 16],
         ]);
