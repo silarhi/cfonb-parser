@@ -4,6 +4,7 @@
  * This file is part of the CFONB Parser package.
  *
  * (c) Guillaume Sainthillier <hello@silarhi.fr>
+ * (c) @fezfez <demonchaux.stephane@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -48,6 +49,10 @@ class Cfonb120Reader extends AbstractReader
         /** @var Operation|null $lastOperation */
         $lastOperation = null;
         foreach ($lines as $line) {
+            if (empty($line)) {
+                continue;
+            }
+
             foreach ($this->parsers as $parser) {
                 if (!$parser->supports($line)) {
                     continue;
@@ -70,16 +75,13 @@ class Cfonb120Reader extends AbstractReader
                     if (null === $lastOperation) {
                         throw new ParseException(sprintf('Unable to attach a detail for operation with internal code %s', $result->getInternalCode()));
                     }
-                    if (null !== $lastOperation->getDetails()) {
-                        throw new ParseException(sprintf('The operation with internal code %s already have a detail!', $result->getInternalCode()));
-                    }
 
                     $lastOperation->setDetails($result);
                 }
 
                 continue 2;
             }
-            throw new ParseException(sprintf("Unable to find a parser for the line :\n###%s###", $line));
+            throw new ParseException(sprintf("Unable to find a parser for the line :\n\"%s\"", $line));
         }
 
         return $statementList;

@@ -4,6 +4,7 @@
  * This file is part of the CFONB Parser package.
  *
  * (c) Guillaume Sainthillier <hello@silarhi.fr>
+ * (c) @fezfez <demonchaux.stephane@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -49,7 +50,7 @@ class Cfonb120ReaderTest extends TestCase
         $reader     = new Cfonb120Reader();
         $statements = $reader->parse($this->loadFixture('complex-test.txt'));
 
-        $this->assertCount(7, $statements);
+        $this->assertCount(8, $statements);
 
         //Test first statement
         $statement = $statements[0];
@@ -127,6 +128,7 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertEquals('PRLV SEPA OVH SAS', $operation->getLabel());
         $this->assertNotNull($operation->getDetails());
         $this->assertEquals('PAYMENT ORDER 124359169', $operation->getDetails()->getAdditionalInformations());
+        $this->assertCount(2, $operation->getAllDetails());
 
         $this->assertEquals(11484.75, $statement->getNewBalance()->getAmount());
 
@@ -135,6 +137,12 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertEquals(11484.75, $statement->getOldBalance()->getAmount());
         $this->assertCount(0, $statement->getOperations());
         $this->assertEquals(11484.75, $statement->getNewBalance()->getAmount());
+
+        //8th statement
+        $statement = $statements[7];
+        $this->assertEquals(584353.02, $statement->getOldBalance()->getAmount());
+        $this->assertCount(0, $statement->getOperations());
+        $this->assertEquals(584353.02, $statement->getNewBalance()->getAmount());
     }
 
     private function loadFixture(string $file) : string

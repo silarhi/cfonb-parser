@@ -4,6 +4,7 @@
  * This file is part of the CFONB Parser package.
  *
  * (c) Guillaume Sainthillier <hello@silarhi.fr>
+ * (c) @fezfez <demonchaux.stephane@gmail.com>
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -52,8 +53,8 @@ class Operation
     /** @var float */
     private $amount;
 
-    /** @var OperationDetail|null */
-    private $details;
+    /** @var OperationDetail[] */
+    private $details = [];
 
     public function __construct(
         string $bankCode,
@@ -154,13 +155,19 @@ class Operation
 
     public function getDetails(): ?OperationDetail
     {
-        return $this->details;
+        return \count($this->details) > 0 ? $this->details[0] : null;
     }
 
     public function setDetails(?OperationDetail $details): self
     {
-        $this->details = $details;
+        $this->details[] = $details;
 
         return $this;
+    }
+
+    /** @return OperationDetail[] */
+    public function getAllDetails(): array
+    {
+        return $this->details;
     }
 }
