@@ -43,10 +43,10 @@ class Operation
     /** @var string */
     private $label;
 
-    /** @var string|null */
+    /** @var string */
     private $reference;
 
-    /** @var string */
+    /** @var string|null */
     private $exemptCode;
 
     /** @var float */
@@ -55,16 +55,40 @@ class Operation
     /** @var OperationDetail|null */
     private $details;
 
+    public function __construct(
+        string $bankCode,
+        string $deskCode,
+        string $accountNumber,
+        string $code,
+        \DateTimeImmutable $date,
+        \DateTimeImmutable $valueDate,
+        string $label,
+        string $reference,
+        float $amount,
+        ?string $internalCode,
+        ?string $currencyCode,
+        ?string $rejectCode,
+        ?string $exemptCode
+    ) {
+        $this->bankCode = $bankCode;
+        $this->deskCode = $deskCode;
+        $this->accountNumber = $accountNumber;
+        $this->code = $code;
+        $this->date = $date;
+        $this->valueDate = $valueDate;
+        $this->label = $label;
+        $this->reference = $reference;
+        $this->amount = $amount;
+        $this->internalCode = $internalCode;
+        $this->currencyCode = $currencyCode;
+        $this->rejectCode = $rejectCode;
+        $this->exemptCode = $exemptCode;
+        $this->details = null;
+    }
+
     public function getBankCode(): string
     {
         return $this->bankCode;
-    }
-
-    public function setBankCode(string $bankCode): self
-    {
-        $this->bankCode = $bankCode;
-
-        return $this;
     }
 
     public function getInternalCode(): ?string
@@ -72,23 +96,9 @@ class Operation
         return $this->internalCode;
     }
 
-    public function setInternalCode(?string $internalCode): self
-    {
-        $this->internalCode = $internalCode;
-
-        return $this;
-    }
-
     public function getDeskCode(): string
     {
         return $this->deskCode;
-    }
-
-    public function setDeskCode(string $deskCode): self
-    {
-        $this->deskCode = $deskCode;
-
-        return $this;
     }
 
     public function getCurrencyCode(): ?string
@@ -96,23 +106,9 @@ class Operation
         return $this->currencyCode;
     }
 
-    public function setCurrencyCode(?string $currencyCode): self
-    {
-        $this->currencyCode = $currencyCode;
-
-        return $this;
-    }
-
     public function getAccountNumber(): string
     {
         return $this->accountNumber;
-    }
-
-    public function setAccountNumber(string $accountNumber): self
-    {
-        $this->accountNumber = $accountNumber;
-
-        return $this;
     }
 
     public function getCode(): string
@@ -120,23 +116,9 @@ class Operation
         return $this->code;
     }
 
-    public function setCode(string $code): self
-    {
-        $this->code = $code;
-
-        return $this;
-    }
-
     public function getDate(): \DateTimeImmutable
     {
         return $this->date;
-    }
-
-    public function setDate(\DateTimeImmutable $date): self
-    {
-        $this->date = $date;
-
-        return $this;
     }
 
     public function getRejectCode(): ?string
@@ -144,23 +126,9 @@ class Operation
         return $this->rejectCode;
     }
 
-    public function setRejectCode(?string $rejectCode): self
-    {
-        $this->rejectCode = $rejectCode;
-
-        return $this;
-    }
-
     public function getValueDate(): \DateTimeImmutable
     {
         return $this->valueDate;
-    }
-
-    public function setValueDate(\DateTimeImmutable $valueDate): self
-    {
-        $this->valueDate = $valueDate;
-
-        return $this;
     }
 
     public function getLabel(): string
@@ -168,23 +136,10 @@ class Operation
         return $this->label;
     }
 
-    public function setLabel(string $label): self
-    {
-        $this->label = $label;
-
-        return $this;
-    }
 
     public function getReference(): string
     {
         return $this->reference;
-    }
-
-    public function setReference(string $reference): self
-    {
-        $this->reference = $reference;
-
-        return $this;
     }
 
     public function getExemptCode(): ?string
@@ -192,23 +147,9 @@ class Operation
         return $this->exemptCode;
     }
 
-    public function setExemptCode(?string $exemptCode): self
-    {
-        $this->exemptCode = $exemptCode;
-
-        return $this;
-    }
-
     public function getAmount(): float
     {
         return $this->amount;
-    }
-
-    public function setAmount(float $amount): self
-    {
-        $this->amount = $amount;
-
-        return $this;
     }
 
     public function getDetails(): ?OperationDetail

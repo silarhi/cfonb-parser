@@ -40,16 +40,31 @@ class OperationDetail
     /** @var string */
     private $qualifier;
 
+    public function __construct(
+        string $bankCode,
+        string $deskCode,
+        string $accountNumber,
+        string $code,
+        \DateTimeImmutable $date,
+        string $qualifier,
+        string $additionalInformations,
+        ?string $internalCode,
+        ?string $currencyCode
+    ) {
+        $this->bankCode = $bankCode;
+        $this->deskCode = $deskCode;
+        $this->accountNumber = $accountNumber;
+        $this->code = $code;
+        $this->date = $date;
+        $this->qualifier = $qualifier;
+        $this->additionalInformations = $additionalInformations;
+        $this->internalCode = $internalCode;
+        $this->currencyCode = $currencyCode;
+    }
+
     public function getBankCode(): string
     {
         return $this->bankCode;
-    }
-
-    public function setBankCode(string $bankCode): self
-    {
-        $this->bankCode = $bankCode;
-
-        return $this;
     }
 
     public function getInternalCode(): ?string
@@ -57,23 +72,9 @@ class OperationDetail
         return $this->internalCode;
     }
 
-    public function setInternalCode(?string $internalCode): self
-    {
-        $this->internalCode = $internalCode;
-
-        return $this;
-    }
-
     public function getDeskCode(): string
     {
         return $this->deskCode;
-    }
-
-    public function setDeskCode(string $deskCode): self
-    {
-        $this->deskCode = $deskCode;
-
-        return $this;
     }
 
     public function getCurrencyCode(): ?string
@@ -81,23 +82,9 @@ class OperationDetail
         return $this->currencyCode;
     }
 
-    public function setCurrencyCode(?string $currencyCode): self
-    {
-        $this->currencyCode = $currencyCode;
-
-        return $this;
-    }
-
     public function getAccountNumber(): string
     {
         return $this->accountNumber;
-    }
-
-    public function setAccountNumber(string $accountNumber): self
-    {
-        $this->accountNumber = $accountNumber;
-
-        return $this;
     }
 
     public function getCode(): string
@@ -105,23 +92,9 @@ class OperationDetail
         return $this->code;
     }
 
-    public function setCode(string $code): self
-    {
-        $this->code = $code;
-
-        return $this;
-    }
-
     public function getDate(): \DateTimeImmutable
     {
         return $this->date;
-    }
-
-    public function setDate(\DateTimeImmutable $date): self
-    {
-        $this->date = $date;
-
-        return $this;
     }
 
     public function getAdditionalInformations(): string
@@ -129,22 +102,8 @@ class OperationDetail
         return $this->additionalInformations;
     }
 
-    public function setAdditionalInformations(string $additionalInformations): self
-    {
-        $this->additionalInformations = $additionalInformations;
-
-        return $this;
-    }
-
     public function getQualifier(): string
     {
         return $this->qualifier;
-    }
-
-    public function setQualifier(string $qualifier): self
-    {
-        $this->qualifier = $qualifier;
-
-        return $this;
     }
 }

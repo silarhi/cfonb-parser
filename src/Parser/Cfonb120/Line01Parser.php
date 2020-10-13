@@ -15,7 +15,7 @@ use Silarhi\Cfonb\Banking\Balance;
 
 class Line01Parser extends AbstractCfonb120Parser
 {
-    public function parse($content)
+    public function parse(string $content) : Balance
     {
         $infos = $this->parseLine($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',
@@ -33,19 +33,17 @@ class Line01Parser extends AbstractCfonb120Parser
             '_unused_5' => [self::ALL, 16],
         ]);
 
-        $balance = new Balance();
-        $balance
-            ->setBankCode($infos['bank_code'])
-            ->setDeskCode($infos['desk_code'])
-            ->setCurrencyCode($infos['currency_code'])
-            ->setAccountNumber($infos['account_nb'])
-            ->setDate($this->parseDate($infos['date']))
-            ->setAmount($this->parseAmount($infos['amount'], $infos['nb_of_dec']));
-
-        return $balance;
+        return new Balance(
+            $infos['bank_code'],
+            $infos['desk_code'],
+            $infos['currency_code'],
+            $infos['account_nb'],
+            $this->parseDate($infos['date']),
+            $this->parseAmount($infos['amount'], $infos['nb_of_dec'])
+        );
     }
 
-    public function getSupportedCode()
+    public function getSupportedCode(): string
     {
         return '01';
     }

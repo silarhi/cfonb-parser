@@ -15,7 +15,7 @@ use Silarhi\Cfonb\Banking\OperationDetail;
 
 class Line05Parser extends AbstractCfonb120Parser
 {
-    public function parse($content)
+    public function parse(string $content): OperationDetail
     {
         $infos = $this->parseLine($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',
@@ -34,23 +34,20 @@ class Line05Parser extends AbstractCfonb120Parser
             '_unused_3' => [self::ALL, 2],
         ]);
 
-        $detail = new OperationDetail();
-        $detail
-            ->setBankCode($infos['bank_code'])
-            ->setInternalCode($infos['internal_code'])
-            ->setDeskCode($infos['desk_code'])
-            ->setCurrencyCode($infos['currency_code'])
-            ->setAccountNumber($infos['account_nb'])
-            ->setCode($infos['operation_code'])
-            ->setDate($this->parseDate($infos['operation_date']))
-            ->setQualifier($infos['qualifier'])
-            ->setAdditionalInformations($infos['additional_info'])
-        ;
-
-        return $detail;
+        return new OperationDetail(
+            $infos['bank_code'],
+            $infos['desk_code'],
+            $infos['account_nb'],
+            $infos['operation_code'],
+            $this->parseDate($infos['operation_date']),
+            $infos['qualifier'],
+            $infos['additional_info'],
+            $infos['internal_code'],
+            $infos['currency_code']
+        );
     }
 
-    public function getSupportedCode()
+    public function getSupportedCode(): string
     {
         return '05';
     }

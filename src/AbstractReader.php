@@ -11,6 +11,7 @@
 
 namespace Silarhi\Cfonb;
 
+use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 
 abstract class AbstractReader
@@ -18,5 +19,6 @@ abstract class AbstractReader
     /** @var ParserInterface[] */
     protected $parsers = [];
 
-    abstract public function parse($content);
+    /** @return Statement[] */
+    abstract public function parse(string $content): array;
 }

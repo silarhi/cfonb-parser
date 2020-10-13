@@ -22,6 +22,12 @@ class Statement
     /** @var Operation[] */
     private $operations = [];
 
+    public function __construct()
+    {
+        $this->oldBalance = null;
+        $this->newBalance = null;
+    }
+
     public function addOperation(Operation $operation): self
     {
         $this->operations[] = $operation;

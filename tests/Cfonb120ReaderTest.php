@@ -16,12 +16,12 @@ use Silarhi\Cfonb\Cfonb120Reader;
 
 class Cfonb120ReaderTest extends TestCase
 {
+    /** @return void */
     public function testSimpleTest()
     {
-        $reader = new Cfonb120Reader();
-        $reader->parse($this->loadFixture('simple-test.txt'));
+        $reader     = new Cfonb120Reader();
+        $statements = $reader->parse($this->loadFixture('simple-test.txt'));
 
-        $statements = $reader->getStatements();
         $this->assertCount(1, $statements);
 
         $statement = $statements[0];
@@ -43,12 +43,11 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertEquals('00012345603', $statement->getNewBalance()->getAccountNumber());
     }
 
+    /** @return void */
     public function testComplexTest()
     {
-        $reader = new Cfonb120Reader();
-        $reader->parse($this->loadFixture('complex-test.txt'));
-
-        $statements = $reader->getStatements();
+        $reader     = new Cfonb120Reader();
+        $statements = $reader->parse($this->loadFixture('complex-test.txt'));
 
         $this->assertCount(7, $statements);
 
@@ -138,7 +137,7 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertEquals(11484.75, $statement->getNewBalance()->getAmount());
     }
 
-    private function loadFixture($file)
+    private function loadFixture(string $file) : string
     {
         return file_get_contents(__DIR__ . '/fixtures/' . $file);
     }

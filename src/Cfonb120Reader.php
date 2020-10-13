@@ -23,9 +23,6 @@ use Silarhi\Cfonb\Parser\Cfonb120\Line07Parser;
 
 class Cfonb120Reader extends AbstractReader
 {
-    /** @var Statement[] */
-    private $statements = [];
-
     public function __construct()
     {
         $this->parsers = [
@@ -36,12 +33,14 @@ class Cfonb120Reader extends AbstractReader
         ];
     }
 
-    public function parse($content)
+    /** @return Statement[] */
+    public function parse(string $content): array
     {
-        $lines = explode("\n", $content);
+        $statementList = [];
+        $lines         = explode("\n", $content);
 
         if (0 === \count($lines)) {
-            return;
+            return $statementList;
         }
 
         $statement = new Statement();
@@ -61,7 +60,7 @@ class Cfonb120Reader extends AbstractReader
                         $statement->setOldBalance($result);
                     } else {
                         $statement->setNewBalance($result);
-                        $this->statements[] = $statement;
+                        $statementList[] = $statement;
                         $statement = new Statement();
                     }
                 } elseif ($result instanceof Operation) {
@@ -82,13 +81,7 @@ class Cfonb120Reader extends AbstractReader
             }
             throw new ParseException(sprintf("Unable to find a parser for the line :\n###%s###", $line));
         }
-    }
 
-    /**
-     * @return Statement[]
-     */
-    public function getStatements(): array
-    {
-        return $this->statements;
+        return $statementList;
     }
 }

@@ -15,7 +15,7 @@ use Silarhi\Cfonb\Banking\Operation;
 
 class Line04Parser extends AbstractCfonb120Parser
 {
-    public function parse($content)
+    public function parse(string $content) : Operation
     {
         $infos = $this->parseLine($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',
@@ -39,26 +39,24 @@ class Line04Parser extends AbstractCfonb120Parser
             '_unused_5' => [self::ALL, 16],
         ]);
 
-        $operation = new Operation();
-        $operation
-            ->setBankCode($infos['bank_code'])
-            ->setInternalCode($infos['internal_code'])
-            ->setDeskCode($infos['desk_code'])
-            ->setCurrencyCode($infos['currency_code'])
-            ->setAccountNumber($infos['account_nb'])
-            ->setCode($infos['operation_code'])
-            ->setDate($this->parseDate($infos['operation_date']))
-            ->setRejectCode($infos['reject_code'])
-            ->setValueDate($this->parseDate($infos['value_date']))
-            ->setLabel($infos['label'])
-            ->setReference($infos['reference'])
-            ->setExemptCode($infos['exempt_code'])
-            ->setAmount($this->parseAmount($infos['amount'], $infos['nb_of_dec']));
-
-        return $operation;
+        return new Operation(
+            $infos['bank_code'],
+            $infos['desk_code'],
+            $infos['account_nb'],
+            $infos['operation_code'],
+            $this->parseDate($infos['operation_date']),
+            $this->parseDate($infos['value_date']),
+            $infos['label'],
+            $infos['reference'],
+            $this->parseAmount($infos['amount'], $infos['nb_of_dec']),
+            $infos['internal_code'],
+            $infos['currency_code'],
+            $infos['reject_code'],
+            $infos['exempt_code']
+        );
     }
 
-    public function getSupportedCode()
+    public function getSupportedCode(): string
     {
         return '04';
     }

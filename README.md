@@ -15,10 +15,9 @@ Supports CFONB 120 format
 use Silarhi\Cfonb\Cfonb120Reader;
 
 $reader = new Cfonb120Reader();
-$reader->parse('My Content');
 
 //Gets all statements day by day
-foreach($reader->getStatements() as $statement) {
+foreach($reader->parse('My Content') as $statement) {
   echo sprintf("Old balance : %f\n", $statement->getOldBalance()->getAmount());
   foreach($statement->getOperations() as $operation) {
       //Gets all statement operations
