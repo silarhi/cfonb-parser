@@ -84,11 +84,8 @@ class Cfonb120Reader extends AbstractReader
                     if (null === $lastOperation) {
                         throw new ParseException(sprintf('Unable to attach a detail for operation with internal code %s', $result->getInternalCode()));
                     }
-                    if (null !== $lastOperation->getDetails()) {
-                        $lastOperation->addSubDetails($result);
-                    } else {
-                        $lastOperation->setDetails($result);
-                    }
+
+                    $lastOperation->setDetails($result);
                 }
 
                 continue 2;
