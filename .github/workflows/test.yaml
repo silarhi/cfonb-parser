@@ -40,5 +40,5 @@ jobs:
             - name: Run phpstan
               run: ./vendor/bin/phpstan analyse
 
-            - name: Run phpstan
+            - name: Run infection
               run: ./vendor/bin/infection
