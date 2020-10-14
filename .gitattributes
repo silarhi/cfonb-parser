@@ -1,0 +1,6 @@
+/tests/                 export-ignore
+/specs/                 export-ignore
+/phpunit.xml.dist       export-ignore
+/infection.json.dist    export-ignore
+/phpstan.neon           export-ignore
+/.*                     export-ignore
