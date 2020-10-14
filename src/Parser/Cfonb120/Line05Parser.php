@@ -48,7 +48,7 @@ class Line05Parser extends AbstractCfonb120Parser
         );
     }
 
-    public function getSupportedCode(): string
+    protected function getSupportedCode(): string
     {
         return '05';
     }

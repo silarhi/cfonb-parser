@@ -14,7 +14,7 @@ namespace Silarhi\Cfonb\Parser\Cfonb120;
 
 class Line07Parser extends Line01Parser
 {
-    public function getSupportedCode(): string
+    protected function getSupportedCode(): string
     {
         return '07';
     }
