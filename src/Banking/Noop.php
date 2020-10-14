@@ -10,12 +10,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Silarhi\Cfonb\Parser;
+namespace Silarhi\Cfonb\Banking;
 
-use Silarhi\Cfonb\Contracts\ParserInterface;
-use Silarhi\Cfonb\Exceptions\ParseException;
-
-abstract class AbstractCfonbParser implements ParserInterface
+class Noop
 {
-    abstract protected function getSupportedCode(): string;
+
 }
