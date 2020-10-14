@@ -10,12 +10,9 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Silarhi\Cfonb\Parser\Cfonb120;
+namespace Silarhi\Cfonb\Exceptions;
 
-class Line07Parser extends Line01Parser
+class BalanceUnavailableException extends \RuntimeException
 {
-    protected function getSupportedCode(): string
-    {
-        return '07';
-    }
+
 }

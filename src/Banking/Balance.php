@@ -20,40 +20,37 @@ class Balance
     /** @var string */
     private $deskCode;
 
-    /** @var string|null */
+    /** @var string */
     private $currencyCode;
 
     /** @var string */
     private $accountNumber;
 
-    /** @var \DateTime */
+    /** @var \DateTimeImmutable */
     private $date;
 
     /** @var float */
     private $amount;
+
+    public function __construct(string $bankCode, string $deskCode, string $currencyCode, string $accountNumber, \DateTimeImmutable $date, float $amount)
+    {
+        $this->bankCode = $bankCode;
+        $this->deskCode = $deskCode;
+        $this->currencyCode = $currencyCode;
+        $this->accountNumber = $accountNumber;
+        $this->date = $date;
+        $this->amount = $amount;
+    }
 
     public function getBankCode(): string
     {
         return $this->bankCode;
     }
 
-    public function setBankCode(string $bankCode): self
-    {
-        $this->bankCode = $bankCode;
-
-        return $this;
-    }
 
     public function getDeskCode(): string
     {
         return $this->deskCode;
-    }
-
-    public function setDeskCode(string $deskCode): self
-    {
-        $this->deskCode = $deskCode;
-
-        return $this;
     }
 
     public function getCurrencyCode(): string
@@ -61,23 +58,9 @@ class Balance
         return $this->currencyCode;
     }
 
-    public function setCurrencyCode(string $currencyCode): self
-    {
-        $this->currencyCode = $currencyCode;
-
-        return $this;
-    }
-
     public function getAccountNumber(): string
     {
         return $this->accountNumber;
-    }
-
-    public function setAccountNumber(string $accountNumber): self
-    {
-        $this->accountNumber = $accountNumber;
-
-        return $this;
     }
 
     public function getDate(): \DateTimeImmutable
@@ -85,22 +68,8 @@ class Balance
         return $this->date;
     }
 
-    public function setDate(\DateTimeImmutable $date): self
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
     public function getAmount(): float
     {
         return $this->amount;
-    }
-
-    public function setAmount(float $amount): self
-    {
-        $this->amount = $amount;
-
-        return $this;
     }
 }

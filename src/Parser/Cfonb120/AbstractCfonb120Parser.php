@@ -19,7 +19,7 @@ abstract class AbstractCfonb120Parser extends AbstractCfonbParser
     /**
      * {@inheritdoc}
      */
-    public function supports($content)
+    public function supports(string $content): bool
     {
         return 120 === \strlen($content) && $this->getSupportedCode() === substr($content, 0, 2);
     }

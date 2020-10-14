@@ -15,15 +15,32 @@ Supports CFONB 120 format
 use Silarhi\Cfonb\Cfonb120Reader;
 
 $reader = new Cfonb120Reader();
-$reader->parse('My Content');
 
 //Gets all statements day by day
-foreach($reader->getStatements() as $statement) {
-  echo sprintf("Old balance : %f\n", $statement->getOldBalance()->getAmount());
+foreach($reader->parse('My Content') as $statement) {
+  if ($statement->hasOldBalance()) {
+    echo sprintf("Old balance : %f\n", $statement->getOldBalance()->getAmount());
+  }
   foreach($statement->getOperations() as $operation) {
-      //Gets all statement operations
+    //Gets all statement operations
   }
   
-  echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
+  if ($statement->hasNewBalance()) {
+    echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
+  }
+}
+
+//Gets all statements day by day
+foreach($reader->parse('My Other Content') as $statement) {
+  if ($statement->hasOldBalance()) {
+    echo sprintf("Old balance : %f\n", $statement->getOldBalance()->getAmount());
+  }
+  foreach($statement->getOperations() as $operation) {
+    //Gets all statement operations
+  }
+  
+  if ($statement->hasNewBalance()) {
+    echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
+  }
 }
 ```

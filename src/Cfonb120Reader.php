@@ -24,9 +24,6 @@ use Silarhi\Cfonb\Parser\Cfonb120\Line07Parser;
 
 class Cfonb120Reader extends AbstractReader
 {
-    /** @var Statement[] */
-    private $statements = [];
-
     public function __construct()
     {
         $this->parsers = [
@@ -37,15 +34,12 @@ class Cfonb120Reader extends AbstractReader
         ];
     }
 
-    public function parse($content)
+    /** @return Statement[] */
+    public function parse(string $content): array
     {
-        $lines = explode("\n", $content);
-
-        if (0 === \count($lines)) {
-            return;
-        }
-
-        $statement = new Statement();
+        $statementList = [];
+        $lines         = explode("\n", $content);
+        $statement     = new Statement();
 
         /** @var Operation|null $lastOperation */
         $lastOperation = null;
@@ -62,11 +56,11 @@ class Cfonb120Reader extends AbstractReader
                 $result = $parser->parse($line);
                 if ($result instanceof Balance) {
                     $lastOperation = null;
-                    if (null === $statement->getOldBalance()) {
+                    if ($statement->hasOldBalance() === false) {
                         $statement->setOldBalance($result);
                     } else {
                         $statement->setNewBalance($result);
-                        $this->statements[] = $statement;
+                        $statementList[] = $statement;
                         $statement = new Statement();
                     }
                 } elseif ($result instanceof Operation) {
@@ -77,20 +71,14 @@ class Cfonb120Reader extends AbstractReader
                         throw new ParseException(sprintf('Unable to attach a detail for operation with internal code %s', $result->getInternalCode()));
                     }
 
-                    $lastOperation->setDetails($result);
+                    $lastOperation->addDetails($result);
                 }
 
                 continue 2;
             }
             throw new ParseException(sprintf("Unable to find a parser for the line :\n\"%s\"", $line));
         }
-    }
 
-    /**
-     * @return Statement[]
-     */
-    public function getStatements(): array
-    {
-        return $this->statements;
+        return $statementList;
     }
 }

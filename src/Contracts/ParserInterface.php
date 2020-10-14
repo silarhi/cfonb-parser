@@ -12,8 +12,6 @@
 
 namespace Silarhi\Cfonb\Contracts;
 
-use Silarhi\Cfonb\Banking\Balance;
-
 interface ParserInterface
 {
     /**
@@ -21,9 +19,9 @@ interface ParserInterface
      *
      * @param string $content
      *
-     * @return Balance
+     * @return object
      */
-    public function parse($content);
+    public function parse(string $content);
 
     /**
      * Checks if current line is handled by the parser
@@ -32,5 +30,5 @@ interface ParserInterface
      *
      * @return bool true if the line is handled by the current parser, false otherwise
      */
-    public function supports($content);
+    public function supports(string $content): bool;
 }

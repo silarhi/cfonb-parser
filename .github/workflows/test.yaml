@@ -36,3 +36,9 @@ jobs:
 
             - name: Run tests
               run: ./vendor/bin/phpunit
+
+            - name: Run phpstan
+              run: ./vendor/bin/phpstan analyse
+
+            - name: Run infection
+              run: ./vendor/bin/infection

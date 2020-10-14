@@ -12,6 +12,8 @@
 
 namespace Silarhi\Cfonb\Banking;
 
+use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
+
 class Statement
 {
     /** @var Balance|null */
@@ -21,7 +23,14 @@ class Statement
     private $newBalance;
 
     /** @var Operation[] */
-    private $operations = [];
+    private $operations;
+
+    public function __construct()
+    {
+        $this->oldBalance = null;
+        $this->newBalance = null;
+        $this->operations = [];
+    }
 
     public function addOperation(Operation $operation): self
     {
@@ -30,8 +39,17 @@ class Statement
         return $this;
     }
 
-    public function getOldBalance(): ?Balance
+    public function hasOldBalance(): bool
     {
+        return $this->oldBalance !== null;
+    }
+
+    public function getOldBalance(): Balance
+    {
+        if ($this->oldBalance === null) {
+            throw new BalanceUnavailableException('old balance is null');
+        }
+
         return $this->oldBalance;
     }
 
@@ -42,8 +60,17 @@ class Statement
         return $this;
     }
 
-    public function getNewBalance(): ?Balance
+    public function hasNewBalance(): bool
     {
+        return $this->newBalance !== null;
+    }
+
+    public function getNewBalance(): Balance
+    {
+        if ($this->newBalance === null) {
+            throw new BalanceUnavailableException('new balance is null');
+        }
+
         return $this->newBalance;
     }
 
@@ -60,15 +87,5 @@ class Statement
     public function getOperations(): array
     {
         return $this->operations;
-    }
-
-    /**
-     * @param Operation[] $operations
-     */
-    public function setOperations(array $operations): self
-    {
-        $this->operations = $operations;
-
-        return $this;
     }
 }

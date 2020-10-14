@@ -32,7 +32,7 @@ abstract class AbstractCfonbParser implements ParserInterface
 
     public const ALL = '(.{%d})';
 
-    protected function parseLine($content, array $parts)
+    protected function parseLine(string $content, array $parts): array
     {
         $regexParts = [];
         foreach ($parts as $part) {
@@ -54,7 +54,7 @@ abstract class AbstractCfonbParser implements ParserInterface
         return $values;
     }
 
-    protected function parseAmount($content, $nbDecimals)
+    protected function parseAmount(string $content, int $nbDecimals): float
     {
         $creditMapping = [
             'A' => '1',
@@ -95,12 +95,7 @@ abstract class AbstractCfonbParser implements ParserInterface
         throw new ParseException(sprintf('Unable to parse amount "%s"', $content));
     }
 
-    /**
-     * @param $date
-     *
-     * @return \DateTimeImmutable
-     */
-    protected function parseDate($date)
+    protected function parseDate(string $date): \DateTimeImmutable
     {
         $datetime = \DateTimeImmutable::createFromFormat('dmy', $date);
         if (false === $datetime) {
@@ -110,25 +105,5 @@ abstract class AbstractCfonbParser implements ParserInterface
         return $datetime->setTime(0, 0);
     }
 
-    abstract protected function getSupportedCode();
-
-    protected function getNumericalValue($content, $position, $length)
-    {
-        return (int) ltrim($this->getValue($content, $position, $length), '0');
-    }
-
-    protected function getAlphabeticalValue($content, $position, $length)
-    {
-        return $this->getAlphanumericalValue($content, $position, $length);
-    }
-
-    protected function getAlphanumericalValue($content, $position, $length)
-    {
-        return rtrim($this->getValue($content, $position, $length));
-    }
-
-    private function getValue($content, $position, $length)
-    {
-        return substr($content, $position - 1, $length);
-    }
+    abstract protected function getSupportedCode(): string;
 }
