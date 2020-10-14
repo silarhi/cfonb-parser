@@ -153,23 +153,7 @@ class Operation
         return $this->amount;
     }
 
-    public function getDetails(): ?OperationDetail
-    {
-        return \count($this->details) > 0 ? $this->details[0] : null;
-    }
-
-    public function getDetailsOrThrowException(): OperationDetail
-    {
-        $detail = $this->getDetails();
-
-        if ($detail === null) {
-            throw new \RuntimeException('detail is null');
-        }
-
-        return $detail;
-    }
-
-    public function setDetails(OperationDetail $details): self
+    public function addDetails(OperationDetail $details): self
     {
         $this->details[] = $details;
 
@@ -177,7 +161,7 @@ class Operation
     }
 
     /** @return OperationDetail[] */
-    public function getAllDetails(): array
+    public function getDetails(): array
     {
         return $this->details;
     }

@@ -56,7 +56,7 @@ class Cfonb120Reader extends AbstractReader
                 $result = $parser->parse($line);
                 if ($result instanceof Balance) {
                     $lastOperation = null;
-                    if (null === $statement->getOldBalance()) {
+                    if ($statement->hasOldBalance() === false) {
                         $statement->setOldBalance($result);
                     } else {
                         $statement->setNewBalance($result);
@@ -71,7 +71,7 @@ class Cfonb120Reader extends AbstractReader
                         throw new ParseException(sprintf('Unable to attach a detail for operation with internal code %s', $result->getInternalCode()));
                     }
 
-                    $lastOperation->setDetails($result);
+                    $lastOperation->addDetails($result);
                 }
 
                 continue 2;
