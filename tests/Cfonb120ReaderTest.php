@@ -71,11 +71,14 @@ class Cfonb120ReaderTest extends TestCase
         $reader->parse($line);
     }
 
-    /** @return void */
-    public function testSimpleTest()
+    /**
+     * @dataProvider provideOneLineOrNot
+     * @return void
+     */
+    public function testSimpleTest(bool $oneLine)
     {
         $reader     = new Cfonb120Reader();
-        $statements = $reader->parse($this->loadFixture('simple-test.txt'));
+        $statements = $reader->parse($this->loadFixture('simple-test.txt', $oneLine));
 
         $this->assertCount(1, $statements);
 
@@ -103,11 +106,20 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertSame('00012345603', $statement->getNewBalance()->getAccountNumber());
     }
 
-    /** @return void */
-    public function testComplexTest()
+    public function provideOneLineOrNot(): iterable
+    {
+        yield [true];
+        yield [false];
+    }
+
+    /**
+     * @dataProvider provideOneLineOrNot
+     * @return void
+     */
+    public function testComplexTest(bool $oneLine)
     {
         $reader     = new Cfonb120Reader();
-        $statements = $reader->parse($this->loadFixture('complex-test.txt'));
+        $statements = $reader->parse($this->loadFixture('complex-test.txt', $oneLine));
 
         $this->assertCount(8, $statements);
 
@@ -239,12 +251,16 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertSame(584353.02, $statement->getNewBalance()->getAmount());
     }
 
-    private function loadFixture(string $file) : string
+    private function loadFixture(string $file, bool $oneline) : string
     {
         $result = file_get_contents(__DIR__ . '/fixtures/' . $file);
 
         if ($result === false) {
             throw new \RuntimeException(sprintf('unable to get %s', $file));
+        }
+
+        if ($oneline == true) {
+            $result = str_replace("\n", '', $result);
         }
 
         return $result;
