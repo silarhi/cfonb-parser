@@ -37,6 +37,10 @@ class Cfonb120Reader extends AbstractReader
     /** @return Statement[] */
     public function parse(string $content): array
     {
+        if (!empty($content) && strlen($content) > 120 && strpos($content, "\n") === false) {
+            $content = chunk_split($content, 120, "\n");
+        }
+
         $statementList = [];
         $lines         = explode("\n", $content);
         $statement     = new Statement();
