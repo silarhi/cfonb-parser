@@ -12,7 +12,11 @@
 
 namespace Silarhi\Cfonb\Banking;
 
-class Operation
+use DateTimeImmutable;
+use DateTimeInterface;
+use Silarhi\Cfonb\Contracts\OperationInterface;
+
+class Operation implements OperationInterface
 {
     /** @var string */
     private $bankCode;
@@ -32,13 +36,13 @@ class Operation
     /** @var string */
     private $code;
 
-    /** @var \DateTimeImmutable */
+    /** @var DateTimeImmutable */
     private $date;
 
     /** @var string|null */
     private $rejectCode;
 
-    /** @var \DateTimeImmutable */
+    /** @var DateTimeImmutable */
     private $valueDate;
 
     /** @var string */
@@ -61,8 +65,8 @@ class Operation
         string $deskCode,
         string $accountNumber,
         string $code,
-        \DateTimeImmutable $date,
-        \DateTimeImmutable $valueDate,
+        DateTimeImmutable $date,
+        DateTimeImmutable $valueDate,
         string $label,
         string $reference,
         float $amount,
@@ -117,7 +121,7 @@ class Operation
         return $this->code;
     }
 
-    public function getDate(): \DateTimeImmutable
+    public function getDate(): DateTimeInterface
     {
         return $this->date;
     }
@@ -127,7 +131,7 @@ class Operation
         return $this->rejectCode;
     }
 
-    public function getValueDate(): \DateTimeImmutable
+    public function getValueDate(): DateTimeInterface
     {
         return $this->valueDate;
     }

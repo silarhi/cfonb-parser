@@ -12,17 +12,20 @@
 
 namespace Silarhi\Cfonb\Banking;
 
+use Silarhi\Cfonb\Contracts\BalanceInterface;
+use Silarhi\Cfonb\Contracts\OperationInterface;
+use Silarhi\Cfonb\Contracts\StatementInterface;
 use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 
-class Statement
+class Statement implements StatementInterface
 {
-    /** @var Balance|null */
+    /** @var BalanceInterface|null */
     private $oldBalance;
 
-    /** @var Balance|null */
+    /** @var BalanceInterface|null */
     private $newBalance;
 
-    /** @var Operation[] */
+    /** @var OperationInterface[] */
     private $operations;
 
     public function __construct()
@@ -44,7 +47,7 @@ class Statement
         return $this->oldBalance !== null;
     }
 
-    public function getOldBalance(): Balance
+    public function getOldBalance(): BalanceInterface
     {
         if ($this->oldBalance === null) {
             throw new BalanceUnavailableException('old balance is null');
@@ -53,7 +56,7 @@ class Statement
         return $this->oldBalance;
     }
 
-    public function setOldBalance(Balance $oldBalance): self
+    public function setOldBalance(BalanceInterface $oldBalance): self
     {
         $this->oldBalance = $oldBalance;
 
@@ -65,7 +68,7 @@ class Statement
         return $this->newBalance !== null;
     }
 
-    public function getNewBalance(): Balance
+    public function getNewBalance(): BalanceInterface
     {
         if ($this->newBalance === null) {
             throw new BalanceUnavailableException('new balance is null');
@@ -74,7 +77,7 @@ class Statement
         return $this->newBalance;
     }
 
-    public function setNewBalance(Balance $newBalance): self
+    public function setNewBalance(BalanceInterface $newBalance): self
     {
         $this->newBalance = $newBalance;
 
@@ -82,7 +85,7 @@ class Statement
     }
 
     /**
-     * @return Operation[]
+     * @return OperationInterface[]
      */
     public function getOperations(): array
     {

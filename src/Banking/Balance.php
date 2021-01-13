@@ -12,7 +12,11 @@
 
 namespace Silarhi\Cfonb\Banking;
 
-class Balance
+use DateTimeImmutable;
+use DateTimeInterface;
+use Silarhi\Cfonb\Contracts\BalanceInterface;
+
+class Balance implements BalanceInterface
 {
     /** @var string */
     private $bankCode;
@@ -26,13 +30,13 @@ class Balance
     /** @var string */
     private $accountNumber;
 
-    /** @var \DateTimeImmutable */
+    /** @var DateTimeImmutable */
     private $date;
 
     /** @var float */
     private $amount;
 
-    public function __construct(string $bankCode, string $deskCode, string $currencyCode, string $accountNumber, \DateTimeImmutable $date, float $amount)
+    public function __construct(string $bankCode, string $deskCode, string $currencyCode, string $accountNumber, DateTimeImmutable $date, float $amount)
     {
         $this->bankCode = $bankCode;
         $this->deskCode = $deskCode;
@@ -63,7 +67,7 @@ class Balance
         return $this->accountNumber;
     }
 
-    public function getDate(): \DateTimeImmutable
+    public function getDate(): DateTimeInterface
     {
         return $this->date;
     }

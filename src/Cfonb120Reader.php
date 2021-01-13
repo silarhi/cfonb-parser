@@ -17,6 +17,7 @@ use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Contracts\Cfonb120ReaderInterface;
+use Silarhi\Cfonb\Contracts\StatementInterface;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\Cfonb120\Line01Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line04Parser;
@@ -35,7 +36,7 @@ class Cfonb120Reader extends AbstractReader implements Cfonb120ReaderInterface
         ];
     }
 
-    /** @return Statement[] */
+    /** @return StatementInterface[] */
     public function parse(string $content): array
     {
         if (!empty($content) && strlen($content) > 120 && strpos($content, "\n") === false) {
