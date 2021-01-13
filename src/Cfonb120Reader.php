@@ -16,13 +16,14 @@ use Silarhi\Cfonb\Banking\Balance;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Banking\Statement;
+use Silarhi\Cfonb\Contracts\Cfonb120ReaderInterface;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\Cfonb120\Line01Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line04Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line05Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line07Parser;
 
-class Cfonb120Reader extends AbstractReader
+class Cfonb120Reader extends AbstractReader implements Cfonb120ReaderInterface
 {
     public function __construct()
     {
