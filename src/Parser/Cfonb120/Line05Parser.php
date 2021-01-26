@@ -12,13 +12,15 @@
 
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
-use Silarhi\Cfonb\Banking\OperationDetail;
+use Silarhi\Cfonb\Contracts\Cfonb120\DetailInterface;
+use Silarhi\Cfonb\Models\Cfonb120\Detail;
+use Silarhi\Cfonb\Parser\LineParser;
 
-class Line05Parser extends AbstractCfonb120Parser
+class Line05Parser extends LineParser
 {
-    public function parse(string $content): OperationDetail
+    public function parse(string $content): DetailInterface
     {
-        $infos = $this->parseLine($content, [
+        $info = $this->parseLine($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',
             'bank_code' => [self::NUMERIC, 5],
             'internal_code' => [self::ALPHANUMERIC_BLANK, 4],
@@ -35,16 +37,16 @@ class Line05Parser extends AbstractCfonb120Parser
             '_unused_3' => [self::ALL, 2],
         ]);
 
-        return new OperationDetail(
-            $infos['bank_code'],
-            $infos['desk_code'],
-            $infos['account_nb'],
-            $infos['operation_code'],
-            $this->parseDate($infos['operation_date']),
-            $infos['qualifier'],
-            $infos['additional_info'],
-            $infos['internal_code'],
-            $infos['currency_code']
+        return new Detail(
+            $info['bank_code'],
+            $info['desk_code'],
+            $info['account_nb'],
+            $info['operation_code'],
+            $this->parseDate($info['operation_date']),
+            $info['qualifier'],
+            $info['additional_info'],
+            $info['internal_code'],
+            $info['currency_code']
         );
     }
 

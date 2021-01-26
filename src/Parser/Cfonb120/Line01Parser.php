@@ -12,13 +12,15 @@
 
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
-use Silarhi\Cfonb\Banking\Balance;
+use Silarhi\Cfonb\Contracts\Cfonb120\BalanceInterface;
+use Silarhi\Cfonb\Models\Cfonb120\OldBalance;
+use Silarhi\Cfonb\Parser\LineParser;
 
-class Line01Parser extends AbstractCfonb120Parser
+class Line01Parser extends LineParser
 {
-    public function parse(string $content) : Balance
+    public function parse(string $content) : BalanceInterface
     {
-        $infos = $this->parseLine($content, [
+        $info = $this->parseLine($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',
             'bank_code' => [self::NUMERIC, 5],
             '_unused_1' => [self::BLANK, 4],
@@ -34,13 +36,13 @@ class Line01Parser extends AbstractCfonb120Parser
             '_unused_5' => [self::ALL, 16],
         ]);
 
-        return new Balance(
-            $infos['bank_code'],
-            $infos['desk_code'],
-            $infos['currency_code'],
-            $infos['account_nb'],
-            $this->parseDate($infos['date']),
-            $this->parseAmount($infos['amount'], $infos['nb_of_dec'])
+        return new OldBalance(
+            $info['bank_code'],
+            $info['desk_code'],
+            $info['currency_code'],
+            $info['account_nb'],
+            $this->parseDate($info['date']),
+            $this->parseAmount($info['amount'], $info['nb_of_dec'])
         );
     }
 

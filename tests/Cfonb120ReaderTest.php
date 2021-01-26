@@ -13,41 +13,39 @@
 namespace Siarhi\Cfonb\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Silarhi\Cfonb\Banking\Balance;
-use Silarhi\Cfonb\Banking\Operation;
-use Silarhi\Cfonb\Banking\Statement;
-use Silarhi\Cfonb\Cfonb120Reader;
+use RuntimeException;
+use Silarhi\Cfonb\CfonbParser;
+use Silarhi\Cfonb\Contracts\Cfonb120\OperationInterface;
+use Silarhi\Cfonb\Contracts\Cfonb120\StatementInterface;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
 class Cfonb120ReaderTest extends TestCase
 {
+
+    /**
+     * @var CfonbParser
+     */
+    private $cfonbParser;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->cfonbParser = new CfonbParser();
+    }
+
     /** @return void */
     public function testEmpty()
     {
-        $reader = new Cfonb120Reader();
-
-        $this->assertCount(0, $reader->parse(''));
+        $this->assertCount(0, $this->cfonbParser->read120C(''));
     }
 
     /** @return void */
-    public function testFailUnknowLine()
+    public function testFailUnknownLine()
     {
-        $reader = new Cfonb120Reader();
-
         self::expectException(ParseException::class);
         self::expectExceptionMessage('Unable to find a parser for the line :
 "abc "');
-        $reader->parse('abc ');
-    }
-
-    /** @return void */
-    public function testFailCauseNoOperation()
-    {
-        $reader = new Cfonb120Reader();
-
-        self::expectException(ParseException::class);
-        self::expectExceptionMessage('Unable to attach a detail for operation with internal code 6772');
-        $reader->parse('0510556677202204EUR2 00012345603B1070420     LIBDEDIBOX 3706114                                                         ');
+        $this->cfonbParser->read120C('abc ');
     }
 
     public function provideMalformedLine(): array
@@ -60,31 +58,34 @@ class Cfonb120ReaderTest extends TestCase
 
     /**
      * @dataProvider provideMalformedLine
+     *
+     * @param string $line
+     *
      * @return void
      */
     public function testMalformedLine(string $line)
     {
-        $reader = new Cfonb120Reader();
-
         self::expectException(ParseException::class);
         self::expectExceptionMessage('Regex does not match the line');
-        $reader->parse($line);
+        $this->cfonbParser->read120C($line);
     }
 
     /**
      * @dataProvider provideOneLineOrNot
+     *
+     * @param bool $oneLine
+     *
      * @return void
      */
     public function testSimpleTest(bool $oneLine)
     {
-        $reader     = new Cfonb120Reader();
-        $statements = $reader->parse($this->loadFixture('simple-test.txt', $oneLine));
+        $statements = $this->cfonbParser->read120C($this->loadFixture('cfonb.120-simple-test.txt', $oneLine));
 
         $this->assertCount(1, $statements);
 
         $statement = $statements[0];
 
-        assert($statement instanceof Statement);
+        $this->assertInstanceOf(StatementInterface::class, $statement);
 
         $this->assertTrue($statement->hasOldBalance());
 
@@ -114,19 +115,21 @@ class Cfonb120ReaderTest extends TestCase
 
     /**
      * @dataProvider provideOneLineOrNot
+     *
+     * @param bool $oneLine
+     *
      * @return void
      */
     public function testComplexTest(bool $oneLine)
     {
-        $reader     = new Cfonb120Reader();
-        $statements = $reader->parse($this->loadFixture('complex-test.txt', $oneLine));
+        $statements = $this->cfonbParser->read120C($this->loadFixture('cfonb.120-complex-test.txt', $oneLine));
 
         $this->assertCount(8, $statements);
 
         //Test first statement
         $statement = $statements[0];
 
-        assert($statement instanceof Statement);
+        $this->assertInstanceOf(StatementInterface::class, $statement);
 
         $this->assertSame(16695.65, $statement->getOldBalance()->getAmount());
         $this->assertCount(1, $statement->getOperations());
@@ -134,20 +137,20 @@ class Cfonb120ReaderTest extends TestCase
 
         $operation = $operations[0];
 
-        assert($operation instanceof Operation);
+        $this->assertInstanceOf(OperationInterface::class, $operation);
 
         $this->assertSame('2020-04-07 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
         $this->assertSame(-22.79, $operation->getAmount());
         $this->assertSame('PRLV SEPA ONLINE SAS', $operation->getLabel());
         $this->assertCount(1, $operation->getDetails());
-        $this->assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformations());
+        $this->assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformation());
 
         $this->assertSame(16672.86, $statement->getNewBalance()->getAmount());
 
         //Test second statement
         $statement = $statements[1];
 
-        assert($statement instanceof Statement);
+        $this->assertInstanceOf(StatementInterface::class, $statement);
 
         $this->assertSame(16672.86, $statement->getOldBalance()->getAmount());
         $this->assertCount(2, $statement->getOperations());
@@ -155,7 +158,7 @@ class Cfonb120ReaderTest extends TestCase
 
         $operation = $operations[0];
 
-        assert($operation instanceof Operation);
+        $this->assertInstanceOf(OperationInterface::class, $operation);
 
         $this->assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
         $this->assertSame(-20.11, $operation->getAmount());
@@ -164,7 +167,7 @@ class Cfonb120ReaderTest extends TestCase
 
         $operation = $operations[1];
 
-        assert($operation instanceof Operation);
+        $this->assertInstanceOf(OperationInterface::class, $operation);
 
         $this->assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
         $this->assertSame(-5000.0, $operation->getAmount());
@@ -176,7 +179,7 @@ class Cfonb120ReaderTest extends TestCase
         //Third statement
         $statement = $statements[2];
 
-        assert($statement instanceof Statement);
+        $this->assertInstanceOf(StatementInterface::class, $statement);
 
         $this->assertSame(11652.75, $statement->getOldBalance()->getAmount());
         $this->assertCount(0, $statement->getOperations());
@@ -185,7 +188,7 @@ class Cfonb120ReaderTest extends TestCase
         //Test fourth statement
         $statement = $statements[3];
 
-        assert($statement instanceof Statement);
+        $this->assertInstanceOf(StatementInterface::class, $statement);
 
         $this->assertSame(11652.75, $statement->getOldBalance()->getAmount());
         $this->assertCount(1, $statement->getOperations());
@@ -193,21 +196,21 @@ class Cfonb120ReaderTest extends TestCase
 
         $operation = $operations[0];
 
-        assert($operation instanceof Operation);
+        $this->assertInstanceOf(OperationInterface::class, $operation);
 
         $this->assertSame('2020-04-10 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
         $this->assertSame('2020-04-01 00:00:00', $operation->getValueDate()->format('Y-m-d H:i:s'));
         $this->assertSame(-117.75, $operation->getAmount());
         $this->assertSame('FACTURE SGT20022040001692', $operation->getLabel());
         $this->assertCount(1, $operation->getDetails());
-        $this->assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformations());
+        $this->assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformation());
 
         $this->assertSame(11535.0, $statement->getNewBalance()->getAmount());
 
         //5th statement
         $statement = $statements[4];
 
-        assert($statement instanceof Statement);
+        $this->assertInstanceOf(StatementInterface::class, $statement);
 
         $this->assertSame(11535.0, $statement->getOldBalance()->getAmount());
         $this->assertCount(0, $statement->getOperations());
@@ -216,7 +219,7 @@ class Cfonb120ReaderTest extends TestCase
         //6th statement
         $statement = $statements[5];
 
-        assert($statement instanceof Statement);
+        $this->assertInstanceOf(StatementInterface::class, $statement);
 
         $this->assertSame(11535.0, $statement->getOldBalance()->getAmount());
         $this->assertCount(1, $statement->getOperations());
@@ -228,14 +231,14 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertSame(-50.25, $operation->getAmount());
         $this->assertSame('PRLV SEPA OVH SAS', $operation->getLabel());
         $this->assertCount(2, $operation->getDetails());
-        $this->assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformations());
+        $this->assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformation());
 
         $this->assertSame(11484.75, $statement->getNewBalance()->getAmount());
 
         //7th statement
         $statement = $statements[6];
 
-        assert($statement instanceof Statement);
+        $this->assertInstanceOf(StatementInterface::class, $statement);
 
         $this->assertSame(11484.75, $statement->getOldBalance()->getAmount());
         $this->assertCount(0, $statement->getOperations());
@@ -244,22 +247,22 @@ class Cfonb120ReaderTest extends TestCase
         //8th statement
         $statement = $statements[7];
 
-        assert($statement instanceof Statement);
+        $this->assertInstanceOf(StatementInterface::class, $statement);
 
         $this->assertSame(584353.02, $statement->getOldBalance()->getAmount());
         $this->assertCount(0, $statement->getOperations());
         $this->assertSame(584353.02, $statement->getNewBalance()->getAmount());
     }
 
-    private function loadFixture(string $file, bool $oneline) : string
+    private function loadFixture(string $file, bool $oneLine): string
     {
         $result = file_get_contents(__DIR__ . '/fixtures/' . $file);
 
         if ($result === false) {
-            throw new \RuntimeException(sprintf('unable to get %s', $file));
+            throw new RuntimeException(sprintf('unable to get %s', $file));
         }
 
-        if ($oneline == true) {
+        if ($oneLine == true) {
             $result = str_replace("\n", '', $result);
         }
 
