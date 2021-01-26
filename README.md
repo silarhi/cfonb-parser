@@ -1,23 +1,16 @@
 # cfonb-parser
-![Tests](https://github.com/silarhi/cfonb-parser/workflows/Tests/badge.svg)
-[![Latest Stable Version](https://poser.pugx.org/silarhi/cfonb-parser/v/stable)](https://packagist.org/packages/silarhi/cfonb-parser)
-[![Total Downloads](https://poser.pugx.org/silarhi/cfonb-parser/downloads)](https://packagist.org/packages/silarhi/cfonb-parser)
-[![License](https://poser.pugx.org/silarhi/cfonb-parser/license)](https://packagist.org/packages/silarhi/cfonb-parser)
-
 A PHP Parser for CFONB statements
 
-Supports CFONB 120 format
+Supports CFONB 120, 240 formats.
 
 ## How to use
 ```php
 <?php
 
-use Silarhi\Cfonb\Cfonb120Reader;
-
-$reader = new Cfonb120Reader();
+$parser = new \Silarhi\Cfonb\CfonbParser();
 
 //Gets all statements day by day
-foreach($reader->parse('My Content') as $statement) {
+foreach($parser->read120C('My Content') as $statement) {
   if ($statement->hasOldBalance()) {
     echo sprintf("Old balance : %f\n", $statement->getOldBalance()->getAmount());
   }
@@ -29,18 +22,24 @@ foreach($reader->parse('My Content') as $statement) {
     echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
   }
 }
+```
+
+```php
+<?php
+
+$parser = new \Silarhi\Cfonb\CfonbParser();
 
 //Gets all statements day by day
-foreach($reader->parse('My Other Content') as $statement) {
-  if ($statement->hasOldBalance()) {
-    echo sprintf("Old balance : %f\n", $statement->getOldBalance()->getAmount());
+foreach($parser->read240C('My Content') as $transaction) {
+  if ($transaction->getHeader()) {
+    echo sprintf("Old balance : %f\n", $transaction->getHeader()->getOperationCode()());
   }
-  foreach($statement->getOperations() as $operation) {
+  foreach($transaction->getOperations() as $operation) {
     //Gets all statement operations
   }
   
-  if ($statement->hasNewBalance()) {
-    echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
+  if ($transaction->getTotal()()) {
+    echo sprintf("New balance : %f\n", $transaction->getTotal()->getTotalAmount()());
   }
 }
 ```
