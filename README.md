@@ -1,7 +1,8 @@
 # cfonb-parser
 A PHP Parser for CFONB statements
 
-Supports CFONB 120, 240 formats.
+Supports CFONB 120 signature and CFONB 240 transactions formats.
+Helper for [EBICS Client PHP](https://github.com/andrew-svirin/ebics-client-php)
 
 ## How to use
 ```php
