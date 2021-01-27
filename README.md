@@ -31,16 +31,16 @@ foreach($parser->read120C('My Content') as $statement) {
 $parser = new \Silarhi\Cfonb\CfonbParser();
 
 //Gets all statements day by day
-foreach($parser->read240C('My Content') as $transaction) {
-  if ($transaction->getHeader()) {
-    echo sprintf("Old balance : %f\n", $transaction->getHeader()->getOperationCode()());
+foreach($parser->read240C('My Content') as $transfer) {
+  if ($transfer->getHeader()) {
+    echo sprintf("Header op code : %f\n", $transaction->getHeader()->getOperationCode());
   }
-  foreach($transaction->getOperations() as $operation) {
+  foreach($transfer->getTransactions() as $transactions) {
     //Gets all statement operations
   }
   
   if ($transaction->getTotal()()) {
-    echo sprintf("New balance : %f\n", $transaction->getTotal()->getTotalAmount()());
+    echo sprintf("Total transfer amount : %f\n", $transaction->getTotal()->getTotalAmount());
   }
 }
 ```
