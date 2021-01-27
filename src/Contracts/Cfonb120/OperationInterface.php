@@ -12,12 +12,13 @@
 namespace Silarhi\Cfonb\Contracts\Cfonb120;
 
 use DateTimeInterface;
+use Silarhi\Cfonb\Contracts\ReadItemInterface;
 
 /**
  * Interface OperationInterface specifies general methods for model,
  * those will not changed for the version.
  */
-interface OperationInterface
+interface OperationInterface extends ReadItemInterface
 {
     /**
      * @return string
@@ -83,6 +84,8 @@ interface OperationInterface
      * @return float
      */
     public function getAmount(): float;
+
+    public function addDetail(DetailInterface $detail): OperationInterface;
 
     /**
      * @return DetailInterface[]

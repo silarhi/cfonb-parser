@@ -21,7 +21,7 @@ use Silarhi\Cfonb\Parser\LineParser;
  */
 class Line39Parser extends LineParser
 {
-    public function parse(string $content)
+    public function parse(string $content): Total
     {
         $info = $this->parseLine($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',

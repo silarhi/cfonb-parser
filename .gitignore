@@ -4,3 +4,5 @@
 infection.log
 .idea
 
+composer.lock
+

@@ -20,7 +20,7 @@ use Silarhi\Cfonb\Parser\LineParser;
  */
 class Line34Parser extends LineParser
 {
-    public function parse(string $content)
+    public function parse(string $content): Operation
     {
         $info = $this->parseLine($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',
@@ -63,7 +63,8 @@ class Line34Parser extends LineParser
             $info['recipient_name_2'],
             $info['presenter_reference'],
             $info['description'],
-            $this->parseDate($info['initial_transaction_settlement_date']),
+            $info['initial_transaction_settlement_date'] ?
+                $this->parseDate($info['initial_transaction_settlement_date']) : null,
             $info['initial_operation_presenter_reference'],
             $this->parseMoney($info['transaction_amount'])
         );

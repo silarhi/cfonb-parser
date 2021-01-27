@@ -34,7 +34,7 @@ class Cfonb120Reader extends AbstractReader implements CfonbReaderInterface
     /** @var LineParserInterface[] */
     protected $lineParsers = [];
 
-    /* @var int */
+    /** @var int */
     private $lineLength;
 
     /**

@@ -12,6 +12,7 @@
 
 namespace Silarhi\Cfonb\Models\Cfonb120;
 
+use RuntimeException;
 use Silarhi\Cfonb\Contracts\Cfonb120\BalanceInterface;
 use Silarhi\Cfonb\Contracts\Cfonb120\OperationInterface;
 use Silarhi\Cfonb\Contracts\Cfonb120\StatementInterface;
@@ -89,6 +90,9 @@ class Statement implements StatementInterface
 
     public function getLastOperation(): OperationInterface
     {
-        return end($this->operations);
+        if (!($lastOperation = end($this->operations))) {
+            throw new RuntimeException('Can not get last operation.');
+        }
+        return $lastOperation;
     }
 }

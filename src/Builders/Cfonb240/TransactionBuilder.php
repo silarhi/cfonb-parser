@@ -11,6 +11,7 @@
 
 namespace Silarhi\Cfonb\Builders\Cfonb240;
 
+use RuntimeException;
 use Silarhi\Cfonb\Models\Cfonb240\Header;
 use Silarhi\Cfonb\Models\Cfonb240\Operation;
 use Silarhi\Cfonb\Models\Cfonb240\Total;
@@ -23,7 +24,7 @@ class TransactionBuilder
 {
 
     /**
-     * @var Transaction
+     * @var Transaction|null
      */
     private $instance;
 
@@ -36,6 +37,10 @@ class TransactionBuilder
 
     public function putHeader(Header $header): TransactionBuilder
     {
+        if (null === $this->instance) {
+            throw new RuntimeException('Instance not defined');
+        }
+
         $this->instance->setHeader($header);
 
         return $this;
@@ -43,6 +48,10 @@ class TransactionBuilder
 
     public function putTotal(Total $total): TransactionBuilder
     {
+        if (null === $this->instance) {
+            throw new RuntimeException('Instance not defined');
+        }
+
         $this->instance->setTotal($total);
 
         return $this;
@@ -50,6 +59,10 @@ class TransactionBuilder
 
     public function addOperation(Operation $operation): TransactionBuilder
     {
+        if (null === $this->instance) {
+            throw new RuntimeException('Instance not defined');
+        }
+
         $this->instance->addOperation($operation);
 
         return $this;
@@ -57,7 +70,10 @@ class TransactionBuilder
 
     public function popInstance(): Transaction
     {
-        $instance = $this->instance;
+        if (!($instance = $this->instance)) {
+            throw new RuntimeException('Instance not defined');
+        }
+
         $this->instance = null;
 
         return $instance;

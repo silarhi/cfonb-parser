@@ -11,10 +11,11 @@
 
 namespace Silarhi\Cfonb\Builders\Cfonb120;
 
+use RuntimeException;
+use Silarhi\Cfonb\Models\Cfonb120\Detail;
 use Silarhi\Cfonb\Models\Cfonb120\NewBalance;
 use Silarhi\Cfonb\Models\Cfonb120\OldBalance;
 use Silarhi\Cfonb\Models\Cfonb120\Operation;
-use Silarhi\Cfonb\Models\Cfonb120\Detail;
 use Silarhi\Cfonb\Models\Cfonb120\Statement;
 
 /**
@@ -24,7 +25,7 @@ class StatementBuilder
 {
 
     /**
-     * @var Statement
+     * @var Statement|null
      */
     private $instance;
 
@@ -37,6 +38,10 @@ class StatementBuilder
 
     public function putOldBalance(OldBalance $oldBalance): StatementBuilder
     {
+        if (null === $this->instance) {
+            throw new RuntimeException('Instance not defined');
+        }
+
         $this->instance->setOldBalance($oldBalance);
 
         return $this;
@@ -44,6 +49,10 @@ class StatementBuilder
 
     public function putNewBalance(NewBalance $oldBalance): StatementBuilder
     {
+        if (null === $this->instance) {
+            throw new RuntimeException('Instance not defined');
+        }
+
         $this->instance->setNewBalance($oldBalance);
 
         return $this;
@@ -51,6 +60,10 @@ class StatementBuilder
 
     public function addOperation(Operation $operation): StatementBuilder
     {
+        if (null === $this->instance) {
+            throw new RuntimeException('Instance not defined');
+        }
+
         $this->instance->addOperation($operation);
 
         return $this;
@@ -58,6 +71,10 @@ class StatementBuilder
 
     public function lastOperationAddDetail(Detail $detail): StatementBuilder
     {
+        if (null === $this->instance) {
+            throw new RuntimeException('Instance not defined');
+        }
+
         $this->instance->getLastOperation()->addDetail($detail);
 
         return $this;
@@ -65,7 +82,10 @@ class StatementBuilder
 
     public function popInstance(): Statement
     {
-        $instance = $this->instance;
+        if (!($instance = $this->instance)) {
+            throw new RuntimeException('Instance not defined');
+        }
+
         $this->instance = null;
 
         return $instance;

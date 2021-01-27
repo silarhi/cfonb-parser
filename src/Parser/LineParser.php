@@ -102,11 +102,8 @@ abstract class LineParser implements LineParserInterface
         return $money / 100;
     }
 
-    protected function parseDate(string $date = null): ?DateTimeInterface
+    protected function parseDate(string $date): DateTimeInterface
     {
-        if (empty($date)) {
-            return null;
-        }
         $datetime = DateTimeImmutable::createFromFormat('dmy', $date);
         if (false === $datetime) {
             throw new ParseException(sprintf('Unable to parse date "%s"', $date));

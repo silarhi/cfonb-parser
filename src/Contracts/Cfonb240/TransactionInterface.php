@@ -11,11 +11,13 @@
 
 namespace Silarhi\Cfonb\Contracts\Cfonb240;
 
+use Silarhi\Cfonb\Contracts\ReadItemInterface;
+
 /**
  * Interface StatementInterface specifies general methods for model,
  * those will not changed for the version.
  */
-interface TransactionInterface
+interface TransactionInterface extends ReadItemInterface
 {
 
     /**

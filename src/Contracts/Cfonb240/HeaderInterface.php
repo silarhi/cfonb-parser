@@ -12,12 +12,13 @@
 namespace Silarhi\Cfonb\Contracts\Cfonb240;
 
 use DateTimeInterface;
+use Silarhi\Cfonb\Contracts\ReadItemInterface;
 
 /**
  * Interface HeaderInterface specifies general methods for model,
  * those will not changed for the version.
  */
-interface HeaderInterface
+interface HeaderInterface extends ReadItemInterface
 {
 
     /**

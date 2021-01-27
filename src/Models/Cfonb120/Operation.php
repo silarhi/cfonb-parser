@@ -13,6 +13,7 @@
 namespace Silarhi\Cfonb\Models\Cfonb120;
 
 use DateTimeInterface;
+use Silarhi\Cfonb\Contracts\Cfonb120\DetailInterface;
 use Silarhi\Cfonb\Contracts\Cfonb120\OperationInterface;
 
 class Operation implements OperationInterface
@@ -56,7 +57,7 @@ class Operation implements OperationInterface
     /** @var float */
     private $amount;
 
-    /** @var Detail[] */
+    /** @var DetailInterface[] */
     private $details;
 
     public function __construct(
@@ -156,14 +157,13 @@ class Operation implements OperationInterface
         return $this->amount;
     }
 
-    public function addDetail(Detail $details): self
+    public function addDetail(DetailInterface $detail): OperationInterface
     {
-        $this->details[] = $details;
+        $this->details[] = $detail;
 
         return $this;
     }
 
-    /** @return Detail[] */
     public function getDetails(): array
     {
         return $this->details;

@@ -12,12 +12,13 @@
 namespace Silarhi\Cfonb\Contracts\Cfonb120;
 
 use DateTimeInterface;
+use Silarhi\Cfonb\Contracts\ReadItemInterface;
 
 /**
  * Interface DetailInterface specifies general methods for model,
  * those will not changed for the version.
  */
-interface DetailInterface
+interface DetailInterface extends ReadItemInterface
 {
     public function getBankCode(): string;
 

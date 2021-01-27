@@ -19,7 +19,7 @@ interface LineParserInterface
      *
      * @param string $content
      *
-     * @return
+     * @return ReadItemInterface
      */
     public function parse(string $content);
 

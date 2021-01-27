@@ -30,7 +30,7 @@ class Cfonb240Reader extends AbstractReader implements CfonbReaderInterface
     /** @var LineParserInterface[] */
     protected $lineParsers = [];
 
-    /* @var int */
+    /** @var int */
     private $lineLength;
 
     /**
@@ -53,6 +53,7 @@ class Cfonb240Reader extends AbstractReader implements CfonbReaderInterface
     {
         $lines = $this->getLines($content);
 
+        /* @var \Silarhi\Cfonb\Contracts\ReadItemInterface[] $transactions */
         $transactions = [];
 
         foreach ($lines as $line) {
