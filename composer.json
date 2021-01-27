@@ -1,6 +1,6 @@
 {
     "name": "silarhi/cfonb-parser",
-    "description": "A PHP Parser for CFONB 120 signatures, 240 transactions. Helper for EBICS.",
+    "description": "A PHP Parser for CFONB 120 signatures, 240 transfers. Helper for EBICS.",
     "license": "MIT",
     "type": "library",
     "keywords": ["cfonb", "parser", "etebac", "swift", "ebics"],
