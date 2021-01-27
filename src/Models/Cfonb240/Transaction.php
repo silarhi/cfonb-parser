@@ -11,61 +11,229 @@
 
 namespace Silarhi\Cfonb\Models\Cfonb240;
 
-use Silarhi\Cfonb\Contracts\Cfonb240\HeaderInterface;
-use Silarhi\Cfonb\Contracts\Cfonb240\OperationInterface;
-use Silarhi\Cfonb\Contracts\Cfonb240\TotalInterface;
+use DateTimeInterface;
 use Silarhi\Cfonb\Contracts\Cfonb240\TransactionInterface;
 
 class Transaction implements TransactionInterface
 {
 
     /**
-     * @var HeaderInterface
+     * @var int
      */
-    private $header;
+    private $sequenceNumber;
 
     /**
-     * @var OperationInterface[]
+     * @var string|null
      */
-    private $operations;
+    private $operationCode;
 
     /**
-     * @var TotalInterface
+     * @var DateTimeInterface
      */
-    private $total;
+    private $settlementDate;
 
-    public function __construct()
-    {
-        $this->operations = [];
+    /**
+     * @var string
+     */
+    private $curIndex;
+
+    /**
+     * @var string
+     */
+    private $recipientBankCode1;
+
+    /**
+     * @var string
+     */
+    private $recipientCounterCode1;
+
+    /**
+     * @var string|null
+     */
+    private $recipientAccountNumber1;
+
+    /**
+     * @var string|null
+     */
+    private $recipientName1;
+
+    /**
+     * @var string|null
+     */
+    private $nationalIssuerNumber;
+
+    /**
+     * @var string
+     */
+    private $recipientBankCode2;
+
+    /**
+     * @var string
+     */
+    private $recipientCounterCode2;
+
+    /**
+     * @var string
+     */
+    private $recipientAccountNumber2;
+
+    /**
+     * @var string|null
+     */
+    private $recipientName2;
+
+    /**
+     * @var string|null
+     */
+    private $presenterReference;
+
+    /**
+     * @var string|null
+     */
+    private $description;
+
+    /**
+     * @var DateTimeInterface|null
+     */
+    private $initialTransactionSettlementDate;
+
+    /**
+     * @var string|null
+     */
+    private $initialOperationPresenterReference;
+
+    /**
+     * @var float
+     */
+    private $transactionAmount;
+
+    public function __construct(
+        int $sequenceNumber,
+        ?string $operationCode,
+        DateTimeInterface $settlementDate,
+        string $curIndex,
+        string $recipientBankCode1,
+        string $recipientCounterCode1,
+        ?string $recipientAccountNumber1,
+        ?string $recipientName1,
+        ?string $nationalIssuerNumber,
+        string $recipientBankCode2,
+        string $recipientCounterCode2,
+        string $recipientAccountNumber2,
+        ?string $recipientName2,
+        ?string $presenterReference,
+        ?string $description,
+        ?DateTimeInterface $initialTransactionSettlementDate,
+        ?string $initialOperationPresenterReference,
+        float $transactionAmount
+    ) {
+        $this->sequenceNumber = $sequenceNumber;
+        $this->operationCode = $operationCode;
+        $this->settlementDate = $settlementDate;
+        $this->curIndex = $curIndex;
+        $this->recipientBankCode1 = $recipientBankCode1;
+        $this->recipientCounterCode1 = $recipientCounterCode1;
+        $this->recipientAccountNumber1 = $recipientAccountNumber1;
+        $this->recipientName1 = $recipientName1;
+        $this->nationalIssuerNumber = $nationalIssuerNumber;
+        $this->recipientBankCode2 = $recipientBankCode2;
+        $this->recipientCounterCode2 = $recipientCounterCode2;
+        $this->recipientAccountNumber2 = $recipientAccountNumber2;
+        $this->recipientName2 = $recipientName2;
+        $this->presenterReference = $presenterReference;
+        $this->description = $description;
+        $this->initialTransactionSettlementDate = $initialTransactionSettlementDate;
+        $this->initialOperationPresenterReference = $initialOperationPresenterReference;
+        $this->transactionAmount = $transactionAmount;
     }
 
-    public function setHeader(HeaderInterface $header): void
+    public function getSequenceNumber(): int
     {
-        $this->header = $header;
+        return $this->sequenceNumber;
     }
 
-    public function getHeader(): HeaderInterface
+    public function getOperationCode(): ?string
     {
-        return $this->header;
+        return $this->operationCode;
     }
 
-    public function addOperation(OperationInterface $operation): void
+    public function getSettlementDate(): DateTimeInterface
     {
-        $this->operations[] = $operation;
+        return $this->settlementDate;
     }
 
-    public function getOperations(): array
+    public function getCurIndex(): string
     {
-        return $this->operations;
+        return $this->curIndex;
     }
 
-    public function setTotal(TotalInterface $total): void
+    public function getRecipientBankCode1(): string
     {
-        $this->total = $total;
+        return $this->recipientBankCode1;
     }
 
-    public function getTotal(): TotalInterface
+    public function getRecipientCounterCode1(): string
     {
-        return $this->total;
+        return $this->recipientCounterCode1;
+    }
+
+    public function getRecipientAccountNumber1(): ?string
+    {
+        return $this->recipientAccountNumber1;
+    }
+
+    public function getRecipientName1(): ?string
+    {
+        return $this->recipientName1;
+    }
+
+    public function getNationalIssuerNumber(): ?string
+    {
+        return $this->nationalIssuerNumber;
+    }
+
+    public function getRecipientBankCode2(): string
+    {
+        return $this->recipientBankCode2;
+    }
+
+    public function getRecipientCounterCode2(): string
+    {
+        return $this->recipientCounterCode2;
+    }
+
+    public function getRecipientAccountNumber2(): string
+    {
+        return $this->recipientAccountNumber2;
+    }
+
+    public function getRecipientName2(): ?string
+    {
+        return $this->recipientName2;
+    }
+
+    public function getPresenterReference(): ?string
+    {
+        return $this->presenterReference;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getInitialTransactionSettlementDate(): ?DateTimeInterface
+    {
+        return $this->initialTransactionSettlementDate;
+    }
+
+    public function getInitialOperationPresenterReference(): ?string
+    {
+        return $this->initialOperationPresenterReference;
+    }
+
+    public function getTransactionAmount(): float
+    {
+        return $this->transactionAmount;
     }
 }

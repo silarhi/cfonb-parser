@@ -11,11 +11,11 @@
 
 namespace Silarhi\Cfonb\Services;
 
-use Silarhi\Cfonb\Builders\Cfonb240\TransactionBuilder;
+use Silarhi\Cfonb\Builders\Cfonb240\TransferBuilder;
 use Silarhi\Cfonb\Contracts\CfonbReaderInterface;
 use Silarhi\Cfonb\Contracts\LineParserInterface;
 use Silarhi\Cfonb\Models\Cfonb240\Header;
-use Silarhi\Cfonb\Models\Cfonb240\Operation;
+use Silarhi\Cfonb\Models\Cfonb240\Transaction;
 use Silarhi\Cfonb\Models\Cfonb240\Total;
 use Silarhi\Cfonb\Parser\Cfonb240\Line31Parser;
 use Silarhi\Cfonb\Parser\Cfonb240\Line34Parser;
@@ -34,9 +34,9 @@ class Cfonb240Reader extends AbstractReader implements CfonbReaderInterface
     private $lineLength;
 
     /**
-     * @var TransactionBuilder
+     * @var TransferBuilder
      */
-    private $transactionBuilder;
+    private $transferBuilder;
 
     public function __construct()
     {
@@ -46,30 +46,30 @@ class Cfonb240Reader extends AbstractReader implements CfonbReaderInterface
             new Line39Parser(),
         ];
         $this->lineLength = 240;
-        $this->transactionBuilder = new TransactionBuilder();
+        $this->transferBuilder = new TransferBuilder();
     }
 
     public function parse(string $content): array
     {
         $lines = $this->getLines($content);
 
-        /* @var \Silarhi\Cfonb\Contracts\ReadItemInterface[] $transactions */
-        $transactions = [];
+        /* @var \Silarhi\Cfonb\Contracts\ReadItemInterface[] $transfers */
+        $transfers = [];
 
         foreach ($lines as $line) {
             $lineParser = $this->resolveLineParser($line);
             $result = $lineParser->parse($line);
 
             if ($result instanceof Header) {
-                $this->transactionBuilder->createInstance()->putHeader($result);
+                $this->transferBuilder->createInstance()->putHeader($result);
             } elseif ($result instanceof Total) {
-                $transactions[] = $this->transactionBuilder->putTotal($result)->popInstance();
-            } elseif ($result instanceof Operation) {
-                $this->transactionBuilder->addOperation($result);
+                $transfers[] = $this->transferBuilder->putTotal($result)->popInstance();
+            } elseif ($result instanceof Transaction) {
+                $this->transferBuilder->addTransaction($result);
             }
         }
 
-        return $transactions;
+        return $transfers;
     }
 
     protected function getLineLength(): int

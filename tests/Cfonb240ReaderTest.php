@@ -56,7 +56,7 @@ class Cfonb240ReaderTest extends TestCase
 
         $transaction = reset($transactions);
 
-        $this->assertEquals(2, count($transaction->getOperations()));
+        $this->assertEquals(2, count($transaction->getTransactions()));
 
         return;
     }

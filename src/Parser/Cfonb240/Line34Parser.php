@@ -11,7 +11,7 @@
 
 namespace Silarhi\Cfonb\Parser\Cfonb240;
 
-use Silarhi\Cfonb\Models\Cfonb240\Operation;
+use Silarhi\Cfonb\Models\Cfonb240\Transaction;
 use Silarhi\Cfonb\Parser\LineParser;
 
 /**
@@ -20,7 +20,7 @@ use Silarhi\Cfonb\Parser\LineParser;
  */
 class Line34Parser extends LineParser
 {
-    public function parse(string $content): Operation
+    public function parse(string $content): Transaction
     {
         $info = $this->parseLine($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',
@@ -47,7 +47,7 @@ class Line34Parser extends LineParser
             'transaction_amount' => [self::NUMERIC, 12],
         ]);
 
-        return new Operation(
+        return new Transaction(
             (int)$info['seq_nb'],
             $info['op_code'],
             $this->parseDate($info['settlement_date']),

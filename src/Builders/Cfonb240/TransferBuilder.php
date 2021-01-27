@@ -13,29 +13,29 @@ namespace Silarhi\Cfonb\Builders\Cfonb240;
 
 use RuntimeException;
 use Silarhi\Cfonb\Models\Cfonb240\Header;
-use Silarhi\Cfonb\Models\Cfonb240\Operation;
-use Silarhi\Cfonb\Models\Cfonb240\Total;
 use Silarhi\Cfonb\Models\Cfonb240\Transaction;
+use Silarhi\Cfonb\Models\Cfonb240\Total;
+use Silarhi\Cfonb\Models\Cfonb240\Transfer;
 
 /**
- * Builder for instance of class @see Transaction
+ * Builder for instance of class @see Transfer
  */
-class TransactionBuilder
+class TransferBuilder
 {
 
     /**
-     * @var Transaction|null
+     * @var Transfer|null
      */
     private $instance;
 
-    public function createInstance(): TransactionBuilder
+    public function createInstance(): TransferBuilder
     {
-        $this->instance = new Transaction();
+        $this->instance = new Transfer();
 
         return $this;
     }
 
-    public function putHeader(Header $header): TransactionBuilder
+    public function putHeader(Header $header): TransferBuilder
     {
         if (null === $this->instance) {
             throw new RuntimeException('Instance not defined');
@@ -46,7 +46,7 @@ class TransactionBuilder
         return $this;
     }
 
-    public function putTotal(Total $total): TransactionBuilder
+    public function putTotal(Total $total): TransferBuilder
     {
         if (null === $this->instance) {
             throw new RuntimeException('Instance not defined');
@@ -57,18 +57,18 @@ class TransactionBuilder
         return $this;
     }
 
-    public function addOperation(Operation $operation): TransactionBuilder
+    public function addTransaction(Transaction $transaction): TransferBuilder
     {
         if (null === $this->instance) {
             throw new RuntimeException('Instance not defined');
         }
 
-        $this->instance->addOperation($operation);
+        $this->instance->addTransaction($transaction);
 
         return $this;
     }
 
-    public function popInstance(): Transaction
+    public function popInstance(): Transfer
     {
         if (!($instance = $this->instance)) {
             throw new RuntimeException('Instance not defined');
