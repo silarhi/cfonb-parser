@@ -16,14 +16,19 @@ use Silarhi\Cfonb\Banking\Balance;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Banking\Statement;
+use Silarhi\Cfonb\Contracts\ParserInterface;
 use Silarhi\Cfonb\Exceptions\ParseException;
+use Silarhi\Cfonb\Parser\Cfonb120\EmptyParser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line01Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line04Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line05Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line07Parser;
 
-class Cfonb120Reader extends AbstractReader
+class Cfonb120Reader
 {
+    /** @var ParserInterface[] */
+    private $parsers;
+
     public function __construct()
     {
         $this->parsers = [
@@ -31,6 +36,7 @@ class Cfonb120Reader extends AbstractReader
             new Line04Parser(),
             new Line05Parser(),
             new Line07Parser(),
+            new EmptyParser(),
         ];
     }
 
@@ -48,41 +54,40 @@ class Cfonb120Reader extends AbstractReader
         /** @var Operation|null $lastOperation */
         $lastOperation = null;
         foreach ($lines as $line) {
-            if (empty($line)) {
-                continue;
-            }
+            $result = $this->findSupportedParserForLine($line)->parse($line);
 
-            foreach ($this->parsers as $parser) {
-                if (!$parser->supports($line)) {
-                    continue;
+            if ($result instanceof Balance) {
+                $lastOperation = null;
+                if ($statement->hasOldBalance() === false) {
+                    $statement->setOldBalance($result);
+                } else {
+                    $statement->setNewBalance($result);
+                    $statementList[] = $statement;
+                    $statement = new Statement();
+                }
+            } elseif ($result instanceof Operation) {
+                $lastOperation = $result;
+                $statement->addOperation($result);
+            } elseif ($result instanceof OperationDetail) {
+                if (null === $lastOperation) {
+                    throw new ParseException(sprintf('Unable to attach a detail for operation with internal code %s', $result->getInternalCode()));
                 }
 
-                $result = $parser->parse($line);
-                if ($result instanceof Balance) {
-                    $lastOperation = null;
-                    if ($statement->hasOldBalance() === false) {
-                        $statement->setOldBalance($result);
-                    } else {
-                        $statement->setNewBalance($result);
-                        $statementList[] = $statement;
-                        $statement = new Statement();
-                    }
-                } elseif ($result instanceof Operation) {
-                    $lastOperation = $result;
-                    $statement->addOperation($result);
-                } elseif ($result instanceof OperationDetail) {
-                    if (null === $lastOperation) {
-                        throw new ParseException(sprintf('Unable to attach a detail for operation with internal code %s', $result->getInternalCode()));
-                    }
-
-                    $lastOperation->addDetails($result);
-                }
-
-                continue 2;
+                $lastOperation->addDetails($result);
             }
-            throw new ParseException(sprintf("Unable to find a parser for the line :\n\"%s\"", $line));
         }
 
         return $statementList;
+    }
+
+    private function findSupportedParserForLine(string $line) : ParserInterface
+    {
+        foreach ($this->parsers as $parser) {
+            if ($parser->supports($line)) {
+                return $parser;
+            }
+        }
+
+        throw new ParseException(sprintf("Unable to find a parser for the line :\n\"%s\"", $line));
     }
 }

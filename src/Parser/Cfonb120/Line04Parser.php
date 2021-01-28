@@ -13,31 +13,54 @@
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
 use Silarhi\Cfonb\Banking\Operation;
+use Silarhi\Cfonb\Parser\LineParser;
+use Silarhi\Cfonb\Parser\AmountParser;
+use Silarhi\Cfonb\Parser\DateParser;
 
 class Line04Parser extends AbstractCfonb120Parser
 {
+    /**
+     * @var LineParser
+     */
+    private $lineParser;
+    /**
+     * @var DateParser
+     */
+    private $parseDate;
+    /**
+     * @var AmountParser
+     */
+    private $parseAmount;
+
+    public function __construct()
+    {
+        $this->lineParser = new LineParser();
+        $this->parseDate = new DateParser();
+        $this->parseAmount = new AmountParser();
+    }
+
     public function parse(string $content) : Operation
     {
-        $infos = $this->parseLine($content, [
+        $infos = $this->lineParser->parse($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',
-            'bank_code' => [self::NUMERIC, 5],
-            'internal_code' => [self::ALPHANUMERIC_BLANK, 4],
-            'desk_code' => [self::NUMERIC, 5],
-            'currency_code' => [self::ALPHA_BLANK, 3],
-            'nb_of_dec' => [self::NUMERIC_BLANK, 1],
-            '_unused_1' => [self::ALL, 1],
-            'account_nb' => [self::ALPHANUMERIC, 11],
-            'operation_code' => [self::ALPHANUMERIC, 2],
-            'operation_date' => [self::NUMERIC, 6],
-            'reject_code' => [self::NUMERIC_BLANK, 2],
-            'value_date' => [self::NUMERIC, 6],
-            'label' => [self::ALL, 31],
-            '_unused_2' => [self::ALL, 2],
-            'reference' => [self::ALL, 7],
-            'exempt_code' => [self::ALL, 1],
-            '_unused_3' => [self::ALL, 1],
-            'amount' => [self::AMOUNT, 14],
-            '_unused_5' => [self::ALL, 16],
+            'bank_code' => [LineParser::NUMERIC, 5],
+            'internal_code' => [LineParser::ALPHANUMERIC_BLANK, 4],
+            'desk_code' => [LineParser::NUMERIC, 5],
+            'currency_code' => [LineParser::ALPHA_BLANK, 3],
+            'nb_of_dec' => [LineParser::NUMERIC_BLANK, 1],
+            '_unused_1' => [LineParser::ALL, 1],
+            'account_nb' => [LineParser::ALPHANUMERIC, 11],
+            'operation_code' => [LineParser::ALPHANUMERIC, 2],
+            'operation_date' => [LineParser::NUMERIC, 6],
+            'reject_code' => [LineParser::NUMERIC_BLANK, 2],
+            'value_date' => [LineParser::NUMERIC, 6],
+            'label' => [LineParser::ALL, 31],
+            '_unused_2' => [LineParser::ALL, 2],
+            'reference' => [LineParser::ALL, 7],
+            'exempt_code' => [LineParser::ALL, 1],
+            '_unused_3' => [LineParser::ALL, 1],
+            'amount' => [LineParser::AMOUNT, 13],
+            '_unused_5' => [LineParser::ALL, 16],
         ]);
 
         return new Operation(
@@ -45,11 +68,11 @@ class Line04Parser extends AbstractCfonb120Parser
             $infos['desk_code'],
             $infos['account_nb'],
             $infos['operation_code'],
-            $this->parseDate($infos['operation_date']),
-            $this->parseDate($infos['value_date']),
+            $this->parseDate->parse($infos['operation_date']),
+            $this->parseDate->parse($infos['value_date']),
             $infos['label'],
             $infos['reference'],
-            $this->parseAmount($infos['amount'], $infos['nb_of_dec']),
+            $this->parseAmount->parse($infos['amount'], $infos['nb_of_dec']),
             $infos['internal_code'],
             $infos['currency_code'],
             $infos['reject_code'],
