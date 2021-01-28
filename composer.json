@@ -11,12 +11,13 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8"
+        "php": "^7.2 || ^8.0"
     },
     "require-dev": {
+        "doctrine/coding-standard": "8.1.*",
         "phpunit/phpunit": "^9.1",
         "symfony/var-dumper": "^5.0",
-        "phpstan/phpstan": "^0.12.58",
+        "phpstan/phpstan": "^0.12",
         "infection/infection": "^0.17.7|^0.20.2"
     },
     "autoload": {
