@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -11,6 +13,8 @@
  */
 
 namespace Silarhi\Cfonb\Banking;
+
+use DateTimeImmutable;
 
 class Balance
 {
@@ -26,27 +30,26 @@ class Balance
     /** @var string */
     private $accountNumber;
 
-    /** @var \DateTimeImmutable */
+    /** @var DateTimeImmutable */
     private $date;
 
     /** @var float */
     private $amount;
 
-    public function __construct(string $bankCode, string $deskCode, string $currencyCode, string $accountNumber, \DateTimeImmutable $date, float $amount)
+    public function __construct(string $bankCode, string $deskCode, string $currencyCode, string $accountNumber, DateTimeImmutable $date, float $amount)
     {
-        $this->bankCode = $bankCode;
-        $this->deskCode = $deskCode;
-        $this->currencyCode = $currencyCode;
+        $this->bankCode      = $bankCode;
+        $this->deskCode      = $deskCode;
+        $this->currencyCode  = $currencyCode;
         $this->accountNumber = $accountNumber;
-        $this->date = $date;
-        $this->amount = $amount;
+        $this->date          = $date;
+        $this->amount        = $amount;
     }
 
     public function getBankCode(): string
     {
         return $this->bankCode;
     }
-
 
     public function getDeskCode(): string
     {
@@ -63,7 +66,7 @@ class Balance
         return $this->accountNumber;
     }
 
-    public function getDate(): \DateTimeImmutable
+    public function getDate(): DateTimeImmutable
     {
         return $this->date;
     }

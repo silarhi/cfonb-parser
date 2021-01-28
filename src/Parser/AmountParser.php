@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser;
 
-
 use Silarhi\Cfonb\Exceptions\ParseException;
+
+use function sprintf;
+use function str_replace;
+use function strlen;
+use function substr;
 
 class AmountParser
 {
-    /** @var string[] */
     private const CREDIT_MAPPING = [
         'A' => '1',
         'B' => '2',
@@ -21,8 +25,7 @@ class AmountParser
         'I' => '9',
         '{' => '0',
     ];
-    /** @var string[] */
-    private const DEBIT_MAPPING = [
+    private const DEBIT_MAPPING  = [
         'J' => '1',
         'K' => '2',
         'L' => '3',
@@ -38,7 +41,7 @@ class AmountParser
 
     public function parse(string $content, int $nbDecimals): float
     {
-        $content = substr($content, 0, \strlen($content) - $nbDecimals) . '.' . substr($content, -1 * $nbDecimals);
+        $content  = substr($content, 0, strlen($content) - $nbDecimals) . '.' . substr($content, -1 * $nbDecimals);
         $lastChar = substr($content, -1);
         if (isset(self::CREDIT_MAPPING[$lastChar])) {
             return (float) (str_replace($lastChar, self::CREDIT_MAPPING[$lastChar], $content));

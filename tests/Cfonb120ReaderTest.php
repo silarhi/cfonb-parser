@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -13,11 +15,16 @@
 namespace Siarhi\Cfonb\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Silarhi\Cfonb\Banking\Balance;
+use RuntimeException;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
+
+use function assert;
+use function file_get_contents;
+use function sprintf;
+use function str_replace;
 
 class Cfonb120ReaderTest extends TestCase
 {
@@ -54,13 +61,14 @@ class Cfonb120ReaderTest extends TestCase
     {
         return [
             'dateMalformed' => ['0110278    02204EUR2 00012345603  YYYYYY                                                  0000000166956E060420070420    '],
-            'amountMalformed' => ['0110278    02204EUR2 00012345603  101020                                                  0000000166956Y060420070420    ']
+            'amountMalformed' => ['0110278    02204EUR2 00012345603  101020                                                  0000000166956Y060420070420    '],
         ];
     }
 
     /**
-     * @dataProvider provideMalformedLine
      * @return void
+     *
+     * @dataProvider provideMalformedLine
      */
     public function testMalformedLine(string $line)
     {
@@ -72,8 +80,9 @@ class Cfonb120ReaderTest extends TestCase
     }
 
     /**
-     * @dataProvider provideOneLineOrNot
      * @return void
+     *
+     * @dataProvider provideOneLineOrNot
      */
     public function testSimpleTest(bool $oneLine)
     {
@@ -113,8 +122,9 @@ class Cfonb120ReaderTest extends TestCase
     }
 
     /**
-     * @dataProvider provideOneLineOrNot
      * @return void
+     *
+     * @dataProvider provideOneLineOrNot
      */
     public function testComplexTest(bool $oneLine)
     {
@@ -251,15 +261,15 @@ class Cfonb120ReaderTest extends TestCase
         $this->assertSame(584353.02, $statement->getNewBalance()->getAmount());
     }
 
-    private function loadFixture(string $file, bool $oneline) : string
+    private function loadFixture(string $file, bool $oneline): string
     {
         $result = file_get_contents(__DIR__ . '/fixtures/' . $file);
 
         if ($result === false) {
-            throw new \RuntimeException(sprintf('unable to get %s', $file));
+            throw new RuntimeException(sprintf('unable to get %s', $file));
         }
 
-        if ($oneline == true) {
+        if ($oneline === true) {
             $result = str_replace("\n", '', $result);
         }
 

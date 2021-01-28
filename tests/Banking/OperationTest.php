@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Banking;
 
-
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
 
-class OperationTest  extends TestCase
+class OperationTest extends TestCase
 {
     /** @return void */
     public function testGetter()
     {
-        $date = new \DateTimeImmutable();
-        $valueDate = new \DateTimeImmutable();
+        $date      = new DateTimeImmutable();
+        $valueDate = new DateTimeImmutable();
 
         $sUT = new Operation(
             'test',

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -13,24 +15,20 @@
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
 use Silarhi\Cfonb\Banking\OperationDetail;
-use Silarhi\Cfonb\Parser\LineParser;
 use Silarhi\Cfonb\Parser\DateParser;
+use Silarhi\Cfonb\Parser\LineParser;
 
 class Line05Parser extends AbstractCfonb120Parser
 {
-    /**
-     * @var LineParser
-     */
+    /** @var LineParser */
     private $lineParser;
-    /**
-     * @var DateParser
-     */
+    /** @var DateParser */
     private $parseDate;
 
     public function __construct()
     {
         $this->lineParser = new LineParser();
-        $this->parseDate = new DateParser();
+        $this->parseDate  = new DateParser();
     }
 
     public function parse(string $content): OperationDetail

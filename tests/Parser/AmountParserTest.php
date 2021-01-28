@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Siarhi\Cfonb\Tests\Parser;
-
 
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
@@ -48,8 +48,9 @@ class AmountParserTest extends TestCase
     }
 
     /**
-     * @dataProvider provideOkCase
      * @return void
+     *
+     * @dataProvider provideOkCase
      */
     public function testOk(string $content, int $nbDecimal, float $expected)
     {

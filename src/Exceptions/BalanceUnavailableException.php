@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -12,7 +14,8 @@
 
 namespace Silarhi\Cfonb\Exceptions;
 
-class BalanceUnavailableException extends \RuntimeException
-{
+use RuntimeException;
 
+class BalanceUnavailableException extends RuntimeException
+{
 }

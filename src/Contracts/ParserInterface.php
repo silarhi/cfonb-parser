@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -17,16 +19,12 @@ interface ParserInterface
     /**
      * Parse the current line
      *
-     * @param string $content
-     *
      * @return object
      */
     public function parse(string $content);
 
     /**
      * Checks if current line is handled by the parser
-     *
-     * @param string $content
      *
      * @return bool true if the line is handled by the current parser, false otherwise
      */

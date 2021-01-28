@@ -1,17 +1,15 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Banking;
 
-
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Balance;
-use Silarhi\Cfonb\Banking\Operation;
-use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 
-class StatementTest  extends TestCase
+class StatementTest extends TestCase
 {
     /** @return void */
     public function testGetter()
