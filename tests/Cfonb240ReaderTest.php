@@ -14,9 +14,10 @@ declare(strict_types=1);
 
 namespace Siarhi\Cfonb\Tests;
 
-use function count;
+use function assert;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Silarhi\Cfonb\Banking\Transfer;
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
@@ -42,13 +43,16 @@ class Cfonb240ReaderTest extends TestCase
      */
     public function testComplexTest()
     {
-        $transactions = (new Cfonb240Reader())->parse($this->loadFixture('cfonb.240-complex-test.txt', false));
+        $transfers = (new Cfonb240Reader())->parse($this->loadFixture('cfonb.240-complex-test.txt', false));
 
-        $this->assertEquals(2, count($transactions));
+        self::assertCount(2, $transfers);
+        self::assertContainsOnlyInstancesOf(Transfer::class, $transfers);
 
-        $transaction = reset($transactions);
+        $firstTransfers = $transfers[0];
 
-        $this->assertEquals(2, count($transaction->getTransactions()));
+        assert($firstTransfers instanceof Transfer);
+
+        self::assertCount(2, $firstTransfers->getTransactions());
     }
 
     private function loadFixture(string $file, bool $oneline): string
