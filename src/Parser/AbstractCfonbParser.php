@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -13,7 +15,6 @@
 namespace Silarhi\Cfonb\Parser;
 
 use Silarhi\Cfonb\Contracts\ParserInterface;
-use Silarhi\Cfonb\Exceptions\ParseException;
 
 abstract class AbstractCfonbParser implements ParserInterface
 {

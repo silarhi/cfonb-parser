@@ -1,10 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the CFONB Parser package.
+ *
+ * (c) Guillaume Sainthillier <hello@silarhi.fr>
+ * (c) @fezfez <demonchaux.stephane@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
 
 namespace Silarhi\Cfonb\Parser;
 
-
+use function is_array;
 use Silarhi\Cfonb\Exceptions\ParseException;
+use function strlen;
 
 class LineParser
 {
@@ -27,19 +39,19 @@ class LineParser
     {
         $regexParts = [];
         foreach ($parts as $part) {
-            $regexParts[] = \is_array($part) ? sprintf($part[0], $part[1]) : $part;
+            $regexParts[] = is_array($part) ? sprintf($part[0], $part[1]) : $part;
         }
 
         $regex = sprintf('/^%s$/', implode('', $regexParts));
 
         if (!preg_match($regex, $content, $matches)) {
-            throw new ParseException(sprintf('Regex does not match the line'));
+            throw new ParseException('Regex does not match the line');
         }
 
         $values = [];
         foreach (array_keys($parts) as $i => $key) {
             $value = trim($matches[$i + 1]);
-            $values[$key] = \strlen($value) != 0 ? $value : null;
+            $values[$key] = 0 != strlen($value) ? $value : null;
         }
 
         return $values;

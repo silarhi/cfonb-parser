@@ -27,6 +27,8 @@ return PhpCsFixer\Config::create()
         'native_constant_invocation' => true,
         'native_function_invocation' => ['include' => ['@compiler_optimized']],
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
+        'global_namespace_import' => ['import_functions' => true],
+        'declare_strict_types' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder);

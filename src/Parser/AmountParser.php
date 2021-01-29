@@ -1,10 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the CFONB Parser package.
+ *
+ * (c) Guillaume Sainthillier <hello@silarhi.fr>
+ * (c) @fezfez <demonchaux.stephane@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
 
 namespace Silarhi\Cfonb\Parser;
 
-
 use Silarhi\Cfonb\Exceptions\ParseException;
+use function strlen;
 
 class AmountParser
 {
@@ -33,12 +44,11 @@ class AmountParser
         'Q' => '8',
         'R' => '9',
         '}' => '0',
-
     ];
 
     public function parse(string $content, int $nbDecimals): float
     {
-        $content = substr($content, 0, \strlen($content) - $nbDecimals) . '.' . substr($content, -1 * $nbDecimals);
+        $content = substr($content, 0, strlen($content) - $nbDecimals) . '.' . substr($content, -1 * $nbDecimals);
         $lastChar = substr($content, -1);
         if (isset(self::CREDIT_MAPPING[$lastChar])) {
             return (float) (str_replace($lastChar, self::CREDIT_MAPPING[$lastChar], $content));

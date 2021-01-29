@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -12,16 +14,12 @@
 
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
-use Silarhi\Cfonb\Banking\Balance;
 use Silarhi\Cfonb\Banking\Noop;
 use Silarhi\Cfonb\Contracts\ParserInterface;
-use Silarhi\Cfonb\Parser\LineParser;
-use Silarhi\Cfonb\Parser\AmountParser;
-use Silarhi\Cfonb\Parser\DateParser;
 
 class EmptyParser implements ParserInterface
 {
-    public function parse(string $content) : Noop
+    public function parse(string $content): Noop
     {
         return new Noop();
     }

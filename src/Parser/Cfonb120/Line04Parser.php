@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -13,9 +15,9 @@
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
 use Silarhi\Cfonb\Banking\Operation;
-use Silarhi\Cfonb\Parser\LineParser;
 use Silarhi\Cfonb\Parser\AmountParser;
 use Silarhi\Cfonb\Parser\DateParser;
+use Silarhi\Cfonb\Parser\LineParser;
 
 class Line04Parser extends AbstractCfonb120Parser
 {
@@ -39,7 +41,7 @@ class Line04Parser extends AbstractCfonb120Parser
         $this->parseAmount = new AmountParser();
     }
 
-    public function parse(string $content) : Operation
+    public function parse(string $content): Operation
     {
         $infos = $this->lineParser->parse($content, [
             'record_code' => '(' . $this->getSupportedCode() . ')',
@@ -72,7 +74,7 @@ class Line04Parser extends AbstractCfonb120Parser
             $this->parseDate->parse($infos['value_date']),
             $infos['label'],
             $infos['reference'],
-            $this->parseAmount->parse($infos['amount'], $infos['nb_of_dec']),
+            $this->parseAmount->parse($infos['amount'], (int) $infos['nb_of_dec']),
             $infos['internal_code'],
             $infos['currency_code'],
             $infos['reject_code'],

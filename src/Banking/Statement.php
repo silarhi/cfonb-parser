@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -41,12 +43,12 @@ class Statement
 
     public function hasOldBalance(): bool
     {
-        return $this->oldBalance !== null;
+        return null !== $this->oldBalance;
     }
 
     public function getOldBalance(): Balance
     {
-        if ($this->oldBalance === null) {
+        if (null === $this->oldBalance) {
             throw new BalanceUnavailableException('old balance is null');
         }
 
@@ -62,12 +64,12 @@ class Statement
 
     public function hasNewBalance(): bool
     {
-        return $this->newBalance !== null;
+        return null !== $this->newBalance;
     }
 
     public function getNewBalance(): Balance
     {
-        if ($this->newBalance === null) {
+        if (null === $this->newBalance) {
             throw new BalanceUnavailableException('new balance is null');
         }
 

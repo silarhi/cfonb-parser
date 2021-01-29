@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -13,6 +15,7 @@
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
 use Silarhi\Cfonb\Parser\AbstractCfonbParser;
+use function strlen;
 
 abstract class AbstractCfonb120Parser extends AbstractCfonbParser
 {
@@ -21,6 +24,6 @@ abstract class AbstractCfonb120Parser extends AbstractCfonbParser
      */
     public function supports(string $content): bool
     {
-        return 120 === \strlen($content) && $this->getSupportedCode() === substr($content, 0, 2);
+        return 120 === strlen($content) && $this->getSupportedCode() === substr($content, 0, 2);
     }
 }
