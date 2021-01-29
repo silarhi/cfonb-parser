@@ -27,6 +27,8 @@ use Silarhi\Cfonb\Parser\FileParser;
 
 class Cfonb240Reader
 {
+    const LINE_LENGTH = 240;
+
     /** @var FileParser */
     private $fileParser;
 
@@ -46,7 +48,7 @@ class Cfonb240Reader
         $instance = null;
         $list = [];
 
-        foreach ($this->fileParser->parse($content, 240) as $result) {
+        foreach ($this->fileParser->parse($content, self::LINE_LENGTH) as $result) {
             if ($result instanceof Header) {
                 $instance = new Transfer();
                 $instance->setHeader($result);

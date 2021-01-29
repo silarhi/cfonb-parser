@@ -38,6 +38,22 @@ class Cfonb240ReaderTest extends TestCase
         (new Cfonb240Reader())->parse('abc ');
     }
 
+    /** @return void */
+    public function testFailCauseNoHeaderWithTotal()
+    {
+        self::expectException(ParseException::class);
+        self::expectExceptionMessage('Unable to attach a total for operation with internal code 3');
+        (new Cfonb240Reader())->parse('3900000320221220E    300661077100020030401                                   300661077100020030401                                                                                                                                  000000063330');
+    }
+
+    /** @return void */
+    public function testFailCauseNoHeaderWithTransaction()
+    {
+        self::expectException(ParseException::class);
+        self::expectExceptionMessage('Unable to attach a total for operation with internal code 2');
+        (new Cfonb240Reader())->parse('3400000220221220E0066300030302100020116383CHIC WWW WWWWWWW                   300661077100020030401ZZZZ ZZZZ                                             F2012017                                                        221220      000000011760');
+    }
+
     /**
      * @return void
      */
@@ -53,6 +69,8 @@ class Cfonb240ReaderTest extends TestCase
         assert($firstTransfers instanceof Transfer);
 
         self::assertCount(2, $firstTransfers->getTransactions());
+        self::assertSame('E', $firstTransfers->getHeader()->getCurrencyIndex());
+        self::assertSame(4652.7, $firstTransfers->getTotal()->getTotalAmount());
     }
 
     private function loadFixture(string $file, bool $oneline): string

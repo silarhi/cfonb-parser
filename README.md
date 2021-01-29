@@ -43,4 +43,10 @@ foreach($reader->parse('My Other Content') as $statement) {
     echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
   }
 }
+
+$reader = new Cfonb240Reader();
+
+foreach($reader->parse('My Content') as $transfer) {
+    assert($transfer instanceof \Silarhi\Cfonb\Banking\Transfer);
+}
 ```

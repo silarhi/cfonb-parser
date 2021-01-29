@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser\Cfonb240;
 
+use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 use function strlen;
 
@@ -26,6 +27,6 @@ abstract class AbstractCfonb240Parser implements ParserInterface
      */
     public function supports(string $content): bool
     {
-        return 240 === strlen($content) && $this->getSupportedCode() === substr($content, 0, 2);
+        return Cfonb240Reader::LINE_LENGTH === strlen($content) && $this->getSupportedCode() === substr($content, 0, 2);
     }
 }
