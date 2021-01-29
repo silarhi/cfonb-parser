@@ -14,10 +14,13 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+use Silarhi\Cfonb\Exceptions\HeaderUnavailableException;
+use Silarhi\Cfonb\Exceptions\TotalUnavailableException;
+
 class Transfer
 {
     /**
-     * @var Header
+     * @var Header|null
      */
     private $header;
 
@@ -27,12 +30,14 @@ class Transfer
     private $transactions;
 
     /**
-     * @var Total
+     * @var Total|null
      */
     private $total;
 
     public function __construct()
     {
+        $this->header = null;
+        $this->total = null;
         $this->transactions = [];
     }
 
@@ -43,6 +48,10 @@ class Transfer
 
     public function getHeader(): Header
     {
+        if (null === $this->header) {
+            throw new HeaderUnavailableException();
+        }
+
         return $this->header;
     }
 
@@ -63,6 +72,10 @@ class Transfer
 
     public function getTotal(): Total
     {
+        if (null === $this->total) {
+            throw new TotalUnavailableException();
+        }
+
         return $this->total;
     }
 }
