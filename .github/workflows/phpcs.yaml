@@ -1,4 +1,4 @@
-name: "Mutation tests"
+name: "PHP-CS-Fixer"
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   mutation-tests:
-    name: "Mutation tests"
+    name: "PHP-CS-Fixer"
 
     runs-on: ${{ matrix.operating-system }}
 
@@ -41,8 +41,5 @@ jobs:
       - name: "Install locked dependencies"
         run: "composer install --no-interaction --no-progress --no-suggest"
 
-      - name: "Infection"
-        run: "./vendor/bin/infection"
-        env:
-          INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
-          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+      - name: "PHP-CS-Fixer"
+        run: "./vendor/bin/php-cs-fixer fix --dry-run --diff"
