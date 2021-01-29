@@ -17,7 +17,8 @@ namespace Silarhi\Cfonb\Parser;
 use DateTimeImmutable;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
-class DateParser
+/** @internal  */
+final class DateParser
 {
     public function parse(string $date): DateTimeImmutable
     {

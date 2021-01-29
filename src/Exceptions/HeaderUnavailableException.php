@@ -16,6 +16,6 @@ namespace Silarhi\Cfonb\Exceptions;
 
 use RuntimeException;
 
-class HeaderUnavailableException extends RuntimeException
+final class HeaderUnavailableException extends RuntimeException
 {
 }

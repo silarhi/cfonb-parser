@@ -16,6 +16,6 @@ namespace Silarhi\Cfonb\Exceptions;
 
 use RuntimeException;
 
-class TotalUnavailableException extends RuntimeException
+final class TotalUnavailableException extends RuntimeException
 {
 }

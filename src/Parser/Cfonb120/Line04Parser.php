@@ -19,7 +19,8 @@ use Silarhi\Cfonb\Parser\AmountParser;
 use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
 
-class Line04Parser extends AbstractCfonb120Parser
+/** @internal  */
+final class Line04Parser extends AbstractCfonb120Parser
 {
     /**
      * @var LineParser

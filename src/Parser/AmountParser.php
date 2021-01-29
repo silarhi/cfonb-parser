@@ -17,7 +17,8 @@ namespace Silarhi\Cfonb\Parser;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use function strlen;
 
-class AmountParser
+/** @internal  */
+final class AmountParser
 {
     /** @var string[] */
     private const CREDIT_MAPPING = [

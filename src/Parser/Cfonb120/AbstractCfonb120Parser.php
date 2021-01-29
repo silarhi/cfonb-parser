@@ -18,6 +18,7 @@ use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 use function strlen;
 
+/** @internal  */
 abstract class AbstractCfonb120Parser implements ParserInterface
 {
     abstract protected function getSupportedCode(): string;

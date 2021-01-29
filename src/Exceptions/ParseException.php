@@ -16,6 +16,6 @@ namespace Silarhi\Cfonb\Exceptions;
 
 use RuntimeException;
 
-class ParseException extends RuntimeException
+final class ParseException extends RuntimeException
 {
 }

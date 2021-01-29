@@ -19,12 +19,8 @@ use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
 use Silarhi\Cfonb\Parser\MoneyParser;
 
-/**
- * A "TOTAL" record.
- * This record contains, in addition to the same information as the "Header" record (operation code, name and bank
- * details of the recipient), the total amount of the transactions appearing in the "DETAIL" records.
- */
-class Line39Parser extends AbstractCfonb240Parser
+/** @internal  */
+final class Line39Parser extends AbstractCfonb240Parser
 {
     /**
      * @var LineParser

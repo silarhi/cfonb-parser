@@ -18,7 +18,8 @@ use Silarhi\Cfonb\Contracts\ParserInterface;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use function strlen;
 
-class FileParser
+/** @internal  */
+final class FileParser
 {
     /** @var ParserInterface[] */
     private $parsers;

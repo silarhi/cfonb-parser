@@ -14,7 +14,8 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
-class Line07Parser extends Line01Parser
+/** @internal  */
+final class Line07Parser extends Line01Parser
 {
     protected function getSupportedCode(): string
     {

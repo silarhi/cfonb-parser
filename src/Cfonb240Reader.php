@@ -19,10 +19,10 @@ use Silarhi\Cfonb\Banking\Total;
 use Silarhi\Cfonb\Banking\Transaction;
 use Silarhi\Cfonb\Banking\Transfer;
 use Silarhi\Cfonb\Exceptions\ParseException;
-use Silarhi\Cfonb\Parser\Cfonb120\EmptyParser;
 use Silarhi\Cfonb\Parser\Cfonb240\Line31Parser;
 use Silarhi\Cfonb\Parser\Cfonb240\Line34Parser;
 use Silarhi\Cfonb\Parser\Cfonb240\Line39Parser;
+use Silarhi\Cfonb\Parser\EmptyParser;
 use Silarhi\Cfonb\Parser\FileParser;
 
 class Cfonb240Reader

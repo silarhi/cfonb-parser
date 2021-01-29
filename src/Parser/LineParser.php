@@ -18,7 +18,8 @@ use function is_array;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use function strlen;
 
-class LineParser
+/** @internal  */
+final class LineParser
 {
     public const BLANK = '( {%d})';
 

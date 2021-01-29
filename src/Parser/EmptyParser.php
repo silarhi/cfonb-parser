@@ -12,12 +12,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Silarhi\Cfonb\Parser\Cfonb120;
+namespace Silarhi\Cfonb\Parser;
 
 use Silarhi\Cfonb\Banking\Noop;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 
-class EmptyParser implements ParserInterface
+/** @internal  */
+final class EmptyParser implements ParserInterface
 {
     public function parse(string $content): Noop
     {

@@ -19,11 +19,8 @@ use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
 use Silarhi\Cfonb\Parser\MoneyParser;
 
-/**
- * 0 to n "DETAIL" records.
- * This record contains information specific to each operation.
- */
-class Line34Parser extends AbstractCfonb240Parser
+/** @internal  */
+final class Line34Parser extends AbstractCfonb240Parser
 {
     /**
      * @var LineParser

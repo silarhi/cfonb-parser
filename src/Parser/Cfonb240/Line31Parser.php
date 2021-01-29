@@ -19,11 +19,8 @@ use Silarhi\Cfonb\Parser\AmountParser;
 use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
 
-/**
- * A "HEADER" record.
- * This record contains the operation code and information (name, bank details) of the recipient.
- */
-class Line31Parser extends AbstractCfonb240Parser
+/** @internal  */
+final class Line31Parser extends AbstractCfonb240Parser
 {
     /**
      * @var LineParser

@@ -13,6 +13,7 @@ Supports CFONB 120 format
 <?php
 
 use Silarhi\Cfonb\Cfonb120Reader;
+use Silarhi\Cfonb\Cfonb240Reader;
 
 $reader = new Cfonb120Reader();
 

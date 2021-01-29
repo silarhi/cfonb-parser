@@ -19,11 +19,11 @@ use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Exceptions\ParseException;
-use Silarhi\Cfonb\Parser\Cfonb120\EmptyParser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line01Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line04Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line05Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line07Parser;
+use Silarhi\Cfonb\Parser\EmptyParser;
 use Silarhi\Cfonb\Parser\FileParser;
 
 class Cfonb120Reader
