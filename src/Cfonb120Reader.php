@@ -28,6 +28,8 @@ use Silarhi\Cfonb\Parser\FileParser;
 
 class Cfonb120Reader
 {
+    const LINE_LENGTH = 120;
+
     /** @var FileParser */
     private $fileParser;
 
@@ -49,7 +51,7 @@ class Cfonb120Reader
         $lastOperation = null;
         $statement = new Statement();
 
-        foreach ($this->fileParser->parse($content, 120) as $result) {
+        foreach ($this->fileParser->parse($content, self::LINE_LENGTH) as $result) {
             if ($result instanceof Balance) {
                 $lastOperation = null;
 

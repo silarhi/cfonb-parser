@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
+use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 use function strlen;
 
@@ -26,6 +27,6 @@ abstract class AbstractCfonb120Parser implements ParserInterface
      */
     public function supports(string $content): bool
     {
-        return 120 === strlen($content) && $this->getSupportedCode() === substr($content, 0, 2);
+        return Cfonb120Reader::LINE_LENGTH === strlen($content) && $this->getSupportedCode() === substr($content, 0, 2);
     }
 }
