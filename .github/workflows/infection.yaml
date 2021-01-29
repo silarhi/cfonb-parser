@@ -19,7 +19,7 @@ jobs:
                 uses: "shivammathur/setup-php@v2"
                 with:
                     coverage: "pcov"
-                    php-version: "${{ matrix.php-version }}"
+                    php-version: "${{ matrix.php }}"
                     ini-values: memory_limit=-1
                     tools: composer:v2, cs2pr
 
@@ -29,8 +29,8 @@ jobs:
                     path: |
                         ~/.composer/cache
                         vendor
-                    key: "php-${{ matrix.php-version }}"
-                    restore-keys: "php-${{ matrix.php-version }}"
+                    key: "php-${{ matrix.php }}"
+                    restore-keys: "php-${{ matrix.php }}"
 
             -   name: "Install locked dependencies"
                 run: "composer install --no-interaction --no-progress --no-suggest"
