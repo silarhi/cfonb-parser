@@ -14,11 +14,13 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
-use Silarhi\Cfonb\Parser\AbstractCfonbParser;
+use Silarhi\Cfonb\Contracts\ParserInterface;
 use function strlen;
 
-abstract class AbstractCfonb120Parser extends AbstractCfonbParser
+abstract class AbstractCfonb120Parser implements ParserInterface
 {
+    abstract protected function getSupportedCode(): string;
+
     /**
      * {@inheritdoc}
      */
