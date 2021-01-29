@@ -13,6 +13,7 @@ Supports CFONB 120 format
 <?php
 
 use Silarhi\Cfonb\Cfonb120Reader;
+use Silarhi\Cfonb\Cfonb240Reader;
 
 $reader = new Cfonb120Reader();
 
@@ -42,5 +43,11 @@ foreach($reader->parse('My Other Content') as $statement) {
   if ($statement->hasNewBalance()) {
     echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
   }
+}
+
+$reader = new Cfonb240Reader();
+
+foreach($reader->parse('My Content') as $transfer) {
+    assert($transfer instanceof \Silarhi\Cfonb\Banking\Transfer);
 }
 ```

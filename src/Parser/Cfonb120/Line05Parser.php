@@ -18,7 +18,8 @@ use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
 
-class Line05Parser extends AbstractCfonb120Parser
+/** @internal  */
+final class Line05Parser extends AbstractCfonb120Parser
 {
     /**
      * @var LineParser

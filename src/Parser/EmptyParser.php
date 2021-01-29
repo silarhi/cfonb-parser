@@ -12,22 +12,21 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Silarhi\Cfonb\Parser\Cfonb120;
+namespace Silarhi\Cfonb\Parser;
 
-use Silarhi\Cfonb\Cfonb120Reader;
+use Silarhi\Cfonb\Banking\Noop;
 use Silarhi\Cfonb\Contracts\ParserInterface;
-use function strlen;
 
 /** @internal  */
-abstract class AbstractCfonb120Parser implements ParserInterface
+final class EmptyParser implements ParserInterface
 {
-    abstract protected function getSupportedCode(): string;
+    public function parse(string $content): Noop
+    {
+        return new Noop();
+    }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supports(string $content): bool
     {
-        return Cfonb120Reader::LINE_LENGTH === strlen($content) && $this->getSupportedCode() === substr($content, 0, 2);
+        return empty($content);
     }
 }

@@ -18,7 +18,7 @@
         "phpunit/phpunit": "^9.1",
         "symfony/var-dumper": "^5.0",
         "phpstan/phpstan": "^0.12.58",
-        "infection/infection": "^0.17.7|^0.20.2"
+        "infection/infection": "^0.17.7|^0.21.0"
     },
     "autoload": {
         "psr-4": {

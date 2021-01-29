@@ -12,13 +12,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Silarhi\Cfonb\Parser\Cfonb120;
+namespace Silarhi\Cfonb\Parser;
 
 /** @internal  */
-final class Line07Parser extends Line01Parser
+final class MoneyParser
 {
-    protected function getSupportedCode(): string
+    public function parser(string $money): float
     {
-        return '07';
+        return $money / 100;
     }
 }

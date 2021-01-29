@@ -16,6 +16,6 @@ namespace Silarhi\Cfonb\Exceptions;
 
 use RuntimeException;
 
-class BalanceUnavailableException extends RuntimeException
+final class BalanceUnavailableException extends RuntimeException
 {
 }
