@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -23,6 +25,7 @@ use Silarhi\Cfonb\Parser\Cfonb120\Line01Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line04Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line05Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line07Parser;
+use function strlen;
 
 class Cfonb120Reader
 {
@@ -43,13 +46,13 @@ class Cfonb120Reader
     /** @return Statement[] */
     public function parse(string $content): array
     {
-        if (!empty($content) && strlen($content) > 120 && strpos($content, "\n") === false) {
+        if (!empty($content) && strlen($content) > 120 && false === strpos($content, "\n")) {
             $content = chunk_split($content, 120, "\n");
         }
 
         $statementList = [];
-        $lines         = explode("\n", $content);
-        $statement     = new Statement();
+        $lines = explode("\n", $content);
+        $statement = new Statement();
 
         /** @var Operation|null $lastOperation */
         $lastOperation = null;
@@ -58,7 +61,7 @@ class Cfonb120Reader
 
             if ($result instanceof Balance) {
                 $lastOperation = null;
-                if ($statement->hasOldBalance() === false) {
+                if (false === $statement->hasOldBalance()) {
                     $statement->setOldBalance($result);
                 } else {
                     $statement->setNewBalance($result);
@@ -80,7 +83,7 @@ class Cfonb120Reader
         return $statementList;
     }
 
-    private function findSupportedParserForLine(string $line) : ParserInterface
+    private function findSupportedParserForLine(string $line): ParserInterface
     {
         foreach ($this->parsers as $parser) {
             if ($parser->supports($line)) {

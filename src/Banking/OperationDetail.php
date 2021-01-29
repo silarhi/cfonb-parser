@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the CFONB Parser package.
  *
@@ -11,6 +13,8 @@
  */
 
 namespace Silarhi\Cfonb\Banking;
+
+use DateTimeImmutable;
 
 class OperationDetail
 {
@@ -32,7 +36,7 @@ class OperationDetail
     /** @var string */
     private $code;
 
-    /** @var \DateTimeImmutable */
+    /** @var DateTimeImmutable */
     private $date;
 
     /** @var string */
@@ -46,7 +50,7 @@ class OperationDetail
         string $deskCode,
         string $accountNumber,
         string $code,
-        \DateTimeImmutable $date,
+        DateTimeImmutable $date,
         string $qualifier,
         string $additionalInformations,
         ?string $internalCode,
@@ -93,7 +97,7 @@ class OperationDetail
         return $this->code;
     }
 
-    public function getDate(): \DateTimeImmutable
+    public function getDate(): DateTimeImmutable
     {
         return $this->date;
     }
