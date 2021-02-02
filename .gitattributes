@@ -3,4 +3,5 @@
 /phpunit.xml.dist       export-ignore
 /infection.json.dist    export-ignore
 /phpstan.neon           export-ignore
+/composer.lock          export-ignore
 /.*                     export-ignore
