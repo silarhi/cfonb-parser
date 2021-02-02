@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser;
 
+use Generator;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use function strlen;
@@ -29,10 +30,14 @@ final class FileParser
         $this->parsers = $parsers;
     }
 
-    /** @return object[] */
+    /** @return Generator<int, object> */
     public function parse(string $content, int $lineLength): iterable
     {
-        if (!empty($content) && strlen($content) > $lineLength && false === strpos($content, "\n")) {
+        if (empty($content)) {
+            return [];
+        }
+
+        if (strlen($content) > $lineLength && false === strpos($content, "\n")) {
             $content = chunk_split($content, $lineLength, "\n");
         }
 

@@ -14,8 +14,10 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Exceptions;
 
-use RuntimeException;
-
-class ParseException extends RuntimeException
+final class ValueOfKeyIsNotAStringException extends ParseException
 {
+    public function __construct(string $key)
+    {
+        parent::__construct(sprintf('The value of key "%s" is not a string', $key));
+    }
 }

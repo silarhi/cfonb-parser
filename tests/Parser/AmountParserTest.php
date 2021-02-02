@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Siarhi\Cfonb\Tests\Parser;
 
+use Generator;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\AmountParser;
@@ -25,12 +26,13 @@ class AmountParserTest extends TestCase
     {
         $sUT = new AmountParser();
 
-        self::expectException(ParseException::class);
-        self::expectExceptionMessage('Unable to parse amount "tes.test"');
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to parse amount "tes.test"');
 
         $sUT->parse('test', 5);
     }
 
+    /** @return Generator<int, array<int, string|int|float>> */
     public function provideOkCase(): iterable
     {
         yield ['10A', 1, 10.1];

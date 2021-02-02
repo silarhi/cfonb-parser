@@ -14,9 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser;
 
-use function is_array;
 use Silarhi\Cfonb\Exceptions\ParseException;
-use function strlen;
 
 /** @internal  */
 final class LineParser
@@ -36,25 +34,32 @@ final class LineParser
 
     public const ALL = '(.{%d})';
 
-    public function parse(string $content, array $parts): array
+    /** @var array<string, RegexParts> */
+    private $regexParts;
+    /** @var string */
+    private $regexAsString;
+
+    /** @param array<string, RegexParts> $regexParts */
+    public function __construct(array $regexParts)
     {
+        $this->regexParts = $regexParts;
+
         $regexParts = [];
-        foreach ($parts as $part) {
-            $regexParts[] = is_array($part) ? sprintf($part[0], $part[1]) : $part;
+        foreach ($this->regexParts as $part) {
+            $regexParts[] = $part->toString();
         }
 
-        $regex = sprintf('/^%s$/', implode('', $regexParts));
+        $this->regexAsString = implode('', $regexParts);
+    }
+
+    public function parse(string $content): RegexMatch
+    {
+        $regex = sprintf('/^%s$/', $this->regexAsString);
 
         if (!preg_match($regex, $content, $matches)) {
             throw new ParseException('Regex does not match the line');
         }
 
-        $values = [];
-        foreach (array_keys($parts) as $i => $key) {
-            $value = trim($matches[$i + 1]);
-            $values[$key] = 0 != strlen($value) ? $value : null;
-        }
-
-        return $values;
+        return new RegexMatch($this->regexParts, $matches);
     }
 }

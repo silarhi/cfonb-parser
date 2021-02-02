@@ -30,8 +30,8 @@ class StatementTest extends TestCase
         self::assertFalse($sUT->hasNewBalance());
         self::assertFalse($sUT->hasOldBalance());
 
-        $newBalance = self::createMock(Balance::class);
-        $oldBalance = self::createMock(Balance::class);
+        $newBalance = $this->createMock(Balance::class);
+        $oldBalance = $this->createMock(Balance::class);
 
         $sUT->setNewBalance($newBalance);
         $sUT->setOldBalance($oldBalance);
@@ -48,8 +48,8 @@ class StatementTest extends TestCase
     {
         $sUT = new Statement();
 
-        self::expectException(BalanceUnavailableException::class);
-        self::expectExceptionMessage('old balance is null');
+        $this->expectException(BalanceUnavailableException::class);
+        $this->expectExceptionMessage('old balance is null');
 
         $sUT->getOldBalance();
     }
@@ -59,8 +59,8 @@ class StatementTest extends TestCase
     {
         $sUT = new Statement();
 
-        self::expectException(BalanceUnavailableException::class);
-        self::expectExceptionMessage('new balance is null');
+        $this->expectException(BalanceUnavailableException::class);
+        $this->expectExceptionMessage('new balance is null');
 
         $sUT->getNewBalance();
     }

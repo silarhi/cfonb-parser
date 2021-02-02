@@ -25,8 +25,8 @@ class CfonbReaderTest extends TestCase
     /** @return void */
     public function testOk()
     {
-        $cfon120 = self::createMock(Cfonb120Reader::class);
-        $cfon240 = self::createMock(Cfonb240Reader::class);
+        $cfon120 = $this->createMock(Cfonb120Reader::class);
+        $cfon240 = $this->createMock(Cfonb240Reader::class);
 
         $cfon120->expects(self::once())->method('parse')->with('120!')->willReturn([]);
         $cfon240->expects(self::once())->method('parse')->with('240!')->willReturn([]);

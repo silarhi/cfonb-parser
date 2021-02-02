@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Siarhi\Cfonb\Tests\Parser;
 
+use Generator;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\DateParser;
@@ -25,12 +26,13 @@ class DateParserTest extends TestCase
     {
         $sUT = new DateParser();
 
-        self::expectException(ParseException::class);
-        self::expectExceptionMessage('Unable to parse date "test"');
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to parse date "test"');
 
         $sUT->parse('test');
     }
 
+    /** @return Generator<int, array<int, string>> */
     public function provideOkCase(): iterable
     {
         yield ['101020', '2020-10-10 00:00:00'];

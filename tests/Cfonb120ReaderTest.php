@@ -14,22 +14,20 @@ declare(strict_types=1);
 
 namespace Siarhi\Cfonb\Tests;
 
-use function assert;
-use PHPUnit\Framework\TestCase;
-use RuntimeException;
-use Silarhi\Cfonb\Banking\Operation;
+use Generator;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
+use Silarhi\Cfonb\Tests\CfonbTestE2e;
 
-class Cfonb120ReaderTest extends TestCase
+class Cfonb120ReaderTest extends CfonbTestE2e
 {
     /** @return void */
     public function testEmpty()
     {
         $reader = new Cfonb120Reader();
 
-        $this->assertCount(0, $reader->parse(''));
+        self::assertCount(0, $reader->parse(''));
     }
 
     /** @return void */
@@ -37,8 +35,8 @@ class Cfonb120ReaderTest extends TestCase
     {
         $reader = new Cfonb120Reader();
 
-        self::expectException(ParseException::class);
-        self::expectExceptionMessage('Unable to find a parser for the line :
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to find a parser for the line :
 "abc "');
         $reader->parse('abc ');
     }
@@ -48,11 +46,12 @@ class Cfonb120ReaderTest extends TestCase
     {
         $reader = new Cfonb120Reader();
 
-        self::expectException(ParseException::class);
-        self::expectExceptionMessage('Unable to attach a detail for operation with internal code 6772');
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to attach a detail for operation with code B1');
         $reader->parse('0510556677202204EUR2 00012345603B1070420     LIBDEDIBOX 3706114                                                         ');
     }
 
+    /** @return array<string, array<int, string>> */
     public function provideMalformedLine(): array
     {
         return [
@@ -70,8 +69,8 @@ class Cfonb120ReaderTest extends TestCase
     {
         $reader = new Cfonb120Reader();
 
-        self::expectException(ParseException::class);
-        self::expectExceptionMessage('Regex does not match the line');
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Regex does not match the line');
         $reader->parse($line);
     }
 
@@ -83,34 +82,33 @@ class Cfonb120ReaderTest extends TestCase
     public function testSimpleTest(bool $oneLine)
     {
         $reader = new Cfonb120Reader();
-        $statements = $reader->parse($this->loadFixture('simple-test.txt', $oneLine));
+        $statements = $reader->parse(self::loadFixture('simple-test.txt', $oneLine));
 
-        $this->assertCount(1, $statements);
+        self::assertCount(1, $statements);
 
         $statement = $statements[0];
 
-        assert($statement instanceof Statement);
+        self::assertTrue($statement->hasOldBalance());
 
-        $this->assertTrue($statement->hasOldBalance());
-
-        $this->assertSame('2020-04-03 00:00:00', $statement->getOldBalance()->getDate()->format('Y-m-d H:i:s'));
-        $this->assertSame('EUR', $statement->getOldBalance()->getCurrencyCode());
-        $this->assertSame(16695.65, $statement->getOldBalance()->getAmount());
-        $this->assertSame('10278', $statement->getOldBalance()->getBankCode());
-        $this->assertSame('02204', $statement->getOldBalance()->getDeskCode());
-        $this->assertSame('00012345603', $statement->getOldBalance()->getAccountNumber());
+        self::assertSame('2020-04-03 00:00:00', $statement->getOldBalance()->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame('EUR', $statement->getOldBalance()->getCurrencyCode());
+        self::assertSame(16695.65, $statement->getOldBalance()->getAmount());
+        self::assertSame('10278', $statement->getOldBalance()->getBankCode());
+        self::assertSame('02204', $statement->getOldBalance()->getDeskCode());
+        self::assertSame('00012345603', $statement->getOldBalance()->getAccountNumber());
 
         //Data are the same expect date
-        $this->assertTrue($statement->hasNewBalance());
+        self::assertTrue($statement->hasNewBalance());
 
-        $this->assertSame('2020-04-06 00:00:00', $statement->getNewBalance()->getDate()->format('Y-m-d H:i:s'));
-        $this->assertSame('EUR', $statement->getNewBalance()->getCurrencyCode());
-        $this->assertSame(16695.65, $statement->getNewBalance()->getAmount());
-        $this->assertSame('10278', $statement->getNewBalance()->getBankCode());
-        $this->assertSame('02204', $statement->getNewBalance()->getDeskCode());
-        $this->assertSame('00012345603', $statement->getNewBalance()->getAccountNumber());
+        self::assertSame('2020-04-06 00:00:00', $statement->getNewBalance()->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame('EUR', $statement->getNewBalance()->getCurrencyCode());
+        self::assertSame(16695.65, $statement->getNewBalance()->getAmount());
+        self::assertSame('10278', $statement->getNewBalance()->getBankCode());
+        self::assertSame('02204', $statement->getNewBalance()->getDeskCode());
+        self::assertSame('00012345603', $statement->getNewBalance()->getAccountNumber());
     }
 
+    /** @return Generator<int, array<int, bool>> */
     public function provideOneLineOrNot(): iterable
     {
         yield [true];
@@ -127,148 +125,109 @@ class Cfonb120ReaderTest extends TestCase
         $reader = new Cfonb120Reader();
         $statements = $reader->parse($this->loadFixture('complex-test.txt', $oneLine));
 
-        $this->assertCount(8, $statements);
+        self::assertCount(8, $statements);
 
         //Test first statement
         $statement = $statements[0];
 
-        assert($statement instanceof Statement);
-
-        $this->assertSame(16695.65, $statement->getOldBalance()->getAmount());
-        $this->assertCount(1, $statement->getOperations());
+        self::assertSame(16695.65, $statement->getOldBalance()->getAmount());
+        self::assertCount(1, $statement->getOperations());
         $operations = $statement->getOperations();
 
         $operation = $operations[0];
 
-        assert($operation instanceof Operation);
+        self::assertSame('2020-04-07 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-22.79, $operation->getAmount());
+        self::assertSame('PRLV SEPA ONLINE SAS', $operation->getLabel());
+        self::assertCount(1, $operation->getDetails());
+        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformations());
 
-        $this->assertSame('2020-04-07 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
-        $this->assertSame(-22.79, $operation->getAmount());
-        $this->assertSame('PRLV SEPA ONLINE SAS', $operation->getLabel());
-        $this->assertCount(1, $operation->getDetails());
-        $this->assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformations());
-
-        $this->assertSame(16672.86, $statement->getNewBalance()->getAmount());
+        self::assertSame(16672.86, $statement->getNewBalance()->getAmount());
 
         //Test second statement
         $statement = $statements[1];
 
-        assert($statement instanceof Statement);
-
-        $this->assertSame(16672.86, $statement->getOldBalance()->getAmount());
-        $this->assertCount(2, $statement->getOperations());
+        self::assertSame(16672.86, $statement->getOldBalance()->getAmount());
+        self::assertCount(2, $statement->getOperations());
         $operations = $statement->getOperations();
 
         $operation = $operations[0];
 
-        assert($operation instanceof Operation);
-
-        $this->assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
-        $this->assertSame(-20.11, $operation->getAmount());
-        $this->assertSame('PRLV SEPA FREE MOBILE', $operation->getLabel());
-        $this->assertCount(0, $operation->getDetails());
+        self::assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-20.11, $operation->getAmount());
+        self::assertSame('PRLV SEPA FREE MOBILE', $operation->getLabel());
+        self::assertCount(0, $operation->getDetails());
 
         $operation = $operations[1];
 
-        assert($operation instanceof Operation);
+        self::assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-5000.0, $operation->getAmount());
+        self::assertSame('VIR JOHNDOE / FOOBAR', $operation->getLabel());
+        self::assertCount(0, $operation->getDetails());
 
-        $this->assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
-        $this->assertSame(-5000.0, $operation->getAmount());
-        $this->assertSame('VIR JOHNDOE / FOOBAR', $operation->getLabel());
-        $this->assertCount(0, $operation->getDetails());
-
-        $this->assertSame(11652.75, $statement->getNewBalance()->getAmount());
+        self::assertSame(11652.75, $statement->getNewBalance()->getAmount());
 
         //Third statement
         $statement = $statements[2];
 
-        assert($statement instanceof Statement);
-
-        $this->assertSame(11652.75, $statement->getOldBalance()->getAmount());
-        $this->assertCount(0, $statement->getOperations());
-        $this->assertSame(11652.75, $statement->getNewBalance()->getAmount());
+        self::assertSame(11652.75, $statement->getOldBalance()->getAmount());
+        self::assertCount(0, $statement->getOperations());
+        self::assertSame(11652.75, $statement->getNewBalance()->getAmount());
 
         //Test fourth statement
         $statement = $statements[3];
 
-        assert($statement instanceof Statement);
-
-        $this->assertSame(11652.75, $statement->getOldBalance()->getAmount());
-        $this->assertCount(1, $statement->getOperations());
+        self::assertSame(11652.75, $statement->getOldBalance()->getAmount());
+        self::assertCount(1, $statement->getOperations());
         $operations = $statement->getOperations();
 
         $operation = $operations[0];
 
-        assert($operation instanceof Operation);
+        self::assertSame('2020-04-10 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame('2020-04-01 00:00:00', $operation->getValueDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-117.75, $operation->getAmount());
+        self::assertSame('FACTURE SGT20022040001692', $operation->getLabel());
+        self::assertCount(1, $operation->getDetails());
+        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformations());
 
-        $this->assertSame('2020-04-10 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
-        $this->assertSame('2020-04-01 00:00:00', $operation->getValueDate()->format('Y-m-d H:i:s'));
-        $this->assertSame(-117.75, $operation->getAmount());
-        $this->assertSame('FACTURE SGT20022040001692', $operation->getLabel());
-        $this->assertCount(1, $operation->getDetails());
-        $this->assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformations());
-
-        $this->assertSame(11535.0, $statement->getNewBalance()->getAmount());
+        self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
 
         //5th statement
         $statement = $statements[4];
 
-        assert($statement instanceof Statement);
-
-        $this->assertSame(11535.0, $statement->getOldBalance()->getAmount());
-        $this->assertCount(0, $statement->getOperations());
-        $this->assertSame(11535.0, $statement->getNewBalance()->getAmount());
+        self::assertSame(11535.0, $statement->getOldBalance()->getAmount());
+        self::assertCount(0, $statement->getOperations());
+        self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
 
         //6th statement
         $statement = $statements[5];
 
-        assert($statement instanceof Statement);
-
-        $this->assertSame(11535.0, $statement->getOldBalance()->getAmount());
-        $this->assertCount(1, $statement->getOperations());
+        self::assertSame(11535.0, $statement->getOldBalance()->getAmount());
+        self::assertCount(1, $statement->getOperations());
         $operations = $statement->getOperations();
 
         $operation = $operations[0];
-        $this->assertSame('2020-04-14 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
-        $this->assertSame('2020-04-14 00:00:00', $operation->getValueDate()->format('Y-m-d H:i:s'));
-        $this->assertSame(-50.25, $operation->getAmount());
-        $this->assertSame('PRLV SEPA OVH SAS', $operation->getLabel());
-        $this->assertCount(2, $operation->getDetails());
-        $this->assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('2020-04-14 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame('2020-04-14 00:00:00', $operation->getValueDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-50.25, $operation->getAmount());
+        self::assertSame('PRLV SEPA OVH SAS', $operation->getLabel());
+        self::assertCount(2, $operation->getDetails());
+        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformations());
 
-        $this->assertSame(11484.75, $statement->getNewBalance()->getAmount());
+        self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
 
         //7th statement
         $statement = $statements[6];
 
-        assert($statement instanceof Statement);
-
-        $this->assertSame(11484.75, $statement->getOldBalance()->getAmount());
-        $this->assertCount(0, $statement->getOperations());
-        $this->assertSame(11484.75, $statement->getNewBalance()->getAmount());
+        self::assertSame(11484.75, $statement->getOldBalance()->getAmount());
+        self::assertCount(0, $statement->getOperations());
+        self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
 
         //8th statement
         $statement = $statements[7];
 
-        assert($statement instanceof Statement);
-
-        $this->assertSame(584353.02, $statement->getOldBalance()->getAmount());
-        $this->assertCount(0, $statement->getOperations());
-        $this->assertSame(584353.02, $statement->getNewBalance()->getAmount());
-    }
-
-    private function loadFixture(string $file, bool $oneline): string
-    {
-        $result = file_get_contents(__DIR__ . '/fixtures/' . $file);
-
-        if (false === $result) {
-            throw new RuntimeException(sprintf('unable to get %s', $file));
-        }
-
-        if (true == $oneline) {
-            $result = str_replace("\n", '', $result);
-        }
-
-        return $result;
+        self::assertSame(584353.02, $statement->getOldBalance()->getAmount());
+        self::assertCount(0, $statement->getOperations());
+        self::assertSame(584353.02, $statement->getNewBalance()->getAmount());
     }
 }

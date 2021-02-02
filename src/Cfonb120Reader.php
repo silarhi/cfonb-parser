@@ -67,7 +67,7 @@ class Cfonb120Reader
                 $statement->addOperation($result);
             } elseif ($result instanceof OperationDetail) {
                 if (null === $lastOperation) {
-                    throw new ParseException(sprintf('Unable to attach a detail for operation with internal code %s', $result->getInternalCode()));
+                    throw new ParseException(sprintf('Unable to attach a detail for operation with code %s', $result->getCode()));
                 }
 
                 $lastOperation->addDetails($result);

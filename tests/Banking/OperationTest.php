@@ -58,7 +58,7 @@ class OperationTest extends TestCase
         self::assertSame('test10', $sUT->getExemptCode());
         self::assertCount(0, $sUT->getDetails());
 
-        $detail = self::createMock(OperationDetail::class);
+        $detail = $this->createMock(OperationDetail::class);
 
         $sUT->addDetails($detail);
 
