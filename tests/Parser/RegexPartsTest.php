@@ -16,14 +16,16 @@ namespace Siarhi\Cfonb\Tests\Parser;
 
 use Generator;
 use PHPUnit\Framework\TestCase;
-use Silarhi\Cfonb\Parser\MoneyParser;
+use Silarhi\Cfonb\Parser\RegexParts;
 
-class MoneyParserTest extends TestCase
+class RegexPartsTest extends TestCase
 {
-    /** @return Generator<int, array<int, float>> */
+    /** @return Generator<int, array<int, string|int>> */
     public function provideOkCase(): iterable
     {
-        yield [100.0, 1.0];
+        yield ['test', 'test'];
+        yield ['test(10)', 'test(%d)', 10];
+        yield ['test10', 'test%d', 10];
     }
 
     /**
@@ -31,10 +33,10 @@ class MoneyParserTest extends TestCase
      *
      * @return void
      */
-    public function testOk(float $content, float $expected)
+    public function testOk(string $expected, string $regexParts, ?int $length = null)
     {
-        $sUT = new MoneyParser();
+        $sUT = new RegexParts($regexParts, $length);
 
-        self::assertSame($expected, $sUT->parser($content));
+        self::assertSame($expected, $sUT->toString());
     }
 }

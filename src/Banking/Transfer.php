@@ -60,6 +60,7 @@ class Transfer
         $this->transactions[] = $operation;
     }
 
+    /** @return Transaction[] */
     public function getTransactions(): array
     {
         return $this->transactions;

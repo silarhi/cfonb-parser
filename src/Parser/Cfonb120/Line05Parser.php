@@ -17,6 +17,7 @@ namespace Silarhi\Cfonb\Parser\Cfonb120;
 use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
+use Silarhi\Cfonb\Parser\RegexParts;
 
 /** @internal  */
 final class Line05Parser extends AbstractCfonb120Parser
@@ -32,39 +33,39 @@ final class Line05Parser extends AbstractCfonb120Parser
 
     public function __construct()
     {
-        $this->lineParser = new LineParser();
         $this->parseDate = new DateParser();
+        $this->lineParser = new LineParser([
+            'record_code' => new RegexParts($this->getSupportedCode(), null, false),
+            'bank_code' => new RegexParts(LineParser::NUMERIC, 5),
+            'internal_code' => new RegexParts(LineParser::ALPHANUMERIC_BLANK, 4),
+            'desk_code' => new RegexParts(LineParser::NUMERIC, 5),
+            'currency_code' => new RegexParts(LineParser::ALPHA_BLANK, 3),
+            'nb_of_dec' => new RegexParts(LineParser::NUMERIC_BLANK, 1),
+            '_unused_1' => new RegexParts(LineParser::ALL, 1),
+            'account_nb' => new RegexParts(LineParser::ALPHANUMERIC, 11),
+            'operation_code' => new RegexParts(LineParser::ALPHANUMERIC, 2),
+            'operation_date' => new RegexParts(LineParser::NUMERIC, 6),
+            '_unused_2' => new RegexParts(LineParser::ALL, 5),
+            'qualifier' => new RegexParts(LineParser::ALPHANUMERIC, 3),
+            'additional_info' => new RegexParts(LineParser::ALL, 70),
+            '_unused_3' => new RegexParts(LineParser::ALL, 2),
+        ]);
     }
 
     public function parse(string $content): OperationDetail
     {
-        $infos = $this->lineParser->parse($content, [
-            'record_code' => '(' . $this->getSupportedCode() . ')',
-            'bank_code' => [LineParser::NUMERIC, 5],
-            'internal_code' => [LineParser::ALPHANUMERIC_BLANK, 4],
-            'desk_code' => [LineParser::NUMERIC, 5],
-            'currency_code' => [LineParser::ALPHA_BLANK, 3],
-            'nb_of_dec' => [LineParser::NUMERIC_BLANK, 1],
-            '_unused_1' => [LineParser::ALL, 1],
-            'account_nb' => [LineParser::ALPHANUMERIC, 11],
-            'operation_code' => [LineParser::ALPHANUMERIC, 2],
-            'operation_date' => [LineParser::NUMERIC, 6],
-            '_unused_2' => [LineParser::ALL, 5],
-            'qualifier' => [LineParser::ALPHANUMERIC, 3],
-            'additional_info' => [LineParser::ALL, 70],
-            '_unused_3' => [LineParser::ALL, 2],
-        ]);
+        $regexMatch = $this->lineParser->parse($content);
 
         return new OperationDetail(
-            $infos['bank_code'],
-            $infos['desk_code'],
-            $infos['account_nb'],
-            $infos['operation_code'],
-            $this->parseDate->parse($infos['operation_date']),
-            $infos['qualifier'],
-            $infos['additional_info'],
-            $infos['internal_code'],
-            $infos['currency_code']
+            $regexMatch->getString('bank_code'),
+            $regexMatch->getString('desk_code'),
+            $regexMatch->getString('account_nb'),
+            $regexMatch->getString('operation_code'),
+            $this->parseDate->parse($regexMatch->getString('operation_date')),
+            $regexMatch->getString('qualifier'),
+            $regexMatch->getString('additional_info'),
+            $regexMatch->getStringOrNull('internal_code'),
+            $regexMatch->getStringOrNull('currency_code')
         );
     }
 

@@ -29,7 +29,7 @@ class TransferTest extends TestCase
     {
         $sUT = new Transfer();
 
-        self::expectException(HeaderUnavailableException::class);
+        $this->expectException(HeaderUnavailableException::class);
         $sUT->getHeader();
     }
 
@@ -38,16 +38,16 @@ class TransferTest extends TestCase
     {
         $sUT = new Transfer();
 
-        self::expectException(TotalUnavailableException::class);
+        $this->expectException(TotalUnavailableException::class);
         $sUT->getTotal();
     }
 
     /** @return void */
     public function testOk()
     {
-        $total = self::createMock(Total::class);
-        $header = self::createMock(Header::class);
-        $transaction = self::createMock(Transaction::class);
+        $total = $this->createMock(Total::class);
+        $header = $this->createMock(Header::class);
+        $transaction = $this->createMock(Transaction::class);
 
         $sUT = new Transfer();
         $sUT->setHeader($header);

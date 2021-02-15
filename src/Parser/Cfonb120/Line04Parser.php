@@ -18,6 +18,7 @@ use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Parser\AmountParser;
 use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
+use Silarhi\Cfonb\Parser\RegexParts;
 
 /** @internal  */
 final class Line04Parser extends AbstractCfonb120Parser
@@ -37,49 +38,49 @@ final class Line04Parser extends AbstractCfonb120Parser
 
     public function __construct()
     {
-        $this->lineParser = new LineParser();
         $this->parseDate = new DateParser();
         $this->parseAmount = new AmountParser();
+        $this->lineParser = new LineParser([
+            'record_code' => new RegexParts($this->getSupportedCode(), null, false),
+            'bank_code' => new RegexParts(LineParser::NUMERIC, 5),
+            'internal_code' => new RegexParts(LineParser::ALPHANUMERIC_BLANK, 4),
+            'desk_code' => new RegexParts(LineParser::NUMERIC, 5),
+            'currency_code' => new RegexParts(LineParser::ALPHA_BLANK, 3),
+            'nb_of_dec' => new RegexParts(LineParser::NUMERIC_BLANK, 1),
+            '_unused_1' => new RegexParts(LineParser::ALL, 1),
+            'account_nb' => new RegexParts(LineParser::ALPHANUMERIC, 11),
+            'operation_code' => new RegexParts(LineParser::ALPHANUMERIC, 2),
+            'operation_date' => new RegexParts(LineParser::NUMERIC, 6),
+            'reject_code' => new RegexParts(LineParser::NUMERIC_BLANK, 2),
+            'value_date' => new RegexParts(LineParser::NUMERIC, 6),
+            'label' => new RegexParts(LineParser::ALL, 31),
+            '_unused_2' => new RegexParts(LineParser::ALL, 2),
+            'reference' => new RegexParts(LineParser::ALL, 7),
+            'exempt_code' => new RegexParts(LineParser::ALL, 1),
+            '_unused_3' => new RegexParts(LineParser::ALL, 1),
+            'amount' => new RegexParts(LineParser::AMOUNT, 13),
+            '_unused_5' => new RegexParts(LineParser::ALL, 16),
+        ]);
     }
 
     public function parse(string $content): Operation
     {
-        $infos = $this->lineParser->parse($content, [
-            'record_code' => '(' . $this->getSupportedCode() . ')',
-            'bank_code' => [LineParser::NUMERIC, 5],
-            'internal_code' => [LineParser::ALPHANUMERIC_BLANK, 4],
-            'desk_code' => [LineParser::NUMERIC, 5],
-            'currency_code' => [LineParser::ALPHA_BLANK, 3],
-            'nb_of_dec' => [LineParser::NUMERIC_BLANK, 1],
-            '_unused_1' => [LineParser::ALL, 1],
-            'account_nb' => [LineParser::ALPHANUMERIC, 11],
-            'operation_code' => [LineParser::ALPHANUMERIC, 2],
-            'operation_date' => [LineParser::NUMERIC, 6],
-            'reject_code' => [LineParser::NUMERIC_BLANK, 2],
-            'value_date' => [LineParser::NUMERIC, 6],
-            'label' => [LineParser::ALL, 31],
-            '_unused_2' => [LineParser::ALL, 2],
-            'reference' => [LineParser::ALL, 7],
-            'exempt_code' => [LineParser::ALL, 1],
-            '_unused_3' => [LineParser::ALL, 1],
-            'amount' => [LineParser::AMOUNT, 13],
-            '_unused_5' => [LineParser::ALL, 16],
-        ]);
+        $regexMatch = $this->lineParser->parse($content);
 
         return new Operation(
-            $infos['bank_code'],
-            $infos['desk_code'],
-            $infos['account_nb'],
-            $infos['operation_code'],
-            $this->parseDate->parse($infos['operation_date']),
-            $this->parseDate->parse($infos['value_date']),
-            $infos['label'],
-            $infos['reference'],
-            $this->parseAmount->parse($infos['amount'], (int) $infos['nb_of_dec']),
-            $infos['internal_code'],
-            $infos['currency_code'],
-            $infos['reject_code'],
-            $infos['exempt_code']
+            $regexMatch->getString('bank_code'),
+            $regexMatch->getString('desk_code'),
+            $regexMatch->getString('account_nb'),
+            $regexMatch->getString('operation_code'),
+            $this->parseDate->parse($regexMatch->getString('operation_date')),
+            $this->parseDate->parse($regexMatch->getString('value_date')),
+            $regexMatch->getString('label'),
+            $regexMatch->getString('reference'),
+            $this->parseAmount->parse($regexMatch->getString('amount'), $regexMatch->getInt('nb_of_dec')),
+            $regexMatch->getStringOrNull('internal_code'),
+            $regexMatch->getStringOrNull('currency_code'),
+            $regexMatch->getStringOrNull('reject_code'),
+            $regexMatch->getStringOrNull('exempt_code')
         );
     }
 

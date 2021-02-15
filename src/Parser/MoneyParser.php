@@ -17,7 +17,7 @@ namespace Silarhi\Cfonb\Parser;
 /** @internal  */
 final class MoneyParser
 {
-    public function parser(string $money): float
+    public function parser(float $money): float
     {
         return $money / 100;
     }

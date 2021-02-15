@@ -18,6 +18,7 @@ use Silarhi\Cfonb\Banking\Header;
 use Silarhi\Cfonb\Parser\AmountParser;
 use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
+use Silarhi\Cfonb\Parser\RegexParts;
 
 /** @internal  */
 final class Line31Parser extends AbstractCfonb240Parser
@@ -37,48 +38,48 @@ final class Line31Parser extends AbstractCfonb240Parser
 
     public function __construct()
     {
-        $this->lineParser = new LineParser();
         $this->parseDate = new DateParser();
         $this->parseAmount = new AmountParser();
+        $this->lineParser = new LineParser([
+            'record_code' => new RegexParts($this->getSupportedCode(), null, false),
+            'seq_nb' => new RegexParts(LineParser::NUMERIC, 6),
+            'op_code' => new RegexParts(LineParser::ALL, 2),
+            'prev_trans_file_date' => new RegexParts(LineParser::NUMERIC, 6),
+            'discount_cur_idx' => new RegexParts(LineParser::ALPHANUMERIC, 1),
+            '_unused_1' => new RegexParts(LineParser::BLANK, 4),
+            'recipient_bank_code_1' => new RegexParts(LineParser::ALPHANUMERIC, 5),
+            'recipient_counter_code_1' => new RegexParts(LineParser::ALPHANUMERIC, 5),
+            'recipient_account_nb_1' => new RegexParts(LineParser::ALPHANUMERIC, 11),
+            'recipient_name_1' => new RegexParts(LineParser::ALL, 24),
+            '_unused_2' => new RegexParts(LineParser::BLANK, 11),
+            // This information, when completed, is identical to that appearing in positions 22 to 66 of this record.
+            'recipient_bank_code_2' => new RegexParts(LineParser::ALPHANUMERIC, 5),
+            'recipient_counter_code_2' => new RegexParts(LineParser::ALPHANUMERIC, 5),
+            'recipient_account_nb_2' => new RegexParts(LineParser::ALPHANUMERIC, 11),
+            'recipient_name_2' => new RegexParts(LineParser::ALL, 24),
+            'processing_center_code' => new RegexParts(LineParser::ALL, 6),
+            '_unused_3' => new RegexParts(LineParser::ALL, 112),
+        ]);
     }
 
     public function parse(string $content): Header
     {
-        $info = $this->lineParser->parse($content, [
-            'record_code' => '(' . $this->getSupportedCode() . ')',
-            'seq_nb' => [LineParser::NUMERIC, 6],
-            'op_code' => [LineParser::ALL, 2],
-            'prev_trans_file_date' => [LineParser::NUMERIC, 6],
-            'discount_cur_idx' => [LineParser::ALPHANUMERIC, 1],
-            '_unused_1' => [LineParser::BLANK, 4],
-            'recipient_bank_code_1' => [LineParser::ALPHANUMERIC, 5],
-            'recipient_counter_code_1' => [LineParser::ALPHANUMERIC, 5],
-            'recipient_account_nb_1' => [LineParser::ALPHANUMERIC, 11],
-            'recipient_name_1' => [LineParser::ALL, 24],
-            '_unused_2' => [LineParser::BLANK, 11],
-            // This information, when completed, is identical to that appearing in positions 22 to 66 of this record.
-            'recipient_bank_code_2' => [LineParser::ALPHANUMERIC, 5],
-            'recipient_counter_code_2' => [LineParser::ALPHANUMERIC, 5],
-            'recipient_account_nb_2' => [LineParser::ALPHANUMERIC, 11],
-            'recipient_name_2' => [LineParser::ALL, 24],
-            'processing_center_code' => [LineParser::ALL, 6],
-            '_unused_3' => [LineParser::ALL, 112],
-        ]);
+        $regexMatch = $this->lineParser->parse($content);
 
         return new Header(
-            (int) $info['seq_nb'],
-            $info['op_code'],
-            $this->parseDate->parse($info['prev_trans_file_date']),
-            $info['discount_cur_idx'],
-            $info['recipient_bank_code_1'],
-            $info['recipient_counter_code_1'],
-            $info['recipient_account_nb_1'],
-            $info['recipient_name_1'],
-            $info['recipient_bank_code_2'],
-            $info['recipient_counter_code_2'],
-            $info['recipient_account_nb_2'],
-            $info['recipient_name_2'],
-            $info['processing_center_code']
+            $regexMatch->getInt('seq_nb'),
+            $regexMatch->getStringOrNull('op_code'),
+            $this->parseDate->parse($regexMatch->getString('prev_trans_file_date')),
+            $regexMatch->getString('discount_cur_idx'),
+            $regexMatch->getString('recipient_bank_code_1'),
+            $regexMatch->getString('recipient_counter_code_1'),
+            $regexMatch->getString('recipient_account_nb_1'),
+            $regexMatch->getStringOrNull('recipient_name_1'),
+            $regexMatch->getString('recipient_bank_code_2'),
+            $regexMatch->getString('recipient_counter_code_2'),
+            $regexMatch->getString('recipient_account_nb_2'),
+            $regexMatch->getStringOrNull('recipient_name_2'),
+            $regexMatch->getStringOrNull('processing_center_code')
         );
     }
 
