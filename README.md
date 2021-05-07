@@ -8,6 +8,16 @@ A PHP Parser for CFONB statements
 
 Supports CFONB 120/240 format
 
+## Installation
+
+The preferred method of installation is via [Composer][]. Run the following
+command to install the package and add it as a requirement to your project's
+`composer.json`:
+
+```bash
+composer require silarhi/cfonb-parser
+```
+
 ## How to use
 
 ### Parse CFONB 120
@@ -65,3 +75,5 @@ foreach($reader->parseCfonb240('My Content') as $transfer) {
     assert($transfer instanceof \Silarhi\Cfonb\Banking\Transfer);
 }
 ```
+
+[composer]: http://getcomposer.org/
