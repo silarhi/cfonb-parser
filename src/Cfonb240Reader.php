@@ -32,14 +32,18 @@ class Cfonb240Reader
     /** @var FileParser */
     private $fileParser;
 
-    public function __construct()
+    public function __construct(?FileParser $fileParser = null)
     {
-        $this->fileParser = new FileParser(
-            new Line31Parser(),
-            new Line34Parser(),
-            new Line39Parser(),
-            new EmptyParser()
-        );
+        if (null === $fileParser) {
+            $fileParser = new FileParser(
+                new Line31Parser(),
+                new Line34Parser(),
+                new Line39Parser(),
+                new EmptyParser()
+            );
+        }
+
+        $this->fileParser = $fileParser;
     }
 
     /** @return Transfer[] */
