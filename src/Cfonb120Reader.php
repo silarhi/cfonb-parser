@@ -28,7 +28,7 @@ use Silarhi\Cfonb\Parser\FileParser;
 
 class Cfonb120Reader
 {
-    const LINE_LENGTH = 120;
+    public const LINE_LENGTH = 120;
 
     /** @var FileParser */
     private $fileParser;

@@ -1,39 +1,42 @@
-name: "PHP-CS-Fixer"
+name: PHP-CS-Fixer
 on: [ push, pull_request ]
 
 jobs:
     run:
-        name: "PHP-CS-Fixer"
+        name: PHP-CS-Fixer ${{ matrix.php }} on ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
 
         strategy:
             matrix:
                 os: [ ubuntu-latest ]
-                php: [ '7.4' ]
+                php: [ '8.0' ]
 
         steps:
-            -   name: "Checkout"
-                uses: "actions/checkout@v2"
+            -   name: Checkout
+                uses: actions/checkout@v2
 
-            -   name: "Install PHP"
-                uses: "shivammathur/setup-php@v2"
+            -   name: Install PHP
+                uses: shivammathur/setup-php@v2
                 with:
-                    coverage: "pcov"
-                    php-version: "${{ matrix.php }}"
+                    coverage: none
+                    php-version: ${{ matrix.php }}
                     ini-values: memory_limit=-1
-                    tools: composer:v2, cs2pr
+                    tools: composer:v2
 
-            -   name: "Cache dependencies"
-                uses: "actions/cache@v2"
+            -   name: Determine composer cache directory
+                id: composer-cache
+                run: echo "::set-output name=directory::$(composer config cache-dir)"
+
+            -   name: Cache composer dependencies
+                uses: actions/cache@v2
                 with:
-                    path: |
-                        ~/.composer/cache
-                        vendor
-                    key: "php-${{ matrix.php }}"
-                    restore-keys: "php-${{ matrix.php }}"
+                    path: ${{ steps.composer-cache.outputs.directory }}
+                    key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+                    restore-keys: |
+                        ${{ matrix.php }}-composer-
 
-            -   name: "Install locked dependencies"
-                run: "composer install --no-interaction --no-progress"
+            -   name: Install Dependencies
+                run: composer update --no-progress --ansi
 
-            -   name: "PHP-CS-Fixer"
-                run: "./vendor/bin/php-cs-fixer fix --dry-run --diff"
+            -   name: PHP-CS-Fixer
+                run: ./vendor/bin/php-cs-fixer fix --dry-run --diff

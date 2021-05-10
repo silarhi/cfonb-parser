@@ -1,7 +1,5 @@
-name: "PHPUnit"
+name: Tests
 on: [ push, pull_request ]
-env:
-    CI: true
 
 jobs:
     run:
@@ -18,21 +16,28 @@ jobs:
             -   name: Checkout
                 uses: actions/checkout@v2
 
-            -   name: Get Composer Cache Directory
-                id: composer-cache
-                run: |
-                    echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            -   name: Cache dependencies
-                uses: actions/cache@v1
+            -   name: Install PHP
+                uses: shivammathur/setup-php@v2
                 with:
-                    path: ${{ steps.composer-cache.outputs.dir }}
-                    key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                    coverage: none
+                    php-version: ${{ matrix.php }}
+                    ini-values: memory_limit=-1
+                    tools: composer:v2
+
+            -   name: Determine composer cache directory
+                id: composer-cache
+                run: echo "::set-output name=directory::$(composer config cache-dir)"
+
+            -   name: Cache composer dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composer-cache.outputs.directory }}
+                    key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
                     restore-keys: |
-                        ${{ runner.os }}-composer-
+                        ${{ matrix.php }}-composer-
 
             -   name: Install Dependencies
-                run: composer install --prefer-dist --no-progress
+                run: composer update --no-progress --ansi
 
             -   name: Run tests
                 run: ./vendor/bin/phpunit

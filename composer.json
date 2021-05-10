@@ -14,12 +14,11 @@
         "php": "^7.2 || ^8"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer" : "^2.18",
-        "phpunit/phpunit": "^9.1",
-        "symfony/var-dumper": "^5.0",
-        "phpstan/phpstan": "^0.12.58",
-        "infection/infection": "^0.17.7|^0.21.0",
-        "vimeo/psalm": "^4.4"
+        "friendsofphp/php-cs-fixer": "^2.18|^3.0",
+        "phpunit/phpunit": "^8.5|^9.4",
+        "phpstan/phpstan": "^0.12.86",
+        "infection/infection": ">=0.13.0",
+        "vimeo/psalm": "^4.7"
     },
     "autoload": {
         "psr-4": {
