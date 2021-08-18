@@ -43,7 +43,7 @@ class Line01Parser extends AbstractCfonb120Parser
         $this->lineParser = new LineParser([
             'record_code' => new RegexParts($this->getSupportedCode(), null, false),
             'bank_code' => new RegexParts(LineParser::NUMERIC, 5),
-            '_unused_1' => new RegexParts(LineParser::BLANK, 4),
+            '_unused_1' => new RegexParts(LineParser::ALL, 4),
             'desk_code' => new RegexParts(LineParser::NUMERIC, 5),
             'currency_code' => new RegexParts(LineParser::ALPHA_BLANK, 3),
             'nb_of_dec' => new RegexParts(LineParser::NUMERIC_BLANK, 1),
