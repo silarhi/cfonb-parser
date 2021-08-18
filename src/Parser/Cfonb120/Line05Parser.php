@@ -63,7 +63,7 @@ final class Line05Parser extends AbstractCfonb120Parser
             $regexMatch->getString('operation_code'),
             $this->parseDate->parse($regexMatch->getString('operation_date')),
             $regexMatch->getString('qualifier'),
-            $regexMatch->getString('additional_info'),
+            $regexMatch->getStringOrNull('additional_info'),
             $regexMatch->getStringOrNull('internal_code'),
             $regexMatch->getStringOrNull('currency_code')
         );
