@@ -52,7 +52,7 @@ class OperationDetail
         string $code,
         DateTimeImmutable $date,
         string $qualifier,
-        string $additionalInformations,
+        ?string $additionalInformations,
         ?string $internalCode,
         ?string $currencyCode
     ) {
