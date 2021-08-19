@@ -39,7 +39,7 @@ class OperationDetail
     /** @var DateTimeImmutable */
     private $date;
 
-    /** @var string */
+    /** @var string|null */
     private $additionalInformations;
 
     /** @var string */
@@ -52,7 +52,7 @@ class OperationDetail
         string $code,
         DateTimeImmutable $date,
         string $qualifier,
-        string $additionalInformations,
+        ?string $additionalInformations,
         ?string $internalCode,
         ?string $currencyCode
     ) {
@@ -102,7 +102,7 @@ class OperationDetail
         return $this->date;
     }
 
-    public function getAdditionalInformations(): string
+    public function getAdditionalInformations(): ?string
     {
         return $this->additionalInformations;
     }
