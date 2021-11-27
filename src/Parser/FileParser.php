@@ -30,7 +30,11 @@ final class FileParser
         $this->parsers = $parsers;
     }
 
-    /** @return Generator<int, object> */
+    /**
+     * @param positive-int $lineLength
+     *
+     * @return Generator<int, object>
+     */
     public function parse(string $content, int $lineLength): iterable
     {
         if (empty($content)) {

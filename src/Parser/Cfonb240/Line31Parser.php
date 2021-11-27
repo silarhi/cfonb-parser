@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Parser\Cfonb240;
 
 use Silarhi\Cfonb\Banking\Header;
-use Silarhi\Cfonb\Parser\AmountParser;
 use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
 use Silarhi\Cfonb\Parser\RegexParts;
@@ -31,15 +30,10 @@ final class Line31Parser extends AbstractCfonb240Parser
      * @var DateParser
      */
     private $parseDate;
-    /**
-     * @var AmountParser
-     */
-    private $parseAmount;
 
     public function __construct()
     {
         $this->parseDate = new DateParser();
-        $this->parseAmount = new AmountParser();
         $this->lineParser = new LineParser([
             'record_code' => new RegexParts($this->getSupportedCode(), null, false),
             'seq_nb' => new RegexParts(LineParser::NUMERIC, 6),
