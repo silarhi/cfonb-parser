@@ -3,7 +3,7 @@
 $header = <<<'EOF'
 This file is part of the CFONB Parser package.
 
-(c) Guillaume Sainthillier <hello@silarhi.fr>
+(c) SILARHI <dev@silarhi.fr>
 (c) @fezfez <demonchaux.stephane@gmail.com>
 
 This source file is subject to the MIT license that is bundled
