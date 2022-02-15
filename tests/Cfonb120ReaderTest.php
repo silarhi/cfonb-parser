@@ -70,7 +70,7 @@ class Cfonb120ReaderTest extends CfonbTest
         $reader = new Cfonb120Reader();
 
         $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Regex does not match the line');
+        $this->expectExceptionMessage(sprintf('Regex does not match the line "%s"', $line));
         $reader->parse($line);
     }
 

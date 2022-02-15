@@ -57,7 +57,7 @@ final class LineParser
         $regex = sprintf('/^%s$/', $this->regexAsString);
 
         if (!preg_match($regex, $content, $matches)) {
-            throw new ParseException('Regex does not match the line');
+            throw new ParseException(sprintf('Regex does not match the line "%s"', $content));
         }
 
         return new RegexMatch($this->regexParts, $matches);
