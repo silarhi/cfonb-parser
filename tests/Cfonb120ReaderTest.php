@@ -79,6 +79,19 @@ class Cfonb120ReaderTest extends CfonbTest
      *
      * @return void
      */
+    public function testUnusedParts(bool $oneLine)
+    {
+        $reader = new Cfonb120Reader();
+        $statements = $reader->parse(self::loadFixture('test-unused-parts.txt', $oneLine));
+
+        self::assertCount(8, $statements);
+    }
+
+    /**
+     * @dataProvider provideOneLineOrNot
+     *
+     * @return void
+     */
     public function testSimpleTest(bool $oneLine)
     {
         $reader = new Cfonb120Reader();
