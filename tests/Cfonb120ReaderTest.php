@@ -18,9 +18,9 @@ use Generator;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
-use Silarhi\Cfonb\Tests\CfonbTestE2e;
+use Silarhi\Cfonb\Tests\CfonbTestCase;
 
-class Cfonb120ReaderTest extends CfonbTestE2e
+class Cfonb120ReaderTest extends CfonbTestCase
 {
     /** @return void */
     public function testEmpty()

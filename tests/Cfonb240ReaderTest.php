@@ -17,9 +17,9 @@ namespace Siarhi\Cfonb\Tests;
 use Silarhi\Cfonb\Banking\Transfer;
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
-use Silarhi\Cfonb\Tests\CfonbTestE2e;
+use Silarhi\Cfonb\Tests\CfonbTestCase;
 
-class Cfonb240ReaderTest extends CfonbTestE2e
+class Cfonb240ReaderTest extends CfonbTestCase
 {
     /** @return void */
     public function testEmpty()

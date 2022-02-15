@@ -17,7 +17,7 @@ namespace Silarhi\Cfonb\Tests;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-abstract class CfonbTestE2e extends TestCase
+abstract class CfonbTestCase extends TestCase
 {
     public static function loadFixture(string $file, bool $oneline): string
     {
