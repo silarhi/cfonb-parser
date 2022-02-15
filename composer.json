@@ -29,5 +29,10 @@
         "psr-4": {
             "Silarhi\\Cfonb\\Tests\\": "tests/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true
+        }
     }
 }
