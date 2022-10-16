@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Parser;
 
 use Silarhi\Cfonb\Exceptions\ParseException;
+
 use function strlen;
 
 /** @internal  */
@@ -52,11 +53,11 @@ final class AmountParser
         $content = substr($content, 0, strlen($content) - $nbDecimals) . '.' . substr($content, -1 * $nbDecimals);
         $lastChar = substr($content, -1);
         if (isset(self::CREDIT_MAPPING[$lastChar])) {
-            return (float) (str_replace($lastChar, self::CREDIT_MAPPING[$lastChar], $content));
+            return (float) str_replace($lastChar, self::CREDIT_MAPPING[$lastChar], $content);
         }
 
         if (isset(self::DEBIT_MAPPING[$lastChar])) {
-            return -1.0 * (float) (str_replace($lastChar, self::DEBIT_MAPPING[$lastChar], $content));
+            return -1.0 * (float) str_replace($lastChar, self::DEBIT_MAPPING[$lastChar], $content);
         }
 
         throw new ParseException(sprintf('Unable to parse amount "%s"', $content));

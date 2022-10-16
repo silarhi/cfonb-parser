@@ -110,7 +110,7 @@ class Cfonb120ReaderTest extends CfonbTest
         self::assertSame('02204', $statement->getOldBalance()->getDeskCode());
         self::assertSame('00012345603', $statement->getOldBalance()->getAccountNumber());
 
-        //Data are the same expect date
+        // Data are the same expect date
         self::assertTrue($statement->hasNewBalance());
 
         self::assertSame('2020-04-06 00:00:00', $statement->getNewBalance()->getDate()->format('Y-m-d H:i:s'));
@@ -140,7 +140,7 @@ class Cfonb120ReaderTest extends CfonbTest
 
         self::assertCount(8, $statements);
 
-        //Test first statement
+        // Test first statement
         $statement = $statements[0];
 
         self::assertSame(16695.65, $statement->getOldBalance()->getAmount());
@@ -157,7 +157,7 @@ class Cfonb120ReaderTest extends CfonbTest
 
         self::assertSame(16672.86, $statement->getNewBalance()->getAmount());
 
-        //Test second statement
+        // Test second statement
         $statement = $statements[1];
 
         self::assertSame(16672.86, $statement->getOldBalance()->getAmount());
@@ -180,14 +180,14 @@ class Cfonb120ReaderTest extends CfonbTest
 
         self::assertSame(11652.75, $statement->getNewBalance()->getAmount());
 
-        //Third statement
+        // Third statement
         $statement = $statements[2];
 
         self::assertSame(11652.75, $statement->getOldBalance()->getAmount());
         self::assertCount(0, $statement->getOperations());
         self::assertSame(11652.75, $statement->getNewBalance()->getAmount());
 
-        //Test fourth statement
+        // Test fourth statement
         $statement = $statements[3];
 
         self::assertSame(11652.75, $statement->getOldBalance()->getAmount());
@@ -205,14 +205,14 @@ class Cfonb120ReaderTest extends CfonbTest
 
         self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
 
-        //5th statement
+        // 5th statement
         $statement = $statements[4];
 
         self::assertSame(11535.0, $statement->getOldBalance()->getAmount());
         self::assertCount(0, $statement->getOperations());
         self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
 
-        //6th statement
+        // 6th statement
         $statement = $statements[5];
 
         self::assertSame(11535.0, $statement->getOldBalance()->getAmount());
@@ -229,14 +229,14 @@ class Cfonb120ReaderTest extends CfonbTest
 
         self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
 
-        //7th statement
+        // 7th statement
         $statement = $statements[6];
 
         self::assertSame(11484.75, $statement->getOldBalance()->getAmount());
         self::assertCount(0, $statement->getOperations());
         self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
 
-        //8th statement
+        // 8th statement
         $statement = $statements[7];
 
         self::assertSame(584353.02, $statement->getOldBalance()->getAmount());
