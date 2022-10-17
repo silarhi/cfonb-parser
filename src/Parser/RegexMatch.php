@@ -16,11 +16,9 @@ namespace Silarhi\Cfonb\Parser;
 
 use function array_key_exists;
 use function is_string;
-
 use Silarhi\Cfonb\Exceptions\KeyDoesNotExistException;
 use Silarhi\Cfonb\Exceptions\ValueOfKeyIsNotAStringException;
 use Silarhi\Cfonb\Exceptions\ValueOfKeyIsNotNumericException;
-
 use function strlen;
 
 /** @internal  */

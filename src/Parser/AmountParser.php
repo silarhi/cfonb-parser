@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Parser;
 
 use Silarhi\Cfonb\Exceptions\ParseException;
-
 use function strlen;
 
 /** @internal  */
