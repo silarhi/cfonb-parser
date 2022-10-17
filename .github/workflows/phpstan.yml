@@ -2,9 +2,6 @@ name: PHPStan
 on:
   pull_request:
   push:
-    branches:
-      - 'refs/pull/*'
-      - 'main'
 
 env:
   CI: true
