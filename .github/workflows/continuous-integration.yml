@@ -3,6 +3,9 @@ name: "Continuous Integration"
 on:
   pull_request:
   push:
+    branches:
+      - 'refs/pull/*'
+      - 'main'
 
 jobs:
   matrix:
