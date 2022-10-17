@@ -16,7 +16,6 @@ namespace Silarhi\Cfonb\Parser\Cfonb120;
 
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Contracts\ParserInterface;
-
 use function strlen;
 
 /** @internal  */

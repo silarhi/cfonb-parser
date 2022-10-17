@@ -11,13 +11,13 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ~8.0.0 || ~8.1.0 || ~8.2.0"
+        "php": "^7.2"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.18|^v3.12.0",
-        "phpunit/phpunit": "^8.5.21|^9.5.25",
+        "friendsofphp/php-cs-fixer": "^2.18",
+        "phpunit/phpunit": "^8.5.21",
         "phpstan/phpstan": "^1.8.9",
-        "infection/infection": "^0.15.3|^0.26.15",
+        "infection/infection": "^0.15.3",
         "vimeo/psalm": "^4.29.0"
     },
     "autoload": {
