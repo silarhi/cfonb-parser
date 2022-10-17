@@ -6,6 +6,7 @@ on:
     branches:
       - 'refs/pull/*'
       - 'main'
+      - '2.x'
 
 jobs:
   matrix:
