@@ -24,7 +24,7 @@ use function strlen;
 final class FileParser
 {
     /** @var ParserInterface[] */
-    private $parsers;
+    private array $parsers;
 
     public function __construct(ParserInterface ...$parsers)
     {
@@ -42,7 +42,7 @@ final class FileParser
             return [];
         }
 
-        if (strlen($content) > $lineLength && false === strpos($content, "\n")) {
+        if (strlen($content) > $lineLength && !str_contains($content, "\n")) {
             $content = chunk_split($content, $lineLength, "\n");
         }
 

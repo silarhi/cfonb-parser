@@ -29,8 +29,7 @@ class Cfonb240Reader
 {
     public const LINE_LENGTH = 240;
 
-    /** @var FileParser */
-    private $fileParser;
+    private FileParser $fileParser;
 
     public function __construct(?FileParser $fileParser = null)
     {

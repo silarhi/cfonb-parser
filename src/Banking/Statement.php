@@ -18,14 +18,12 @@ use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 
 class Statement
 {
-    /** @var Balance|null */
-    private $oldBalance;
+    private ?Balance $oldBalance;
 
-    /** @var Balance|null */
-    private $newBalance;
+    private ?Balance $newBalance;
 
     /** @var Operation[] */
-    private $operations;
+    private array $operations;
 
     public function __construct()
     {

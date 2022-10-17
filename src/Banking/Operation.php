@@ -18,76 +18,24 @@ use DateTimeImmutable;
 
 class Operation
 {
-    /** @var string */
-    private $bankCode;
-
-    /** @var string|null */
-    private $internalCode;
-
-    /** @var string */
-    private $deskCode;
-
-    /** @var string|null */
-    private $currencyCode;
-
-    /** @var string */
-    private $accountNumber;
-
-    /** @var string */
-    private $code;
-
-    /** @var DateTimeImmutable */
-    private $date;
-
-    /** @var string|null */
-    private $rejectCode;
-
-    /** @var DateTimeImmutable */
-    private $valueDate;
-
-    /** @var string */
-    private $label;
-
-    /** @var string */
-    private $reference;
-
-    /** @var string|null */
-    private $exemptCode;
-
-    /** @var float */
-    private $amount;
-
     /** @var OperationDetail[] */
-    private $details;
+    private array $details;
 
     public function __construct(
-        string $bankCode,
-        string $deskCode,
-        string $accountNumber,
-        string $code,
-        DateTimeImmutable $date,
-        DateTimeImmutable $valueDate,
-        string $label,
-        string $reference,
-        float $amount,
-        ?string $internalCode,
-        ?string $currencyCode,
-        ?string $rejectCode,
-        ?string $exemptCode
+        private string $bankCode,
+        private string $deskCode,
+        private string $accountNumber,
+        private string $code,
+        private DateTimeImmutable $date,
+        private DateTimeImmutable $valueDate,
+        private string $label,
+        private string $reference,
+        private float $amount,
+        private ?string $internalCode,
+        private ?string $currencyCode,
+        private ?string $rejectCode,
+        private ?string $exemptCode
     ) {
-        $this->bankCode = $bankCode;
-        $this->deskCode = $deskCode;
-        $this->accountNumber = $accountNumber;
-        $this->code = $code;
-        $this->date = $date;
-        $this->valueDate = $valueDate;
-        $this->label = $label;
-        $this->reference = $reference;
-        $this->amount = $amount;
-        $this->internalCode = $internalCode;
-        $this->currencyCode = $currencyCode;
-        $this->rejectCode = $rejectCode;
-        $this->exemptCode = $exemptCode;
         $this->details = [];
     }
 
