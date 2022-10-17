@@ -33,17 +33,11 @@ final class LineParser
     public const AMOUNT = '(\d{%d}[{}A-R]{1})';
 
     public const ALL = '(.{%d})';
-
-    /** @var array<string, RegexParts> */
-    private $regexParts;
-    /** @var string */
-    private $regexAsString;
+    private string $regexAsString;
 
     /** @param array<string, RegexParts> $regexParts */
-    public function __construct(array $regexParts)
+    public function __construct(private array $regexParts)
     {
-        $this->regexParts = $regexParts;
-
         $regexParts = [];
         foreach ($this->regexParts as $part) {
             $regexParts[] = $part->toString();

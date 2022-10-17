@@ -19,15 +19,13 @@ use Silarhi\Cfonb\Banking\Transfer;
 
 class CfonbReader
 {
-    /** @var Cfonb120Reader */
-    private $cfonb120Reader;
-    /** @var Cfonb240Reader */
-    private $cfonb240Reader;
+    private Cfonb120Reader $cfonb120Reader;
+    private Cfonb240Reader $cfonb240Reader;
 
     public function __construct(Cfonb120Reader $cfonb120Reader = null, Cfonb240Reader $cfonb240Reader = null)
     {
-        $this->cfonb120Reader = null === $cfonb120Reader ? new Cfonb120Reader() : $cfonb120Reader;
-        $this->cfonb240Reader = null === $cfonb240Reader ? new Cfonb240Reader() : $cfonb240Reader;
+        $this->cfonb120Reader = $cfonb120Reader ?? new Cfonb120Reader();
+        $this->cfonb240Reader = $cfonb240Reader ?? new Cfonb240Reader();
     }
 
     /** @return Statement[] */

@@ -22,14 +22,8 @@ use Silarhi\Cfonb\Parser\RegexParts;
 /** @internal  */
 final class Line31Parser extends AbstractCfonb240Parser
 {
-    /**
-     * @var LineParser
-     */
-    private $lineParser;
-    /**
-     * @var DateParser
-     */
-    private $parseDate;
+    private LineParser $lineParser;
+    private DateParser $parseDate;
 
     public function __construct()
     {

@@ -19,20 +19,14 @@ use Silarhi\Cfonb\Exceptions\TotalUnavailableException;
 
 class Transfer
 {
-    /**
-     * @var Header|null
-     */
-    private $header;
+    private ?Header $header;
 
     /**
      * @var Transaction[]
      */
-    private $transactions;
+    private array $transactions;
 
-    /**
-     * @var Total|null
-     */
-    private $total;
+    private ?Total $total;
 
     public function __construct()
     {

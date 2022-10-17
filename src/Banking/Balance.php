@@ -18,32 +18,8 @@ use DateTimeImmutable;
 
 class Balance
 {
-    /** @var string */
-    private $bankCode;
-
-    /** @var string */
-    private $deskCode;
-
-    /** @var string */
-    private $currencyCode;
-
-    /** @var string */
-    private $accountNumber;
-
-    /** @var DateTimeImmutable */
-    private $date;
-
-    /** @var float */
-    private $amount;
-
-    public function __construct(string $bankCode, string $deskCode, string $currencyCode, string $accountNumber, DateTimeImmutable $date, float $amount)
+    public function __construct(private string $bankCode, private string $deskCode, private string $currencyCode, private string $accountNumber, private DateTimeImmutable $date, private float $amount)
     {
-        $this->bankCode = $bankCode;
-        $this->deskCode = $deskCode;
-        $this->currencyCode = $currencyCode;
-        $this->accountNumber = $accountNumber;
-        $this->date = $date;
-        $this->amount = $amount;
     }
 
     public function getBankCode(): string

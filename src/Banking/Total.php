@@ -18,107 +18,23 @@ use DateTimeInterface;
 
 class Total
 {
-    /**
-     * @var int
-     */
-    private $sequenceNumber;
-
-    /**
-     * @var string|null
-     */
-    private $operationCode;
-
-    /**
-     * @var DateTimeInterface
-     */
-    private $creationTransactionFileDate;
-
-    /**
-     * @var string
-     */
-    private $currencyIndex;
-
-    /**
-     * @var string
-     */
-    private $recipientBankCode1;
-
-    /**
-     * @var string
-     */
-    private $recipientCounterCode1;
-
-    /**
-     * @var string
-     */
-    private $recipientAccountNumber1;
-
-    /**
-     * @var string|null
-     */
-    private $recipientName1;
-
-    /**
-     * @var string
-     */
-    private $recipientBankCode2;
-
-    /**
-     * @var string
-     */
-    private $recipientCounterCode2;
-
-    /**
-     * @var string
-     */
-    private $recipientAccountNumber2;
-
-    /**
-     * @var string|null
-     */
-    private $recipientName2;
-
-    /**
-     * @var string|null
-     */
-    private $processingCenterCode;
-
-    /**
-     * @var float
-     */
-    private $totalAmount;
-
     public function __construct(
-        int $sequenceNumber,
-        ?string $operationCode,
-        DateTimeInterface $creationTransactionFileDate,
-        string $currencyIndex,
-        string $recipientBankCode1,
-        string $recipientCounterCode1,
-        string $recipientAccountNumber1,
-        ?string $recipientName1,
-        string $recipientBankCode2,
-        string $recipientCounterCode2,
-        string $recipientAccountNumber2,
-        ?string $recipientName2,
-        ?string $processingCenterCode,
-        float $totalAmount
+        private int $sequenceNumber,
+        private ?string $operationCode,
+        private DateTimeInterface $creationTransactionFileDate,
+        private string $currencyIndex,
+        private string $recipientBankCode1,
+        private string $recipientCounterCode1,
+        private string $recipientAccountNumber1,
+        private ?string $recipientName1,
+        private string $recipientBankCode2,
+        private string $recipientCounterCode2,
+        private string $recipientAccountNumber2,
+        private ?string $recipientName2,
+        private ?string $processingCenterCode,
+        private float $totalAmount
     ) {
-        $this->sequenceNumber = $sequenceNumber;
-        $this->operationCode = $operationCode;
-        $this->creationTransactionFileDate = $creationTransactionFileDate;
-        $this->currencyIndex = $currencyIndex;
-        $this->recipientBankCode1 = $recipientBankCode1;
-        $this->recipientCounterCode1 = $recipientCounterCode1;
-        $this->recipientAccountNumber1 = $recipientAccountNumber1;
-        $this->recipientName1 = $recipientName1;
-        $this->recipientBankCode2 = $recipientBankCode2;
-        $this->recipientCounterCode2 = $recipientCounterCode2;
-        $this->recipientAccountNumber2 = $recipientAccountNumber2;
-        $this->recipientName2 = $recipientName2;
         $this->processingCenterCode = $processingCenterCode;
-        $this->processingCenterCode = $processingCenterCode;
-        $this->totalAmount = $totalAmount;
     }
 
     public function getSequenceNumber(): int

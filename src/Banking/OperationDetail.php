@@ -18,53 +18,8 @@ use DateTimeImmutable;
 
 class OperationDetail
 {
-    /** @var string */
-    private $bankCode;
-
-    /** @var string|null */
-    private $internalCode;
-
-    /** @var string */
-    private $deskCode;
-
-    /** @var string|null */
-    private $currencyCode;
-
-    /** @var string */
-    private $accountNumber;
-
-    /** @var string */
-    private $code;
-
-    /** @var DateTimeImmutable */
-    private $date;
-
-    /** @var string|null */
-    private $additionalInformations;
-
-    /** @var string */
-    private $qualifier;
-
-    public function __construct(
-        string $bankCode,
-        string $deskCode,
-        string $accountNumber,
-        string $code,
-        DateTimeImmutable $date,
-        string $qualifier,
-        ?string $additionalInformations,
-        ?string $internalCode,
-        ?string $currencyCode
-    ) {
-        $this->bankCode = $bankCode;
-        $this->deskCode = $deskCode;
-        $this->accountNumber = $accountNumber;
-        $this->code = $code;
-        $this->date = $date;
-        $this->qualifier = $qualifier;
-        $this->additionalInformations = $additionalInformations;
-        $this->internalCode = $internalCode;
-        $this->currencyCode = $currencyCode;
+    public function __construct(private string $bankCode, private string $deskCode, private string $accountNumber, private string $code, private DateTimeImmutable $date, private string $qualifier, private ?string $additionalInformations, private ?string $internalCode, private ?string $currencyCode)
+    {
     }
 
     public function getBankCode(): string
