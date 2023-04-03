@@ -12,7 +12,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Siarhi\Cfonb\Tests\Parser;
+namespace Silarhi\Cfonb\Tests\Parser;
 
 use Generator;
 use PHPUnit\Framework\TestCase;

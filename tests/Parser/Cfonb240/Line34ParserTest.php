@@ -12,7 +12,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Siarhi\Cfonb\Tests\Parser\Cfonb240;
+namespace Silarhi\Cfonb\Tests\Parser\Cfonb240;
 
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Transaction;

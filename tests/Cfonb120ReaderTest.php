@@ -12,7 +12,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Siarhi\Cfonb\Tests;
+namespace Silarhi\Cfonb\Tests;
 
 use Generator;
 use Silarhi\Cfonb\Banking\Statement;
