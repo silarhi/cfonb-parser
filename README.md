@@ -4,7 +4,7 @@
 [![Total Downloads](https://poser.pugx.org/silarhi/cfonb-parser/downloads)](https://packagist.org/packages/silarhi/cfonb-parser)
 [![License](https://poser.pugx.org/silarhi/cfonb-parser/license)](https://packagist.org/packages/silarhi/cfonb-parser)
 
-A PHP Parser for CFONB statements
+A zero dependencies PHP Parser for CFONB statements
 
 Supports CFONB 120/240 format
 

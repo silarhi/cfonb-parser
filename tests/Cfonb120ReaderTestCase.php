@@ -12,26 +12,24 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Siarhi\Cfonb\Tests;
+namespace Silarhi\Cfonb\Tests;
 
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
-use Silarhi\Cfonb\Tests\CfonbTest;
 
-class Cfonb120ReaderTest extends CfonbTest
+class Cfonb120ReaderTestCase extends CfonbTestCase
 {
-    /** @return void */
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $reader = new Cfonb120Reader();
 
         self::assertCount(0, $reader->parse(''));
     }
 
-    /** @return void */
-    public function testFailUnknowLine()
+    public function testFailUnknowLine(): void
     {
         $reader = new Cfonb120Reader();
 
@@ -41,8 +39,7 @@ class Cfonb120ReaderTest extends CfonbTest
         $reader->parse('abc ');
     }
 
-    /** @return void */
-    public function testFailCauseNoOperation()
+    public function testFailCauseNoOperation(): void
     {
         $reader = new Cfonb120Reader();
 
@@ -52,7 +49,7 @@ class Cfonb120ReaderTest extends CfonbTest
     }
 
     /** @return array<string, array<int, string>> */
-    public function provideMalformedLine(): array
+    public static function provideMalformedLine(): array
     {
         return [
             'dateMalformed' => ['0110278    02204EUR2 00012345603  YYYYYY                                                  0000000166956E060420070420    '],
@@ -60,12 +57,8 @@ class Cfonb120ReaderTest extends CfonbTest
         ];
     }
 
-    /**
-     * @dataProvider provideMalformedLine
-     *
-     * @return void
-     */
-    public function testMalformedLine(string $line)
+    #[DataProvider('provideMalformedLine')]
+    public function testMalformedLine(string $line): void
     {
         $reader = new Cfonb120Reader();
 
@@ -74,12 +67,8 @@ class Cfonb120ReaderTest extends CfonbTest
         $reader->parse($line);
     }
 
-    /**
-     * @dataProvider provideOneLineOrNot
-     *
-     * @return void
-     */
-    public function testUnusedParts(bool $oneLine)
+    #[DataProvider('provideOneLineOrNot')]
+    public function testUnusedParts(bool $oneLine): void
     {
         $reader = new Cfonb120Reader();
         $statements = $reader->parse(self::loadFixture('test-unused-parts.txt', $oneLine));
@@ -87,12 +76,8 @@ class Cfonb120ReaderTest extends CfonbTest
         self::assertCount(8, $statements);
     }
 
-    /**
-     * @dataProvider provideOneLineOrNot
-     *
-     * @return void
-     */
-    public function testSimpleTest(bool $oneLine)
+    #[DataProvider('provideOneLineOrNot')]
+    public function testSimpleTest(bool $oneLine): void
     {
         $reader = new Cfonb120Reader();
         $statements = $reader->parse(self::loadFixture('simple-test.txt', $oneLine));
@@ -122,18 +107,14 @@ class Cfonb120ReaderTest extends CfonbTest
     }
 
     /** @return Generator<int, array<int, bool>> */
-    public function provideOneLineOrNot(): iterable
+    public static function provideOneLineOrNot(): iterable
     {
         yield [true];
         yield [false];
     }
 
-    /**
-     * @dataProvider provideOneLineOrNot
-     *
-     * @return void
-     */
-    public function testComplexTest(bool $oneLine)
+    #[DataProvider('provideOneLineOrNot')]
+    public function testComplexTest(bool $oneLine): void
     {
         $reader = new Cfonb120Reader();
         $statements = $reader->parse($this->loadFixture('complex-test.txt', $oneLine));

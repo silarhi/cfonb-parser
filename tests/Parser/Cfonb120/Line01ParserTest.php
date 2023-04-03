@@ -12,7 +12,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Siarhi\Cfonb\Tests\Parser\Cfonb120;
+namespace Silarhi\Cfonb\Tests\Parser\Cfonb120;
 
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Balance;
@@ -29,8 +29,7 @@ class Line01ParserTest extends TestCase
         return $sUT->parse($content);
     }
 
-    /** @return void */
-    public function testOkEmptyUnused1()
+    public function testOkEmptyUnused1(): void
     {
         $balance = $this->parse('0110278    02204EUR2 00012345603  060420                                                  0000000166956E060420070420    ');
 
@@ -42,8 +41,7 @@ class Line01ParserTest extends TestCase
         self::assertSame(16695.65, $balance->getAmount());
     }
 
-    /** @return void */
-    public function testOkNotEmptyUnused1()
+    public function testOkNotEmptyUnused1(): void
     {
         $balance = $this->parse('0110278RLV 02204EUR2 00012345603  060420                                                  0000000166956E060420070420    ');
 

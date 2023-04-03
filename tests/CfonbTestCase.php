@@ -17,7 +17,7 @@ namespace Silarhi\Cfonb\Tests;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-abstract class CfonbTest extends TestCase
+abstract class CfonbTestCase extends TestCase
 {
     public static function loadFixture(string $file, bool $oneline): string
     {
@@ -27,7 +27,7 @@ abstract class CfonbTest extends TestCase
             throw new RuntimeException(sprintf('unable to get %s', $file));
         }
 
-        if (true == $oneline) {
+        if (true === $oneline) {
             $result = str_replace("\n", '', $result);
         }
 

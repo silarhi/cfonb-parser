@@ -12,26 +12,23 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Siarhi\Cfonb\Tests\Parser;
+namespace Silarhi\Cfonb\Tests\Parser;
 
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Parser\MoneyParser;
 
 class MoneyParserTest extends TestCase
 {
     /** @return Generator<int, array<int, float>> */
-    public function provideOkCase(): iterable
+    public static function provideOkCase(): iterable
     {
         yield [100.0, 1.0];
     }
 
-    /**
-     * @dataProvider provideOkCase
-     *
-     * @return void
-     */
-    public function testOk(float $content, float $expected)
+    #[DataProvider('provideOkCase')]
+    public function testOk(float $content, float $expected): void
     {
         $sUT = new MoneyParser();
 

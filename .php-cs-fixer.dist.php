@@ -1,5 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the CFONB Parser package.
+ *
+ * (c) SILARHI <dev@silarhi.fr>
+ * (c) @fezfez <demonchaux.stephane@gmail.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 $header = <<<'EOF'
 This file is part of the CFONB Parser package.
 
@@ -11,10 +23,18 @@ with this source code in the file LICENSE.
 EOF;
 
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__.'/src')
-    ->in(__DIR__.'/tests');
+    ->in([
+        __DIR__ . '/src',
+        __DIR__ . '/tests',
+    ])
+    ->append([
+        __FILE__,
+        __DIR__ . '/rector.php',
+    ])
+;
 
 $config = new PhpCsFixer\Config();
+
 return $config
     ->setRules([
         '@Symfony' => true,

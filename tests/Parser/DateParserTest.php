@@ -12,17 +12,17 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Siarhi\Cfonb\Tests\Parser;
+namespace Silarhi\Cfonb\Tests\Parser;
 
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\DateParser;
 
 class DateParserTest extends TestCase
 {
-    /** @return void */
-    public function testFail()
+    public function testFail(): void
     {
         $sUT = new DateParser();
 
@@ -33,17 +33,13 @@ class DateParserTest extends TestCase
     }
 
     /** @return Generator<int, array<int, string>> */
-    public function provideOkCase(): iterable
+    public static function provideOkCase(): iterable
     {
         yield ['101020', '2020-10-10 00:00:00'];
     }
 
-    /**
-     * @dataProvider provideOkCase
-     *
-     * @return void
-     */
-    public function testOk(string $content, string $expected)
+    #[DataProvider('provideOkCase')]
+    public function testOk(string $content, string $expected): void
     {
         $sUT = new DateParser();
 

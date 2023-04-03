@@ -12,17 +12,17 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Siarhi\Cfonb\Tests\Parser;
+namespace Silarhi\Cfonb\Tests\Parser;
 
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\AmountParser;
 
 class AmountParserTest extends TestCase
 {
-    /** @return void */
-    public function testFail()
+    public function testFail(): void
     {
         $sUT = new AmountParser();
 
@@ -33,7 +33,7 @@ class AmountParserTest extends TestCase
     }
 
     /** @return Generator<int, array<int, string|int|float>> */
-    public function provideOkCase(): iterable
+    public static function provideOkCase(): iterable
     {
         yield ['10A', 1, 10.1];
         yield ['10B', 1, 10.2];
@@ -59,12 +59,8 @@ class AmountParserTest extends TestCase
         yield ['10.10}', 1, -10.10];
     }
 
-    /**
-     * @dataProvider provideOkCase
-     *
-     * @return void
-     */
-    public function testOk(string $content, int $nbDecimal, float $expected)
+    #[DataProvider('provideOkCase')]
+    public function testOk(string $content, int $nbDecimal, float $expected): void
     {
         $sUT = new AmountParser();
 

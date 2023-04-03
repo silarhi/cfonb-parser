@@ -16,7 +16,7 @@ namespace Silarhi\Cfonb\Banking;
 
 use DateTimeInterface;
 
-class Transaction
+class Transaction extends Element
 {
     public function __construct(private int $sequenceNumber, private ?string $operationCode, private DateTimeInterface $settlementDate, private string $curIndex, private string $recipientBankCode1, private string $recipientCounterCode1, private ?string $recipientAccountNumber1, private ?string $recipientName1, private ?string $nationalIssuerNumber, private string $recipientBankCode2, private string $recipientCounterCode2, private string $recipientAccountNumber2, private ?string $recipientName2, private ?string $presenterReference, private ?string $description, private ?DateTimeInterface $initialTransactionSettlementDate, private ?string $initialOperationPresenterReference, private float $transactionAmount)
     {

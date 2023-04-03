@@ -12,18 +12,18 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Siarhi\Cfonb\Tests;
+namespace Silarhi\Cfonb\Tests;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\CfonbReader;
 
-/** @covers Silarhi\Cfonb\CfonbReader */
+#[CoversClass(CfonbReader::class)]
 class CfonbReaderTest extends TestCase
 {
-    /** @return void */
-    public function testOk()
+    public function testOk(): void
     {
         $cfon120 = $this->createMock(Cfonb120Reader::class);
         $cfon240 = $this->createMock(Cfonb240Reader::class);

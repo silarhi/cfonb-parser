@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Parser;
 
 use Generator;
+use Silarhi\Cfonb\Banking\Element;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
@@ -34,7 +35,7 @@ final class FileParser
     /**
      * @param positive-int $lineLength
      *
-     * @return Generator<int, object>
+     * @return Generator<int, Element>
      */
     public function parse(string $content, int $lineLength): iterable
     {
