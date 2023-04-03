@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Parser;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Parser\MoneyParser;
@@ -21,16 +22,15 @@ use Silarhi\Cfonb\Parser\MoneyParser;
 class MoneyParserTest extends TestCase
 {
     /** @return Generator<int, array<int, float>> */
-    public function provideOkCase(): iterable
+    public static function provideOkCase(): iterable
     {
         yield [100.0, 1.0];
     }
 
     /**
-     * @dataProvider provideOkCase
-     *
      * @return void
      */
+    #[DataProvider('provideOkCase')]
     public function testOk(float $content, float $expected)
     {
         $sUT = new MoneyParser();

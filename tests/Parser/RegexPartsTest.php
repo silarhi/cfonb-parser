@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Parser;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Parser\RegexParts;
@@ -21,7 +22,7 @@ use Silarhi\Cfonb\Parser\RegexParts;
 class RegexPartsTest extends TestCase
 {
     /** @return Generator<int, array<int, string|int>> */
-    public function provideOkCase(): iterable
+    public static function provideOkCase(): iterable
     {
         yield ['test', 'test'];
         yield ['test(10)', 'test(%d)', 10];
@@ -29,10 +30,9 @@ class RegexPartsTest extends TestCase
     }
 
     /**
-     * @dataProvider provideOkCase
-     *
      * @return void
      */
+    #[DataProvider('provideOkCase')]
     public function testOk(string $expected, string $regexParts, ?int $length = null)
     {
         $sUT = new RegexParts($regexParts, $length);

@@ -14,13 +14,14 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Generator;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
-use Silarhi\Cfonb\Tests\CfonbTest;
+use Silarhi\Cfonb\Tests\CfonbTestCase;
 
-class Cfonb120ReaderTest extends CfonbTest
+class Cfonb120ReaderTestCase extends CfonbTestCase
 {
     /** @return void */
     public function testEmpty()
@@ -52,7 +53,7 @@ class Cfonb120ReaderTest extends CfonbTest
     }
 
     /** @return array<string, array<int, string>> */
-    public function provideMalformedLine(): array
+    public static function provideMalformedLine(): array
     {
         return [
             'dateMalformed' => ['0110278    02204EUR2 00012345603  YYYYYY                                                  0000000166956E060420070420    '],
@@ -61,10 +62,9 @@ class Cfonb120ReaderTest extends CfonbTest
     }
 
     /**
-     * @dataProvider provideMalformedLine
-     *
      * @return void
      */
+    #[DataProvider('provideMalformedLine')]
     public function testMalformedLine(string $line)
     {
         $reader = new Cfonb120Reader();
@@ -75,10 +75,9 @@ class Cfonb120ReaderTest extends CfonbTest
     }
 
     /**
-     * @dataProvider provideOneLineOrNot
-     *
      * @return void
      */
+    #[DataProvider('provideOneLineOrNot')]
     public function testUnusedParts(bool $oneLine)
     {
         $reader = new Cfonb120Reader();
@@ -88,10 +87,9 @@ class Cfonb120ReaderTest extends CfonbTest
     }
 
     /**
-     * @dataProvider provideOneLineOrNot
-     *
      * @return void
      */
+    #[DataProvider('provideOneLineOrNot')]
     public function testSimpleTest(bool $oneLine)
     {
         $reader = new Cfonb120Reader();
@@ -122,17 +120,16 @@ class Cfonb120ReaderTest extends CfonbTest
     }
 
     /** @return Generator<int, array<int, bool>> */
-    public function provideOneLineOrNot(): iterable
+    public static function provideOneLineOrNot(): iterable
     {
         yield [true];
         yield [false];
     }
 
     /**
-     * @dataProvider provideOneLineOrNot
-     *
      * @return void
      */
+    #[DataProvider('provideOneLineOrNot')]
     public function testComplexTest(bool $oneLine)
     {
         $reader = new Cfonb120Reader();

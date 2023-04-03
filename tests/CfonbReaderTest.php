@@ -14,12 +14,13 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\CfonbReader;
 
-/** @covers Silarhi\Cfonb\CfonbReader */
+#[CoversClass(CfonbReader::class)]
 class CfonbReaderTest extends TestCase
 {
     /** @return void */

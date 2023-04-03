@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Parser;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
@@ -33,16 +34,15 @@ class DateParserTest extends TestCase
     }
 
     /** @return Generator<int, array<int, string>> */
-    public function provideOkCase(): iterable
+    public static function provideOkCase(): iterable
     {
         yield ['101020', '2020-10-10 00:00:00'];
     }
 
     /**
-     * @dataProvider provideOkCase
-     *
      * @return void
      */
+    #[DataProvider('provideOkCase')]
     public function testOk(string $content, string $expected)
     {
         $sUT = new DateParser();

@@ -14,10 +14,14 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Parser;
 
+use function assert;
+use function is_array;
+use function is_bool;
+
 use PHPUnit\Framework\TestCase;
+use Silarhi\Cfonb\Banking\Noop;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 use Silarhi\Cfonb\Parser\FileParser;
-use stdClass;
 
 class FileParserTest extends TestCase
 {
@@ -35,19 +39,49 @@ class FileParserTest extends TestCase
     /** @return void */
     public function testSplitOk()
     {
-        $object1 = new stdClass();
-        $object2 = new stdClass();
-        $object3 = new stdClass();
+        $object1 = new Noop();
+        $object2 = new Noop();
+        $object3 = new Noop();
 
         $parser = $this->createMock(ParserInterface::class);
+
+        $supportsSeries = [
+            [['aaaaaaaaaa'], true],
+            [['bbbbbbbbbb'], true],
+            [[''], true],
+        ];
         $parser->expects(self::exactly(3))
             ->method('supports')
-            ->withConsecutive(['aaaaaaaaaa'], ['bbbbbbbbbb'], [''])
-            ->willReturn(true);
+            ->willReturnCallback(function (mixed ...$args) use (&$supportsSeries): bool {
+                assert(is_array($supportsSeries));
+                $serie = array_shift($supportsSeries);
+                assert(is_array($serie));
+                [$expectedArgs, $return] = $serie;
+                assert(is_bool($return));
+                $this->assertSame($expectedArgs, $args);
+
+                return $return;
+            })
+        ;
+
+        $parseSeries = [
+            [['aaaaaaaaaa'], $object1],
+            [['bbbbbbbbbb'], $object2],
+            [[''], $object3],
+        ];
         $parser->expects(self::exactly(3))
             ->method('parse')
-            ->withConsecutive(['aaaaaaaaaa'], ['bbbbbbbbbb'], [''])
-            ->willReturnOnConsecutiveCalls($object1, $object2, $object3);
+            ->willReturnCallback(function (mixed ...$args) use (&$parseSeries): Noop {
+                assert(is_array($parseSeries));
+                $serie = array_shift($parseSeries);
+                assert(is_array($serie));
+                [$expectedArgs, $return] = $serie;
+                assert($return instanceof Noop);
+                $this->assertSame($expectedArgs, $args);
+
+                return $return;
+            })
+        ;
 
         $sUT = new FileParser($parser);
 
@@ -57,17 +91,41 @@ class FileParserTest extends TestCase
     /** @return void */
     public function testDontSplitWithSameLength()
     {
-        $object1 = new stdClass();
+        $object1 = new Noop();
 
+        $supportsSeries = [
+            [['aaaaaaaaaa'], true],
+        ];
         $parser = $this->createMock(ParserInterface::class);
         $parser->expects(self::exactly(1))
             ->method('supports')
-            ->withConsecutive(['aaaaaaaaaa'])
-            ->willReturn(true);
+            ->willReturnCallback(function (mixed ...$args) use (&$supportsSeries): bool {
+                assert(is_array($supportsSeries));
+                $serie = array_shift($supportsSeries);
+                assert(is_array($serie));
+                [$expectedArgs, $return] = $serie;
+                assert(is_bool($return));
+                $this->assertSame($expectedArgs, $args);
+
+                return $return;
+            })
+        ;
+
+        $parseSeries = [
+            [['aaaaaaaaaa'], $object1],
+        ];
         $parser->expects(self::exactly(1))
             ->method('parse')
-            ->withConsecutive(['aaaaaaaaaa'])
-            ->willReturnOnConsecutiveCalls($object1);
+            ->willReturnCallback(function (mixed ...$args) use (&$parseSeries): Noop {
+                assert(is_array($parseSeries));
+                $serie = array_shift($parseSeries);
+                assert(is_array($serie));
+                [$expectedArgs, $return] = $serie;
+                assert($return instanceof Noop);
+                $this->assertSame($expectedArgs, $args);
+
+                return $return;
+            });
 
         $sUT = new FileParser($parser);
 
