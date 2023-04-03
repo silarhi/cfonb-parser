@@ -27,7 +27,7 @@ abstract class CfonbTestCase extends TestCase
             throw new RuntimeException(sprintf('unable to get %s', $file));
         }
 
-        if (true == $oneline) {
+        if (true === $oneline) {
             $result = str_replace("\n", '', $result);
         }
 
