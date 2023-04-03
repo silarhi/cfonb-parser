@@ -17,7 +17,7 @@ namespace Silarhi\Cfonb;
 class CfonbCodes
 {
     /** @var string[][] */
-    public static $codes = [
+    public static array $codes = [
         '01' => ['label' => 'Chèques payés', 'way' => 'D', 'swift_code' => 'CHK', 'swift_label' => 'Cheques', 'swift_way' => 'D'],
         '02' => ['label' => 'Remises de chèques', 'way' => 'C', 'swift_code' => 'CLR', 'swift_label' => 'Cash letters/Cheques remittance', 'swift_way' => 'C'],
         '03' => ['label' => 'Chèques impayés', 'way' => 'D', 'swift_code' => 'RTI', 'swift_label' => 'Returned item', 'swift_way' => 'D'],
