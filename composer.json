@@ -17,7 +17,6 @@
         "friendsofphp/php-cs-fixer": "^3.16",
         "phpunit/phpunit": "^10",
         "phpstan/phpstan": "^1.10",
-        "infection/infection": "^0.26.19",
         "rector/rector": "^0.15.23",
         "vimeo/psalm": "^5.9"
     },
@@ -29,11 +28,6 @@
     "autoload-dev": {
         "psr-4": {
             "Silarhi\\Cfonb\\Tests\\": "tests/"
-        }
-    },
-    "config": {
-        "allow-plugins": {
-            "infection/extension-installer": true
         }
     }
 }
