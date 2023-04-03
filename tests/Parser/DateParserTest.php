@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Parser;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\DateParser;

@@ -14,12 +14,11 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
-use Silarhi\Cfonb\Tests\CfonbTestCase;
 
 class Cfonb120ReaderTestCase extends CfonbTestCase
 {
