@@ -29,11 +29,8 @@ class RegexPartsTest extends TestCase
         yield ['test10', 'test%d', 10];
     }
 
-    /**
-     * @return void
-     */
     #[DataProvider('provideOkCase')]
-    public function testOk(string $expected, string $regexParts, ?int $length = null)
+    public function testOk(string $expected, string $regexParts, ?int $length = null): void
     {
         $sUT = new RegexParts($regexParts, $length);
 

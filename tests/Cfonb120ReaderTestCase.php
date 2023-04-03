@@ -22,16 +22,14 @@ use Silarhi\Cfonb\Exceptions\ParseException;
 
 class Cfonb120ReaderTestCase extends CfonbTestCase
 {
-    /** @return void */
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $reader = new Cfonb120Reader();
 
         self::assertCount(0, $reader->parse(''));
     }
 
-    /** @return void */
-    public function testFailUnknowLine()
+    public function testFailUnknowLine(): void
     {
         $reader = new Cfonb120Reader();
 
@@ -41,8 +39,7 @@ class Cfonb120ReaderTestCase extends CfonbTestCase
         $reader->parse('abc ');
     }
 
-    /** @return void */
-    public function testFailCauseNoOperation()
+    public function testFailCauseNoOperation(): void
     {
         $reader = new Cfonb120Reader();
 
@@ -60,11 +57,8 @@ class Cfonb120ReaderTestCase extends CfonbTestCase
         ];
     }
 
-    /**
-     * @return void
-     */
     #[DataProvider('provideMalformedLine')]
-    public function testMalformedLine(string $line)
+    public function testMalformedLine(string $line): void
     {
         $reader = new Cfonb120Reader();
 
@@ -73,11 +67,8 @@ class Cfonb120ReaderTestCase extends CfonbTestCase
         $reader->parse($line);
     }
 
-    /**
-     * @return void
-     */
     #[DataProvider('provideOneLineOrNot')]
-    public function testUnusedParts(bool $oneLine)
+    public function testUnusedParts(bool $oneLine): void
     {
         $reader = new Cfonb120Reader();
         $statements = $reader->parse(self::loadFixture('test-unused-parts.txt', $oneLine));
@@ -85,11 +76,8 @@ class Cfonb120ReaderTestCase extends CfonbTestCase
         self::assertCount(8, $statements);
     }
 
-    /**
-     * @return void
-     */
     #[DataProvider('provideOneLineOrNot')]
-    public function testSimpleTest(bool $oneLine)
+    public function testSimpleTest(bool $oneLine): void
     {
         $reader = new Cfonb120Reader();
         $statements = $reader->parse(self::loadFixture('simple-test.txt', $oneLine));
@@ -125,11 +113,8 @@ class Cfonb120ReaderTestCase extends CfonbTestCase
         yield [false];
     }
 
-    /**
-     * @return void
-     */
     #[DataProvider('provideOneLineOrNot')]
-    public function testComplexTest(bool $oneLine)
+    public function testComplexTest(bool $oneLine): void
     {
         $reader = new Cfonb120Reader();
         $statements = $reader->parse($this->loadFixture('complex-test.txt', $oneLine));

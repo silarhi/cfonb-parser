@@ -25,8 +25,7 @@ use Silarhi\Cfonb\Parser\FileParser;
 
 class FileParserTest extends TestCase
 {
-    /** @return void */
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $parser = $this->createMock(ParserInterface::class);
         $parser->expects(self::never())->method('supports');
@@ -36,8 +35,7 @@ class FileParserTest extends TestCase
         self::assertSame([], iterator_to_array($sUT->parse('', 10)));
     }
 
-    /** @return void */
-    public function testSplitOk()
+    public function testSplitOk(): void
     {
         $object1 = new Noop();
         $object2 = new Noop();
@@ -88,8 +86,7 @@ class FileParserTest extends TestCase
         self::assertSame([$object1, $object2, $object3], iterator_to_array($sUT->parse('aaaaaaaaaabbbbbbbbbb', 10)));
     }
 
-    /** @return void */
-    public function testDontSplitWithSameLength()
+    public function testDontSplitWithSameLength(): void
     {
         $object1 = new Noop();
 

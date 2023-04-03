@@ -22,8 +22,7 @@ use Silarhi\Cfonb\Parser\DateParser;
 
 class DateParserTest extends TestCase
 {
-    /** @return void */
-    public function testFail()
+    public function testFail(): void
     {
         $sUT = new DateParser();
 
@@ -39,11 +38,8 @@ class DateParserTest extends TestCase
         yield ['101020', '2020-10-10 00:00:00'];
     }
 
-    /**
-     * @return void
-     */
     #[DataProvider('provideOkCase')]
-    public function testOk(string $content, string $expected)
+    public function testOk(string $content, string $expected): void
     {
         $sUT = new DateParser();
 

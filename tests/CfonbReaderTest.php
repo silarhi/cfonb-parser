@@ -23,8 +23,7 @@ use Silarhi\Cfonb\CfonbReader;
 #[CoversClass(CfonbReader::class)]
 class CfonbReaderTest extends TestCase
 {
-    /** @return void */
-    public function testOk()
+    public function testOk(): void
     {
         $cfon120 = $this->createMock(Cfonb120Reader::class);
         $cfon240 = $this->createMock(Cfonb240Reader::class);

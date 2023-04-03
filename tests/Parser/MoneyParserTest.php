@@ -27,11 +27,8 @@ class MoneyParserTest extends TestCase
         yield [100.0, 1.0];
     }
 
-    /**
-     * @return void
-     */
     #[DataProvider('provideOkCase')]
-    public function testOk(float $content, float $expected)
+    public function testOk(float $content, float $expected): void
     {
         $sUT = new MoneyParser();
 

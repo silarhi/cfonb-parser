@@ -22,8 +22,7 @@ use Silarhi\Cfonb\Parser\AmountParser;
 
 class AmountParserTest extends TestCase
 {
-    /** @return void */
-    public function testFail()
+    public function testFail(): void
     {
         $sUT = new AmountParser();
 
@@ -60,11 +59,8 @@ class AmountParserTest extends TestCase
         yield ['10.10}', 1, -10.10];
     }
 
-    /**
-     * @return void
-     */
     #[DataProvider('provideOkCase')]
-    public function testOk(string $content, int $nbDecimal, float $expected)
+    public function testOk(string $content, int $nbDecimal, float $expected): void
     {
         $sUT = new AmountParser();
 

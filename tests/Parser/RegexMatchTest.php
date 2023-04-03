@@ -23,10 +23,7 @@ use Silarhi\Cfonb\Parser\RegexParts;
 
 class RegexMatchTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testKeyDoesNotExistOnGetStringOrNull()
+    public function testKeyDoesNotExistOnGetStringOrNull(): void
     {
         $sUT = new RegexMatch([], []);
 
@@ -36,10 +33,7 @@ class RegexMatchTest extends TestCase
         $sUT->getStringOrNull('test');
     }
 
-    /**
-     * @return void
-     */
-    public function testKeyDoesNotExistOnGetString()
+    public function testKeyDoesNotExistOnGetString(): void
     {
         $sUT = new RegexMatch([], []);
 
@@ -49,10 +43,7 @@ class RegexMatchTest extends TestCase
         $sUT->getString('test');
     }
 
-    /**
-     * @return void
-     */
-    public function testKeyDoesNotExistOnGetInt()
+    public function testKeyDoesNotExistOnGetInt(): void
     {
         $sUT = new RegexMatch([], []);
 
@@ -62,10 +53,7 @@ class RegexMatchTest extends TestCase
         $sUT->getInt('test');
     }
 
-    /**
-     * @return void
-     */
-    public function testFailOnConstruct()
+    public function testFailOnConstruct(): void
     {
         $regexParts = $this->createMock(RegexParts::class);
         $regexParts->expects(self::once())->method('isMatching')->willReturn(true);
@@ -76,10 +64,7 @@ class RegexMatchTest extends TestCase
         new RegexMatch(['test' => $regexParts], ['']);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetStringOrNullIsNull()
+    public function testGetStringOrNullIsNull(): void
     {
         $regexParts = $this->createMock(RegexParts::class);
         $regexParts->expects(self::once())->method('isMatching')->willReturn(true);
@@ -94,10 +79,7 @@ class RegexMatchTest extends TestCase
         $sUT->getString('test');
     }
 
-    /**
-     * @return void
-     */
-    public function testGetStringOk()
+    public function testGetStringOk(): void
     {
         $regexParts = $this->createMock(RegexParts::class);
         $regexParts->expects(self::once())->method('isMatching')->willReturn(true);
@@ -108,10 +90,7 @@ class RegexMatchTest extends TestCase
         self::assertSame('toto', $sUT->getString('test'));
     }
 
-    /**
-     * @return void
-     */
-    public function testGetIntNotNumeric()
+    public function testGetIntNotNumeric(): void
     {
         $regexParts = $this->createMock(RegexParts::class);
         $regexParts->expects(self::once())->method('isMatching')->willReturn(true);
@@ -124,10 +103,7 @@ class RegexMatchTest extends TestCase
         $sUT->getInt('test');
     }
 
-    /**
-     * @return void
-     */
-    public function testGetIntOk()
+    public function testGetIntOk(): void
     {
         $regexParts = $this->createMock(RegexParts::class);
         $regexParts->expects(self::once())->method('isMatching')->willReturn(true);
@@ -137,10 +113,7 @@ class RegexMatchTest extends TestCase
         self::assertSame(10, $sUT->getInt('test'));
     }
 
-    /**
-     * @return void
-     */
-    public function testGetFloatNotNumeric()
+    public function testGetFloatNotNumeric(): void
     {
         $regexParts = $this->createMock(RegexParts::class);
         $regexParts->expects(self::once())->method('isMatching')->willReturn(true);
@@ -153,10 +126,7 @@ class RegexMatchTest extends TestCase
         $sUT->getFloat('test');
     }
 
-    /**
-     * @return void
-     */
-    public function testGetFloatOk()
+    public function testGetFloatOk(): void
     {
         $regexParts = $this->createMock(RegexParts::class);
         $regexParts->expects(self::once())->method('isMatching')->willReturn(true);
@@ -166,10 +136,7 @@ class RegexMatchTest extends TestCase
         self::assertSame(10.0, $sUT->getFloat('test'));
     }
 
-    /**
-     * @return void
-     */
-    public function testIsNull()
+    public function testIsNull(): void
     {
         $regexParts = $this->createMock(RegexParts::class);
         $regexParts->expects(self::exactly(2))->method('isMatching')->willReturn(true);
