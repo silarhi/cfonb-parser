@@ -14,6 +14,6 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
-class Noop extends Element
+abstract class Element
 {
 }

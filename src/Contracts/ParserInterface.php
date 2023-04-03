@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Contracts;
 
+use Silarhi\Cfonb\Banking\Element;
+
 interface ParserInterface
 {
     /**
      * Parse the current line
-     *
-     * @return object
      */
-    public function parse(string $content);
+    public function parse(string $content): Element;
 
     /**
      * Checks if current line is handled by the parser

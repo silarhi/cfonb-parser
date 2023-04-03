@@ -16,7 +16,7 @@ namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
 
-class OperationDetail
+class OperationDetail extends Element
 {
     public function __construct(private string $bankCode, private string $deskCode, private string $accountNumber, private string $code, private DateTimeImmutable $date, private string $qualifier, private ?string $additionalInformations, private ?string $internalCode, private ?string $currencyCode)
     {

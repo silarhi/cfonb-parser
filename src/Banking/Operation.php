@@ -16,7 +16,7 @@ namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
 
-class Operation
+class Operation extends Element
 {
     /** @var OperationDetail[] */
     private array $details;
