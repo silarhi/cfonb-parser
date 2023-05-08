@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         backupGlobals="false"
-         bootstrap="vendor/autoload.php"
-         executionOrder="random"
-         resolveDependencies="true"
-         colors="true">
-  <coverage>
-    <include>
-      <directory>./src</directory>
-    </include>
-  </coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php" executionOrder="random" resolveDependencies="true" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd">
+  <coverage/>
   <testsuites>
     <testsuite name="Test Suite">
       <directory>./tests</directory>
@@ -19,4 +10,9 @@
     <ini name="error_reporting" value="32767"/>
     <ini name="date.timezone" value="Europe/Paris"/>
   </php>
+  <source>
+    <include>
+      <directory>./src</directory>
+    </include>
+  </source>
 </phpunit>
