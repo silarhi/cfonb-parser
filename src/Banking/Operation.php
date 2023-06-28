@@ -22,19 +22,19 @@ class Operation extends Element
     private array $details;
 
     public function __construct(
-        private string $bankCode,
-        private string $deskCode,
-        private string $accountNumber,
-        private string $code,
-        private DateTimeImmutable $date,
-        private DateTimeImmutable $valueDate,
-        private string $label,
-        private string $reference,
-        private float $amount,
-        private ?string $internalCode,
-        private ?string $currencyCode,
-        private ?string $rejectCode,
-        private ?string $exemptCode
+        private readonly string $bankCode,
+        private readonly string $deskCode,
+        private readonly string $accountNumber,
+        private readonly string $code,
+        private readonly DateTimeImmutable $date,
+        private readonly DateTimeImmutable $valueDate,
+        private readonly string $label,
+        private readonly string $reference,
+        private readonly float $amount,
+        private readonly ?string $internalCode,
+        private readonly ?string $currencyCode,
+        private readonly ?string $rejectCode,
+        private readonly ?string $exemptCode
     ) {
         $this->details = [];
     }

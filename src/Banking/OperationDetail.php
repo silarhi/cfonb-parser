@@ -18,8 +18,17 @@ use DateTimeImmutable;
 
 class OperationDetail extends Element
 {
-    public function __construct(private string $bankCode, private string $deskCode, private string $accountNumber, private string $code, private DateTimeImmutable $date, private string $qualifier, private ?string $additionalInformations, private ?string $internalCode, private ?string $currencyCode)
-    {
+    public function __construct(
+        private readonly string $bankCode,
+        private readonly string $deskCode,
+        private readonly string $accountNumber,
+        private readonly string $code,
+        private readonly DateTimeImmutable $date,
+        private readonly string $qualifier,
+        private readonly ?string $additionalInformations,
+        private readonly ?string $internalCode,
+        private readonly ?string $currencyCode,
+    ) {
     }
 
     public function getBankCode(): string

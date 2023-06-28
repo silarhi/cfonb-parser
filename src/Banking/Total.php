@@ -19,20 +19,20 @@ use DateTimeInterface;
 class Total extends Element
 {
     public function __construct(
-        private int $sequenceNumber,
-        private ?string $operationCode,
-        private DateTimeInterface $creationTransactionFileDate,
-        private string $currencyIndex,
-        private string $recipientBankCode1,
-        private string $recipientCounterCode1,
-        private string $recipientAccountNumber1,
-        private ?string $recipientName1,
-        private string $recipientBankCode2,
-        private string $recipientCounterCode2,
-        private string $recipientAccountNumber2,
-        private ?string $recipientName2,
+        private readonly int $sequenceNumber,
+        private readonly ?string $operationCode,
+        private readonly DateTimeInterface $creationTransactionFileDate,
+        private readonly string $currencyIndex,
+        private readonly string $recipientBankCode1,
+        private readonly string $recipientCounterCode1,
+        private readonly string $recipientAccountNumber1,
+        private readonly ?string $recipientName1,
+        private readonly string $recipientBankCode2,
+        private readonly string $recipientCounterCode2,
+        private readonly string $recipientAccountNumber2,
+        private readonly ?string $recipientName2,
         private ?string $processingCenterCode,
-        private float $totalAmount
+        private readonly float $totalAmount
     ) {
         $this->processingCenterCode = $processingCenterCode;
     }
