@@ -18,8 +18,14 @@ use DateTimeImmutable;
 
 class Balance extends Element
 {
-    public function __construct(private string $bankCode, private string $deskCode, private string $currencyCode, private string $accountNumber, private DateTimeImmutable $date, private float $amount)
-    {
+    public function __construct(
+        private string $bankCode,
+        private string $deskCode,
+        private string $currencyCode,
+        private string $accountNumber,
+        private DateTimeImmutable $date,
+        private float $amount,
+    ) {
     }
 
     public function getBankCode(): string

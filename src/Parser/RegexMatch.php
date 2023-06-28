@@ -33,8 +33,10 @@ class RegexMatch
      * @param array<string, RegexParts> $regexParts
      * @param array<array-key, string>  $matches
      */
-    public function __construct(array $regexParts, array $matches)
-    {
+    public function __construct(
+        array $regexParts,
+        array $matches,
+    ) {
         $values = [];
         $index = 0;
 

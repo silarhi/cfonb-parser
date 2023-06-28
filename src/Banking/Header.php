@@ -18,8 +18,21 @@ use DateTimeInterface;
 
 class Header extends Element
 {
-    public function __construct(private int $sequenceNumber, private ?string $operationCode, private DateTimeInterface $prevTransactionFileDate, private string $currencyIndex, private string $recipientBankCode1, private string $recipientCounterCode1, private string $recipientAccountNumber1, private ?string $recipientName1, private string $recipientBankCode2, private string $recipientCounterCode2, private string $recipientAccountNumber2, private ?string $recipientName2, private ?string $processingCenterCode)
-    {
+    public function __construct(
+        private int $sequenceNumber,
+        private ?string $operationCode,
+        private DateTimeInterface $prevTransactionFileDate,
+        private string $currencyIndex,
+        private string $recipientBankCode1,
+        private string $recipientCounterCode1,
+        private string $recipientAccountNumber1,
+        private ?string $recipientName1,
+        private string $recipientBankCode2,
+        private string $recipientCounterCode2,
+        private string $recipientAccountNumber2,
+        private ?string $recipientName2,
+        private ?string $processingCenterCode,
+    ) {
     }
 
     public function getSequenceNumber(): int

@@ -17,8 +17,11 @@ namespace Silarhi\Cfonb\Parser;
 /** @internal  */
 class RegexParts
 {
-    public function __construct(private string $regexParts, private ?int $length = null, private bool $matching = true)
-    {
+    public function __construct(
+        private string $regexParts,
+        private ?int $length = null,
+        private bool $matching = true,
+    ) {
     }
 
     public function isMatching(): bool
