@@ -16,7 +16,6 @@ namespace Silarhi\Cfonb\Tests;
 
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
