@@ -19,8 +19,8 @@ use Silarhi\Cfonb\Banking\Transfer;
 
 class CfonbReader
 {
-    private Cfonb120Reader $cfonb120Reader;
-    private Cfonb240Reader $cfonb240Reader;
+    private readonly Cfonb120Reader $cfonb120Reader;
+    private readonly Cfonb240Reader $cfonb240Reader;
 
     public function __construct(
         Cfonb120Reader $cfonb120Reader = null,

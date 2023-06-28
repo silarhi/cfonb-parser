@@ -27,7 +27,7 @@ use function strlen;
 class RegexMatch
 {
     /** @var array<string, string|null> */
-    private array $values;
+    private readonly array $values;
 
     /**
      * @param array<string, RegexParts> $regexParts

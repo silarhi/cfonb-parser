@@ -25,7 +25,7 @@ use function strlen;
 final class FileParser
 {
     /** @var ParserInterface[] */
-    private array $parsers;
+    private readonly array $parsers;
 
     public function __construct(ParserInterface ...$parsers)
     {
