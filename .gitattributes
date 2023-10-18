@@ -3,3 +3,5 @@
 /phpunit.xml.dist       export-ignore
 /phpstan.neon           export-ignore
 /.*                     export-ignore
+/psalm.xml              export-ignore
+/rector.php             export-ignore
