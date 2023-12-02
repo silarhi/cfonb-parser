@@ -19,7 +19,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
-class Cfonb120ReaderTestCase extends CfonbTestCase
+class Cfonb120ReaderTest extends CfonbTestCase
 {
     public function testEmpty(): void
     {
