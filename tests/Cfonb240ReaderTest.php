@@ -18,7 +18,7 @@ use Silarhi\Cfonb\Banking\Transfer;
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
-class Cfonb240ReaderTestCase extends CfonbTestCase
+class Cfonb240ReaderTest extends CfonbTestCase
 {
     public function testEmpty(): void
     {
