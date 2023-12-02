@@ -223,4 +223,126 @@ class Cfonb120ReaderTest extends CfonbTestCase
         self::assertCount(0, $statement->getOperations());
         self::assertSame(584353.02, $statement->getNewBalance()->getAmount());
     }
+
+    #[DataProvider('provideOneLineOrNot')]
+    public function testtrictModeTest(bool $oneLine): void
+    {
+        self::expectException(ParseException::class);
+        $reader = new Cfonb120Reader();
+        $reader->parse($this->loadFixture('non-strict-test.txt', $oneLine));
+    }
+
+    #[DataProvider('provideOneLineOrNot')]
+    public function testNonStrictModeTest(bool $oneLine): void
+    {
+        $reader = new Cfonb120Reader();
+        $statements = $reader->parse($this->loadFixture('non-strict-test.txt', $oneLine), false);
+
+        self::assertCount(8, $statements);
+
+        // Test first statement
+        $statement = $statements[0];
+
+        self::assertSame(16695.65, $statement->getOldBalance()->getAmount());
+        self::assertCount(1, $statement->getOperations());
+        $operations = $statement->getOperations();
+
+        $operation = $operations[0];
+
+        self::assertSame('2020-04-07 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-22.79, $operation->getAmount());
+        self::assertSame('PRLV SEPA ONLINE SAS', $operation->getLabel());
+        self::assertCount(1, $operation->getDetails());
+        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformations());
+
+        self::assertSame(16672.86, $statement->getNewBalance()->getAmount());
+
+        // Test second statement
+        $statement = $statements[1];
+
+        self::assertSame(16672.86, $statement->getOldBalance()->getAmount());
+        self::assertCount(2, $statement->getOperations());
+        $operations = $statement->getOperations();
+
+        $operation = $operations[0];
+
+        self::assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-20.11, $operation->getAmount());
+        self::assertSame('PRLV SEPA FREE MOBILE', $operation->getLabel());
+        self::assertSame('', $operation->getReference());
+        self::assertCount(0, $operation->getDetails());
+
+        $operation = $operations[1];
+
+        self::assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-5000.0, $operation->getAmount());
+        self::assertSame('VIR JOHNDOE / FOOBAR', $operation->getLabel());
+        self::assertSame('', $operation->getReference());
+        self::assertCount(0, $operation->getDetails());
+
+        self::assertSame(11652.75, $statement->getNewBalance()->getAmount());
+
+        // Third statement
+        $statement = $statements[2];
+
+        self::assertSame(11652.75, $statement->getOldBalance()->getAmount());
+        self::assertCount(0, $statement->getOperations());
+        self::assertSame(11652.75, $statement->getNewBalance()->getAmount());
+
+        // Test fourth statement
+        $statement = $statements[3];
+
+        self::assertSame(11652.75, $statement->getOldBalance()->getAmount());
+        self::assertCount(1, $statement->getOperations());
+        $operations = $statement->getOperations();
+
+        $operation = $operations[0];
+
+        self::assertSame('2020-04-10 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame('2020-04-01 00:00:00', $operation->getValueDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-117.75, $operation->getAmount());
+        self::assertSame('FACTURE SGT20022040001692', $operation->getLabel());
+        self::assertCount(1, $operation->getDetails());
+        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformations());
+
+        self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
+
+        // 5th statement
+        $statement = $statements[4];
+
+        self::assertSame(11535.0, $statement->getOldBalance()->getAmount());
+        self::assertCount(0, $statement->getOperations());
+        self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
+
+        // 6th statement
+        $statement = $statements[5];
+
+        self::assertSame(11535.0, $statement->getOldBalance()->getAmount());
+        self::assertCount(1, $statement->getOperations());
+        $operations = $statement->getOperations();
+
+        $operation = $operations[0];
+        self::assertSame('2020-04-14 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame('2020-04-14 00:00:00', $operation->getValueDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-50.25, $operation->getAmount());
+        self::assertSame('PRLV SEPA OVH SAS', $operation->getLabel());
+        self::assertCount(2, $operation->getDetails());
+        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformations());
+
+        self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
+
+        // 7th statement
+        $statement = $statements[6];
+
+        self::assertSame(11484.75, $statement->getOldBalance()->getAmount());
+        self::assertCount(0, $statement->getOperations());
+        self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
+
+        // 8th statement
+        $statement = $statements[7];
+
+        self::assertSame(584353.02, $statement->getOldBalance()->getAmount());
+        self::assertCount(0, $statement->getOperations());
+        self::assertSame(584353.02, $statement->getNewBalance()->getAmount());
+    }
 }

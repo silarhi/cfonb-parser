@@ -57,15 +57,18 @@ class RegexMatch
         $this->values = $values;
     }
 
-    public function getString(string $key): string
+    public function getString(string $key, string $default = null): string
     {
         $value = $this->getValue($key);
-
-        if (!is_string($value)) {
-            throw new ValueOfKeyIsNotAStringException($key);
+        if (is_string($value)) {
+            return $value;
         }
 
-        return $value;
+        if (null !== $default) {
+            return $default;
+        }
+
+        throw new ValueOfKeyIsNotAStringException($key);
     }
 
     public function getInt(string $key): int
