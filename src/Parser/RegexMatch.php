@@ -23,7 +23,7 @@ use Silarhi\Cfonb\Exceptions\ValueOfKeyIsNotNumericException;
 
 use function strlen;
 
-/** @internal  */
+/** @internal */
 class RegexMatch
 {
     /** @var array<string, string|null> */

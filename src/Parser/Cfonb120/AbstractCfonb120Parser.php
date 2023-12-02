@@ -19,7 +19,7 @@ use Silarhi\Cfonb\Contracts\ParserInterface;
 
 use function strlen;
 
-/** @internal  */
+/** @internal */
 abstract class AbstractCfonb120Parser implements ParserInterface
 {
     abstract protected function getSupportedCode(): string;
