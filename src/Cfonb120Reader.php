@@ -48,13 +48,13 @@ class Cfonb120Reader
     }
 
     /** @return Statement[] */
-    public function parse(string $content): array
+    public function parse(string $content, bool $strict = true): array
     {
         $statementList = [];
         $lastOperation = null;
         $statement = new Statement();
 
-        foreach ($this->fileParser->parse($content, self::LINE_LENGTH) as $result) {
+        foreach ($this->fileParser->parse($content, self::LINE_LENGTH, $strict) as $result) {
             if ($result instanceof Balance) {
                 $lastOperation = null;
 

@@ -31,14 +31,14 @@ class CfonbReader
     }
 
     /** @return Statement[] */
-    public function parseCfonb120(string $content): array
+    public function parseCfonb120(string $content, bool $strict = true): array
     {
-        return $this->cfonb120Reader->parse($content);
+        return $this->cfonb120Reader->parse($content, $strict);
     }
 
     /** @return Transfer[] */
-    public function parseCfonb240(string $content): array
+    public function parseCfonb240(string $content, bool $strict = true): array
     {
-        return $this->cfonb240Reader->parse($content);
+        return $this->cfonb240Reader->parse($content, $strict);
     }
 }

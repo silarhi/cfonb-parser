@@ -1,3 +1,7 @@
+# 5.0
+
+Add a strict mode parameter
+
 # 4.0
 
 Bump minimal php version to 8.1

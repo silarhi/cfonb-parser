@@ -48,7 +48,7 @@ class Line01Parser extends AbstractCfonb120Parser
         ]);
     }
 
-    public function parse(string $content): Balance
+    public function parse(string $content, bool $strict): Balance
     {
         $regexMatch = $this->lineParser->parse($content);
 
