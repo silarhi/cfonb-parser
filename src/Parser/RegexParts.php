@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser;
 
-/** @internal  */
+/** @internal */
 class RegexParts
 {
     public function __construct(

@@ -20,7 +20,7 @@ use Silarhi\Cfonb\Parser\LineParser;
 use Silarhi\Cfonb\Parser\MoneyParser;
 use Silarhi\Cfonb\Parser\RegexParts;
 
-/** @internal  */
+/** @internal */
 final class Line34Parser extends AbstractCfonb240Parser
 {
     private readonly LineParser $lineParser;

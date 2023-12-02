@@ -17,7 +17,7 @@ namespace Silarhi\Cfonb\Parser;
 use Silarhi\Cfonb\Banking\Noop;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 
-/** @internal  */
+/** @internal */
 final class EmptyParser implements ParserInterface
 {
     public function parse(string $content): Noop

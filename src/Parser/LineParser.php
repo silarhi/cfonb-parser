@@ -16,7 +16,7 @@ namespace Silarhi\Cfonb\Parser;
 
 use Silarhi\Cfonb\Exceptions\ParseException;
 
-/** @internal  */
+/** @internal */
 final class LineParser
 {
     public const BLANK = '( {%d})';

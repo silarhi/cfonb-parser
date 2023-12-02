@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser;
 
-/** @internal  */
+/** @internal */
 final class MoneyParser
 {
     public function parser(float $money): float

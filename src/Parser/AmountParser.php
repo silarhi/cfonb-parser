@@ -18,7 +18,7 @@ use Silarhi\Cfonb\Exceptions\ParseException;
 
 use function strlen;
 
-/** @internal  */
+/** @internal */
 final class AmountParser
 {
     /** @var string[] */
