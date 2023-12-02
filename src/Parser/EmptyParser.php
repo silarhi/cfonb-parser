@@ -20,7 +20,7 @@ use Silarhi\Cfonb\Contracts\ParserInterface;
 /** @internal */
 final class EmptyParser implements ParserInterface
 {
-    public function parse(string $content): Noop
+    public function parse(string $content, bool $strict): Noop
     {
         return new Noop();
     }

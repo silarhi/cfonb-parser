@@ -57,7 +57,7 @@ final class Line34Parser extends AbstractCfonb240Parser
         ]);
     }
 
-    public function parse(string $content): Transaction
+    public function parse(string $content, bool $strict): Transaction
     {
         $regexMatch = $this->lineParser->parse($content);
 

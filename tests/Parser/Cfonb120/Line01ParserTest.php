@@ -26,7 +26,7 @@ class Line01ParserTest extends TestCase
 
         self::assertTrue($sUT->supports($content));
 
-        return $sUT->parse($content);
+        return $sUT->parse($content, true);
     }
 
     public function testOkEmptyUnused1(): void

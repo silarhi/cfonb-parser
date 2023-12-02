@@ -54,7 +54,7 @@ final class Line39Parser extends AbstractCfonb240Parser
         ]);
     }
 
-    public function parse(string $content): Total
+    public function parse(string $content, bool $strict): Total
     {
         $regexMatch = $this->lineParser->parse($content);
 

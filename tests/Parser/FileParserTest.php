@@ -32,7 +32,7 @@ class FileParserTest extends TestCase
 
         $sUT = new FileParser($parser);
 
-        self::assertSame([], iterator_to_array($sUT->parse('', 10)));
+        self::assertSame([], iterator_to_array($sUT->parse('', 10, true)));
     }
 
     public function testSplitOk(): void
@@ -63,9 +63,9 @@ class FileParserTest extends TestCase
         ;
 
         $parseSeries = [
-            [['aaaaaaaaaa'], $object1],
-            [['bbbbbbbbbb'], $object2],
-            [[''], $object3],
+            [['aaaaaaaaaa', true], $object1],
+            [['bbbbbbbbbb', true], $object2],
+            [['', true], $object3],
         ];
         $parser->expects(self::exactly(3))
             ->method('parse')
@@ -83,7 +83,7 @@ class FileParserTest extends TestCase
 
         $sUT = new FileParser($parser);
 
-        self::assertSame([$object1, $object2, $object3], iterator_to_array($sUT->parse('aaaaaaaaaabbbbbbbbbb', 10)));
+        self::assertSame([$object1, $object2, $object3], iterator_to_array($sUT->parse('aaaaaaaaaabbbbbbbbbb', 10, true)));
     }
 
     public function testDontSplitWithSameLength(): void
@@ -109,7 +109,7 @@ class FileParserTest extends TestCase
         ;
 
         $parseSeries = [
-            [['aaaaaaaaaa'], $object1],
+            [['aaaaaaaaaa', true], $object1],
         ];
         $parser->expects(self::exactly(1))
             ->method('parse')
@@ -126,6 +126,6 @@ class FileParserTest extends TestCase
 
         $sUT = new FileParser($parser);
 
-        self::assertSame([$object1], iterator_to_array($sUT->parse('aaaaaaaaaa', 10)));
+        self::assertSame([$object1], iterator_to_array($sUT->parse('aaaaaaaaaa', 10, true)));
     }
 }

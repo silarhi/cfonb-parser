@@ -46,12 +46,12 @@ class Cfonb240Reader
     }
 
     /** @return Transfer[] */
-    public function parse(string $content): array
+    public function parse(string $content, bool $strict = true): array
     {
         $instance = null;
         $list = [];
 
-        foreach ($this->fileParser->parse($content, self::LINE_LENGTH) as $result) {
+        foreach ($this->fileParser->parse($content, self::LINE_LENGTH, $strict) as $result) {
             if ($result instanceof Header) {
                 $instance = new Transfer();
                 $instance->setHeader($result);

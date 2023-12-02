@@ -50,7 +50,7 @@ final class Line31Parser extends AbstractCfonb240Parser
         ]);
     }
 
-    public function parse(string $content): Header
+    public function parse(string $content, bool $strict): Header
     {
         $regexMatch = $this->lineParser->parse($content);
 

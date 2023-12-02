@@ -37,7 +37,7 @@ final class FileParser
      *
      * @return Generator<int, Element>
      */
-    public function parse(string $content, int $lineLength): iterable
+    public function parse(string $content, int $lineLength, bool $strict): iterable
     {
         if (empty($content)) {
             return [];
@@ -48,7 +48,7 @@ final class FileParser
         }
 
         foreach (explode("\n", $content) as $line) {
-            yield $this->findSupportedParserForLine($line)->parse($line);
+            yield $this->findSupportedParserForLine($line)->parse($line, $strict);
         }
     }
 
