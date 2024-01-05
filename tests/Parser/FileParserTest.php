@@ -16,7 +16,6 @@ namespace Silarhi\Cfonb\Tests\Parser;
 
 use function assert;
 use function is_array;
-use function is_bool;
 
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Noop;
@@ -51,11 +50,9 @@ class FileParserTest extends TestCase
         $parser->expects(self::exactly(3))
             ->method('supports')
             ->willReturnCallback(function (mixed ...$args) use (&$supportsSeries): bool {
-                assert(is_array($supportsSeries));
                 $serie = array_shift($supportsSeries);
                 assert(is_array($serie));
                 [$expectedArgs, $return] = $serie;
-                assert(is_bool($return));
                 $this->assertSame($expectedArgs, $args);
 
                 return $return;
@@ -70,11 +67,9 @@ class FileParserTest extends TestCase
         $parser->expects(self::exactly(3))
             ->method('parse')
             ->willReturnCallback(function (mixed ...$args) use (&$parseSeries): Noop {
-                assert(is_array($parseSeries));
                 $serie = array_shift($parseSeries);
                 assert(is_array($serie));
                 [$expectedArgs, $return] = $serie;
-                assert($return instanceof Noop);
                 $this->assertSame($expectedArgs, $args);
 
                 return $return;
@@ -97,11 +92,9 @@ class FileParserTest extends TestCase
         $parser->expects(self::exactly(1))
             ->method('supports')
             ->willReturnCallback(function (mixed ...$args) use (&$supportsSeries): bool {
-                assert(is_array($supportsSeries));
                 $serie = array_shift($supportsSeries);
                 assert(is_array($serie));
                 [$expectedArgs, $return] = $serie;
-                assert(is_bool($return));
                 $this->assertSame($expectedArgs, $args);
 
                 return $return;
@@ -114,11 +107,9 @@ class FileParserTest extends TestCase
         $parser->expects(self::exactly(1))
             ->method('parse')
             ->willReturnCallback(function (mixed ...$args) use (&$parseSeries): Noop {
-                assert(is_array($parseSeries));
                 $serie = array_shift($parseSeries);
                 assert(is_array($serie));
                 [$expectedArgs, $return] = $serie;
-                assert($return instanceof Noop);
                 $this->assertSame($expectedArgs, $args);
 
                 return $return;
