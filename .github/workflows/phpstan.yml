@@ -6,9 +6,6 @@ on:
       - 'refs/pull/*'
       - '5.x'
 
-env:
-  CI: true
-
 jobs:
   run:
     name: PHPStan ${{ matrix.php }} on ${{ matrix.os }}
