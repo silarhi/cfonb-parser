@@ -4,8 +4,8 @@ on:
   pull_request:
   push:
     branches:
-      - 'refs/pull/*'
-      - '5.x'
+      - "refs/pull/*"
+      - "5.x"
 
 jobs:
   matrix:

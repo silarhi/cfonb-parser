@@ -32,7 +32,7 @@ class Cfonb120Reader
 
     private readonly FileParser $fileParser;
 
-    public function __construct(FileParser $fileParser = null)
+    public function __construct(?FileParser $fileParser = null)
     {
         if (null === $fileParser) {
             $fileParser = new FileParser(

@@ -57,7 +57,7 @@ class RegexMatch
         $this->values = $values;
     }
 
-    public function getString(string $key, string $default = null): string
+    public function getString(string $key, ?string $default = null): string
     {
         $value = $this->getValue($key);
         if (is_string($value)) {

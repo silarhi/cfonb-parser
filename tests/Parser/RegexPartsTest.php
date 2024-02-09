@@ -30,7 +30,7 @@ class RegexPartsTest extends TestCase
     }
 
     #[DataProvider('provideOkCase')]
-    public function testOk(string $expected, string $regexParts, int $length = null): void
+    public function testOk(string $expected, string $regexParts, ?int $length = null): void
     {
         $sUT = new RegexParts($regexParts, $length);
 
