@@ -35,7 +35,7 @@ class Operation extends Element
         private readonly ?string $currencyCode,
         private readonly ?string $rejectCode,
         private readonly ?string $exemptCode,
-        private readonly ?string $bankReference,
+        private readonly ?string $bankOperationReference,
     ) {
         $this->details = [];
     }
@@ -105,9 +105,9 @@ class Operation extends Element
         return $this->amount;
     }
     
-    public function getBankReference(): ?string
+    public function getBankOperationReference(): ?string
     {
-        return $this->bankReference;
+        return $this->bankOperationReference;
     }
 
     public function addDetails(OperationDetail $details): self
