@@ -104,7 +104,7 @@ class Operation extends Element
     {
         return $this->amount;
     }
-    
+
     public function getBankOperationReference(): ?string
     {
         return $this->bankOperationReference;
