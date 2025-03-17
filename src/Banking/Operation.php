@@ -35,6 +35,7 @@ class Operation extends Element
         private readonly ?string $currencyCode,
         private readonly ?string $rejectCode,
         private readonly ?string $exemptCode,
+        private readonly ?string $bankOperationReference,
     ) {
         $this->details = [];
     }
@@ -102,6 +103,11 @@ class Operation extends Element
     public function getAmount(): float
     {
         return $this->amount;
+    }
+
+    public function getBankOperationReference(): ?string
+    {
+        return $this->bankOperationReference;
     }
 
     public function addDetails(OperationDetail $details): self

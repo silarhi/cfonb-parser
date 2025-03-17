@@ -50,7 +50,7 @@ final class Line04Parser extends AbstractCfonb120Parser
             'exempt_code' => new RegexParts(LineParser::ALL, 1),
             '_unused_3' => new RegexParts(LineParser::ALL, 1),
             'amount' => new RegexParts(LineParser::AMOUNT, 13),
-            '_unused_5' => new RegexParts(LineParser::ALL, 16),
+            'bank_operation_reference' => new RegexParts(LineParser::ALPHANUMERIC_BLANK, 16),
         ]);
     }
 
@@ -71,7 +71,8 @@ final class Line04Parser extends AbstractCfonb120Parser
             $regexMatch->getStringOrNull('internal_code'),
             $regexMatch->getStringOrNull('currency_code'),
             $regexMatch->getStringOrNull('reject_code'),
-            $regexMatch->getStringOrNull('exempt_code')
+            $regexMatch->getStringOrNull('exempt_code'),
+            $regexMatch->getStringOrNull('bank_operation_reference')
         );
     }
 

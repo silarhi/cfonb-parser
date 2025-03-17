@@ -40,7 +40,8 @@ class OperationTest extends TestCase
             'test7',
             'test8',
             'test9',
-            'test10'
+            'test10',
+            'test11',
         );
 
         self::assertSame('test', $sUT->getBankCode());
@@ -56,6 +57,7 @@ class OperationTest extends TestCase
         self::assertSame('test8', $sUT->getCurrencyCode());
         self::assertSame('test9', $sUT->getRejectCode());
         self::assertSame('test10', $sUT->getExemptCode());
+        self::assertSame('test11', $sUT->getBankOperationReference());
         self::assertCount(0, $sUT->getDetails());
 
         $detail = $this->createMock(OperationDetail::class);
