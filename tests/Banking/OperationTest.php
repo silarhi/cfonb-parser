@@ -43,7 +43,7 @@ class OperationTest extends TestCase
             'test10',
             'test11',
         );
-        
+
         self::assertSame('test', $sUT->getBankCode());
         self::assertSame('test2', $sUT->getDeskCode());
         self::assertSame('test3', $sUT->getAccountNumber());
