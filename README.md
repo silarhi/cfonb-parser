@@ -122,11 +122,12 @@ $statements = $reader->parse($content, false); // strict=false
 <?php
 
 use Silarhi\Cfonb\Cfonb240Reader;
+use Silarhi\Cfonb\Banking\Transfer;
 
 $reader = new Cfonb240Reader();
 
 foreach($reader->parse('My Content') as $transfer) {
-    assert($transfer instanceof \Silarhi\Cfonb\Banking\Transfer);
+    assert($transfer instanceof Transfer);
 }
 ```
 
@@ -168,6 +169,7 @@ foreach($reader->parse($content) as $transfer) {
 
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
+use Silarhi\Cfonb\Exceptions\HeaderUnavailableException;
 
 $reader = new Cfonb240Reader();
 
@@ -179,7 +181,7 @@ try {
         try {
             $header = $transfer->getHeader();
             echo "Processing transfer from: " . $header->getRecipientBankCode1() . "\n";
-        } catch (\Silarhi\Cfonb\Exceptions\HeaderUnavailableException $e) {
+        } catch (HeaderUnavailableException $e) {
             echo "Transfer header not available\n";
         }
         
@@ -196,15 +198,17 @@ try {
 <?php
 
 use Silarhi\Cfonb\CfonbReader;
+use Silarhi\Cfonb\Banking\Statement;
+use Silarhi\Cfonb\Banking\Transfer;
 
 $reader = new CfonbReader();
 
 foreach($reader->parseCfonb120('My Content') as $statement) {
-    assert($statement instanceof \Silarhi\Cfonb\Banking\Statement);
+    assert($statement instanceof Statement);
 }
 
 foreach($reader->parseCfonb240('My Content') as $transfer) {
-    assert($transfer instanceof \Silarhi\Cfonb\Banking\Transfer);
+    assert($transfer instanceof Transfer);
 }
 ```
 
@@ -216,6 +220,7 @@ foreach($reader->parseCfonb240('My Content') as $transfer) {
 <?php
 
 use Silarhi\Cfonb\Cfonb120Reader;
+use Silarhi\Cfonb\Banking\Operation;
 
 $reader = new Cfonb120Reader();
 $statements = $reader->parse($content);
@@ -224,7 +229,7 @@ $statements = $reader->parse($content);
 foreach ($statements as $statement) {
     $largeOperations = array_filter(
         $statement->getOperations(), 
-        fn(\Silarhi\Cfonb\Banking\Operation $op) => abs($op->getAmount()) > 1000
+        fn(Operation $op) => abs($op->getAmount()) > 1000
     );
     
     foreach ($largeOperations as $operation) {
@@ -372,6 +377,8 @@ try {
 ```php
 <?php
 
+use Silarhi\Cfonb\Cfonb120Reader;
+
 function validateCfonbFormat(string $content): bool {
     $lines = explode("\n", trim($content));
     
@@ -396,7 +403,7 @@ function validateCfonbFormat(string $content): bool {
 
 // Usage
 if (validateCfonbFormat($content)) {
-    $reader = new \Silarhi\Cfonb\Cfonb120Reader();
+    $reader = new Cfonb120Reader();
     $statements = $reader->parse($content);
 } else {
     echo "Invalid CFONB format\n";
