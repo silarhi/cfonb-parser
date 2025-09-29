@@ -224,7 +224,7 @@ $statements = $reader->parse($content);
 foreach ($statements as $statement) {
     $largeOperations = array_filter(
         $statement->getOperations(), 
-        fn($op) => abs($op->getAmount()) > 1000
+        fn(\Silarhi\Cfonb\Banking\Operation $op) => abs($op->getAmount()) > 1000
     );
     
     foreach ($largeOperations as $operation) {
