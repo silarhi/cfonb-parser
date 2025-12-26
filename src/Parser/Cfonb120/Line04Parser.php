@@ -50,7 +50,7 @@ final class Line04Parser extends AbstractCfonb120Parser
             'exempt_code' => new RegexParts(LineParser::ALL, 1),
             '_unused_3' => new RegexParts(LineParser::ALL, 1),
             'amount' => new RegexParts(LineParser::AMOUNT, 13),
-            'bank_operation_reference' => new RegexParts(LineParser::ALPHANUMERIC_BLANK, 16),
+            'bank_operation_reference' => new RegexParts(LineParser::ALL, 16),
         ]);
     }
 
