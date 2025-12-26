@@ -143,7 +143,7 @@ class Cfonb120ReaderTest extends CfonbTestCase
         $statement = $statements[1];
 
         self::assertSame(16672.86, $statement->getOldBalance()->getAmount());
-        self::assertCount(2, $statement->getOperations());
+        self::assertCount(3, $statement->getOperations());
         $operations = $statement->getOperations();
 
         $operation = $operations[0];
@@ -158,6 +158,15 @@ class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
         self::assertSame(-5000.0, $operation->getAmount());
         self::assertSame('VIR JOHNDOE / FOOBAR', $operation->getLabel());
+        self::assertCount(0, $operation->getDetails());
+
+        self::assertSame(11652.75, $statement->getNewBalance()->getAmount());
+
+        $operation = $operations[2];
+
+        self::assertSame('2020-04-08 00:00:00', $operation->getDate()->format('Y-m-d H:i:s'));
+        self::assertSame(-20.11, $operation->getAmount());
+        self::assertSame('VIR BOR TEST / FOOBAR', $operation->getLabel());
         self::assertCount(0, $operation->getDetails());
 
         self::assertSame(11652.75, $statement->getNewBalance()->getAmount());
