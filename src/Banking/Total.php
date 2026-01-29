@@ -31,10 +31,9 @@ class Total extends Element
         private readonly string $recipientCounterCode2,
         private readonly string $recipientAccountNumber2,
         private readonly ?string $recipientName2,
-        private ?string $processingCenterCode,
+        private readonly ?string $processingCenterCode,
         private readonly float $totalAmount,
     ) {
-        $this->processingCenterCode = $processingCenterCode;
     }
 
     public function getSequenceNumber(): int

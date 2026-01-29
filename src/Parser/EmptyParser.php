@@ -27,6 +27,6 @@ final class EmptyParser implements ParserInterface
 
     public function supports(string $content): bool
     {
-        return empty($content);
+        return '' === $content;
     }
 }

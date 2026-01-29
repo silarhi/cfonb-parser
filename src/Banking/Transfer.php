@@ -19,21 +19,14 @@ use Silarhi\Cfonb\Exceptions\TotalUnavailableException;
 
 class Transfer extends Element
 {
-    private ?Header $header;
+    private ?Header $header = null;
 
     /**
      * @var Transaction[]
      */
-    private array $transactions;
+    private array $transactions = [];
 
-    private ?Total $total;
-
-    public function __construct()
-    {
-        $this->header = null;
-        $this->total = null;
-        $this->transactions = [];
-    }
+    private ?Total $total = null;
 
     public function setHeader(Header $header): void
     {

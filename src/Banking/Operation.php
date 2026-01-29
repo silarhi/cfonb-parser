@@ -19,7 +19,7 @@ use DateTimeImmutable;
 class Operation extends Element
 {
     /** @var OperationDetail[] */
-    private array $details;
+    private array $details = [];
 
     public function __construct(
         private readonly string $bankCode,
@@ -37,7 +37,6 @@ class Operation extends Element
         private readonly ?string $exemptCode,
         private readonly ?string $bankOperationReference,
     ) {
-        $this->details = [];
     }
 
     public function getBankCode(): string

@@ -51,7 +51,7 @@ class RegexMatch
             }
 
             $value = trim($matches[$index]);
-            $values[$key] = 0 != strlen($value) ? $value : null;
+            $values[$key] = 0 !== strlen($value) ? $value : null;
         }
 
         $this->values = $values;
