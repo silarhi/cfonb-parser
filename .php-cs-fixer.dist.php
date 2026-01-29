@@ -53,4 +53,5 @@ return $config
         'declare_strict_types' => true,
     ])
     ->setRiskyAllowed(true)
+    ->setCacheFile(__DIR__ . '/var/tools/.php-cs-fixer.cache')
     ->setFinder($finder);

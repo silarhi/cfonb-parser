@@ -16,6 +16,7 @@ use Rector\Config\RectorConfig;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 
 return RectorConfig::configure()
+    ->withCache(__DIR__.'/var/tools/rector')
     ->withImportNames()
     ->withPaths([
         __DIR__ . '/src',
