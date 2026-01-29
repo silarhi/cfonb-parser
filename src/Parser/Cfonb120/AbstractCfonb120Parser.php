@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
+use Override;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 
@@ -27,6 +28,7 @@ abstract class AbstractCfonb120Parser implements ParserInterface
     /**
      * {@inheritdoc}
      */
+    #[Override]
     public function supports(string $content): bool
     {
         return Cfonb120Reader::LINE_LENGTH === strlen($content) && $this->getSupportedCode() === substr($content, 0, 2);
