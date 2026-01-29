@@ -23,13 +23,10 @@ with this source code in the file LICENSE.
 EOF;
 
 $finder = PhpCsFixer\Finder::create()
-    ->in([
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
-    ])
-    ->append([
-        __FILE__,
-        __DIR__ . '/rector.php',
+    ->in(__DIR__)
+    ->notPath([
+        'node_modules',
+        'var',
     ])
 ;
 
