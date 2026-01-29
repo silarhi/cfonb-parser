@@ -24,7 +24,7 @@ interface ParserInterface
     public function parse(string $content, bool $strict): Element;
 
     /**
-     * Checks if current line is handled by the parser
+     * Checks if the parser handles the current line
      *
      * @return bool true if the line is handled by the current parser, false otherwise
      */
