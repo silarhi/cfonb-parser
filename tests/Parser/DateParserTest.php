@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\DateParser;
 
-class DateParserTest extends TestCase
+final class DateParserTest extends TestCase
 {
     public function testFail(): void
     {

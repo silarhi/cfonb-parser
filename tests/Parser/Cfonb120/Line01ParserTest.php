@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Balance;
 use Silarhi\Cfonb\Parser\Cfonb120\Line01Parser;
 
-class Line01ParserTest extends TestCase
+final class Line01ParserTest extends TestCase
 {
     private function parse(string $content): Balance
     {

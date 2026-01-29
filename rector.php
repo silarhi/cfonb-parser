@@ -12,10 +12,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
-use Rector\PHPUnit\Set\PHPUnitSetList;
 
 return RectorConfig::configure()
+    ->withCache(__DIR__ . '/var/tools/rector')
     ->withImportNames()
     ->withPaths([
         __DIR__ . '/src',
@@ -23,6 +24,14 @@ return RectorConfig::configure()
     ])
     // uncomment to reach your current PHP version
     ->withPhpSets()
-    ->withSets([
-        PHPUnitSetList::PHPUNIT_100,
-    ]);
+    ->withComposerBased(
+        phpunit: true,
+    )
+    ->withPreparedSets(
+        deadCode: true,
+        codeQuality: true
+    )
+    ->withSkip([
+        FlipTypeControlToUseExclusiveTypeRector::class,
+    ])
+;

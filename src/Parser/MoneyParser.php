@@ -19,6 +19,6 @@ final class MoneyParser
 {
     public function parser(float $money): float
     {
-        return $money / 100;
+        return $money / 100.0;
     }
 }

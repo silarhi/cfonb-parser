@@ -19,7 +19,7 @@ use Silarhi\Cfonb\Banking\Balance;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 
-class StatementTest extends TestCase
+final class StatementTest extends TestCase
 {
     /** @return void */
     public function testGetter()

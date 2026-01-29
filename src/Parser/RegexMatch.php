@@ -24,10 +24,10 @@ use Silarhi\Cfonb\Exceptions\ValueOfKeyIsNotNumericException;
 use function strlen;
 
 /** @internal */
-class RegexMatch
+final readonly class RegexMatch
 {
     /** @var array<string, string|null> */
-    private readonly array $values;
+    private array $values;
 
     /**
      * @param array<string, RegexParts> $regexParts
@@ -51,7 +51,7 @@ class RegexMatch
             }
 
             $value = trim($matches[$index]);
-            $values[$key] = 0 != strlen($value) ? $value : null;
+            $values[$key] = 0 !== strlen($value) ? $value : null;
         }
 
         $this->values = $values;

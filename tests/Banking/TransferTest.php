@@ -22,7 +22,7 @@ use Silarhi\Cfonb\Banking\Transfer;
 use Silarhi\Cfonb\Exceptions\HeaderUnavailableException;
 use Silarhi\Cfonb\Exceptions\TotalUnavailableException;
 
-class TransferTest extends TestCase
+final class TransferTest extends TestCase
 {
     /** @return void */
     public function testFailOnHeaderNoAvailable()

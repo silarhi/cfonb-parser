@@ -17,11 +17,11 @@ namespace Silarhi\Cfonb;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Banking\Transfer;
 
-class CfonbReader
+final readonly class CfonbReader
 {
     public function __construct(
-        private readonly Cfonb120Reader $cfonb120Reader = new Cfonb120Reader(),
-        private readonly Cfonb240Reader $cfonb240Reader = new Cfonb240Reader(),
+        private Cfonb120Reader $cfonb120Reader = new Cfonb120Reader(),
+        private Cfonb240Reader $cfonb240Reader = new Cfonb240Reader(),
     ) {
     }
 

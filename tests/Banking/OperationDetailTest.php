@@ -18,7 +18,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\OperationDetail;
 
-class OperationDetailTest extends TestCase
+final class OperationDetailTest extends TestCase
 {
     /** @return void */
     public function testGetter()

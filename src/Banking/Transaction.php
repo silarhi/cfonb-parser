@@ -16,7 +16,7 @@ namespace Silarhi\Cfonb\Banking;
 
 use DateTimeInterface;
 
-class Transaction extends Element
+final class Transaction extends Element
 {
     public function __construct(
         private readonly int $sequenceNumber,

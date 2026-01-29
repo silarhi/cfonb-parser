@@ -14,19 +14,22 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser;
 
+use Override;
 use Silarhi\Cfonb\Banking\Noop;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 
 /** @internal */
 final class EmptyParser implements ParserInterface
 {
+    #[Override]
     public function parse(string $content, bool $strict): Noop
     {
         return new Noop();
     }
 
+    #[Override]
     public function supports(string $content): bool
     {
-        return empty($content);
+        return '' === $content;
     }
 }

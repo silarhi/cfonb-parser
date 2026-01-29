@@ -16,21 +16,14 @@ namespace Silarhi\Cfonb\Banking;
 
 use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 
-class Statement extends Element
+final class Statement extends Element
 {
-    private ?Balance $oldBalance;
+    private ?Balance $oldBalance = null;
 
-    private ?Balance $newBalance;
+    private ?Balance $newBalance = null;
 
     /** @var Operation[] */
-    private array $operations;
-
-    public function __construct()
-    {
-        $this->oldBalance = null;
-        $this->newBalance = null;
-        $this->operations = [];
-    }
+    private array $operations = [];
 
     public function addOperation(Operation $operation): self
     {

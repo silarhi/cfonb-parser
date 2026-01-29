@@ -1,5 +1,13 @@
 parameters:
 	level: max
+	tmpDir: var/tools/phpstan
 	paths:
 		- src
 		- tests
+	ignoreErrors:
+		- identifier: method.unresolvableReturnType
+		  path: tests/*
+		- identifier: method.nonObject
+		  path: tests/*
+		- identifier: argument.unresolvableType
+		  path: tests/*

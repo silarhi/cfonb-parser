@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\AmountParser;
 
-class AmountParserTest extends TestCase
+final class AmountParserTest extends TestCase
 {
     public function testFail(): void
     {

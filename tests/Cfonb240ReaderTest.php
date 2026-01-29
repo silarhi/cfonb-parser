@@ -18,7 +18,7 @@ use Silarhi\Cfonb\Banking\Transfer;
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
-class Cfonb240ReaderTest extends CfonbTestCase
+final class Cfonb240ReaderTest extends CfonbTestCase
 {
     public function testEmpty(): void
     {
@@ -52,6 +52,8 @@ class Cfonb240ReaderTest extends CfonbTestCase
         $transfers = (new Cfonb240Reader())->parse($this->loadFixture('cfonb.240-complex-test.txt', false));
 
         self::assertCount(2, $transfers);
+
+        // @phpstan-ignore staticMethod.alreadyNarrowedType
         self::assertContainsOnlyInstancesOf(Transfer::class, $transfers);
 
         $firstTransfers = $transfers[0];

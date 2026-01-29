@@ -14,9 +14,12 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
+use Override;
+
 /** @internal */
 final class Line07Parser extends Line01Parser
 {
+    #[Override]
     protected function getSupportedCode(): string
     {
         return '07';

@@ -42,7 +42,7 @@ final readonly class FileParser
     {
         $content = ltrim(rtrim(str_replace("\r\n", "\n", $content), "\n"), "\n");
 
-        if (empty($content)) {
+        if ('' === $content) {
             return [];
         }
 

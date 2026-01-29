@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
 
-class OperationTest extends TestCase
+final class OperationTest extends TestCase
 {
     /** @return void */
     public function testGetter()

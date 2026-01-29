@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser\Cfonb120;
 
+use Override;
 use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Parser\DateParser;
 use Silarhi\Cfonb\Parser\LineParser;
@@ -46,6 +47,7 @@ final class Line05Parser extends AbstractCfonb120Parser
         ]);
     }
 
+    #[Override]
     public function parse(string $content, bool $strict): OperationDetail
     {
         $regexMatch = $this->lineParser->parse($content);
@@ -63,6 +65,7 @@ final class Line05Parser extends AbstractCfonb120Parser
         );
     }
 
+    #[Override]
     protected function getSupportedCode(): string
     {
         return '05';

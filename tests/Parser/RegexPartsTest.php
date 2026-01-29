@@ -19,7 +19,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Parser\RegexParts;
 
-class RegexPartsTest extends TestCase
+final class RegexPartsTest extends TestCase
 {
     /** @return Generator<int, array<int, string|int>> */
     public static function provideOkCase(): iterable

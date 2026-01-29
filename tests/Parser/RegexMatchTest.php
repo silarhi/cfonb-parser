@@ -21,7 +21,7 @@ use Silarhi\Cfonb\Exceptions\ValueOfKeyIsNotNumericException;
 use Silarhi\Cfonb\Parser\RegexMatch;
 use Silarhi\Cfonb\Parser\RegexParts;
 
-class RegexMatchTest extends TestCase
+final class RegexMatchTest extends TestCase
 {
     public function testKeyDoesNotExistOnGetStringOrNull(): void
     {

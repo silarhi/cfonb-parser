@@ -19,7 +19,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Parser\MoneyParser;
 
-class MoneyParserTest extends TestCase
+final class MoneyParserTest extends TestCase
 {
     /** @return Generator<int, array<int, float>> */
     public static function provideOkCase(): iterable

@@ -21,7 +21,7 @@ use Silarhi\Cfonb\Banking\Noop;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 use Silarhi\Cfonb\Parser\FileParser;
 
-class FileParserTest extends TestCase
+final class FileParserTest extends TestCase
 {
     /** @return iterable<string, array<string>> */
     public static function provideEmptyCase(): iterable
@@ -235,7 +235,7 @@ class FileParserTest extends TestCase
         $invokedCountSupportInternal = self::exactly($invokedCountSupport);
         $parser->expects($invokedCountSupportInternal)
             ->method('supports')
-            ->willReturnCallback(function (mixed ...$args) use ($invokedCountSupportInternal, $supportArgs, $supportReturnValue): mixed {
+            ->willReturnCallback(static function (mixed ...$args) use ($invokedCountSupportInternal, $supportArgs, $supportReturnValue): mixed {
                 self::assertSame($supportArgs[$invokedCountSupportInternal->numberOfInvocations()], $args);
 
                 return $supportReturnValue[$invokedCountSupportInternal->numberOfInvocations()];
@@ -245,7 +245,7 @@ class FileParserTest extends TestCase
         $invokedCountParseInternal = self::exactly($invokedCountParse);
         $parser->expects($invokedCountParseInternal)
             ->method('parse')
-            ->willReturnCallback(function (mixed ...$args) use ($invokedCountParseInternal, $parseArgs, $parseReturnValue, $strict): mixed {
+            ->willReturnCallback(static function (mixed ...$args) use ($invokedCountParseInternal, $parseArgs, $parseReturnValue, $strict): mixed {
                 self::assertSame([$parseArgs[$invokedCountParseInternal->numberOfInvocations()], $strict], $args);
 
                 return $parseReturnValue[$invokedCountParseInternal->numberOfInvocations()];
