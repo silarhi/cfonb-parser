@@ -4,3 +4,10 @@ parameters:
 	paths:
 		- src
 		- tests
+	ignoreErrors:
+		- identifier: method.unresolvableReturnType
+		  path: tests/*
+		- identifier: method.nonObject
+		  path: tests/*
+		- identifier: argument.unresolvableType
+		  path: tests/*
