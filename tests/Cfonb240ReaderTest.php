@@ -52,6 +52,8 @@ class Cfonb240ReaderTest extends CfonbTestCase
         $transfers = (new Cfonb240Reader())->parse($this->loadFixture('cfonb.240-complex-test.txt', false));
 
         self::assertCount(2, $transfers);
+
+        // @phpstan-ignore staticMethod.alreadyNarrowedType
         self::assertContainsOnlyInstancesOf(Transfer::class, $transfers);
 
         $firstTransfers = $transfers[0];
