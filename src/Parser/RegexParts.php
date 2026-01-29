@@ -17,12 +17,12 @@ namespace Silarhi\Cfonb\Parser;
 use function sprintf;
 
 /** @internal */
-final class RegexParts
+final readonly class RegexParts
 {
     public function __construct(
-        private readonly string $regexParts,
-        private readonly ?int $length = null,
-        private readonly bool $matching = true,
+        private string $regexParts,
+        private ?int $length = null,
+        private bool $matching = true,
     ) {
     }
 

@@ -28,11 +28,11 @@ use Silarhi\Cfonb\Parser\FileParser;
 
 use function sprintf;
 
-final class Cfonb120Reader
+final readonly class Cfonb120Reader
 {
     final public const LINE_LENGTH = 120;
 
-    private readonly FileParser $fileParser;
+    private FileParser $fileParser;
 
     public function __construct(?FileParser $fileParser = null)
     {
