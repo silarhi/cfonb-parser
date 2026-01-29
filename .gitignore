@@ -3,4 +3,5 @@
 .phpunit.result.cache
 composer.lock
 .phpunit.cache
+/node_modules
 /var
