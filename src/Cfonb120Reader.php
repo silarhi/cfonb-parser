@@ -28,7 +28,7 @@ use Silarhi\Cfonb\Parser\FileParser;
 
 use function sprintf;
 
-class Cfonb120Reader
+final class Cfonb120Reader
 {
     final public const LINE_LENGTH = 120;
 

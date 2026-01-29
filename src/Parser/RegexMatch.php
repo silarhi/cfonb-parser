@@ -24,7 +24,7 @@ use Silarhi\Cfonb\Exceptions\ValueOfKeyIsNotNumericException;
 use function strlen;
 
 /** @internal */
-class RegexMatch
+final class RegexMatch
 {
     /** @var array<string, string|null> */
     private readonly array $values;

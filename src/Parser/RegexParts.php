@@ -17,7 +17,7 @@ namespace Silarhi\Cfonb\Parser;
 use function sprintf;
 
 /** @internal */
-class RegexParts
+final class RegexParts
 {
     public function __construct(
         private readonly string $regexParts,

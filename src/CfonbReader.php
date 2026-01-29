@@ -17,7 +17,7 @@ namespace Silarhi\Cfonb;
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Banking\Transfer;
 
-class CfonbReader
+final class CfonbReader
 {
     public function __construct(
         private readonly Cfonb120Reader $cfonb120Reader = new Cfonb120Reader(),

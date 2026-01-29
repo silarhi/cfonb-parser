@@ -21,7 +21,7 @@ use Silarhi\Cfonb\Banking\Noop;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 use Silarhi\Cfonb\Parser\FileParser;
 
-class FileParserTest extends TestCase
+final class FileParserTest extends TestCase
 {
     /** @return iterable<string, array<string>> */
     public static function provideEmptyCase(): iterable

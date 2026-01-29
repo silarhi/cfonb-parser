@@ -21,7 +21,7 @@ use Silarhi\Cfonb\Exceptions\ParseException;
 
 use function sprintf;
 
-class Cfonb120ReaderTest extends CfonbTestCase
+final class Cfonb120ReaderTest extends CfonbTestCase
 {
     public function testEmpty(): void
     {

@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Transaction;
 use Silarhi\Cfonb\Parser\Cfonb240\Line34Parser;
 
-class Line34ParserTest extends TestCase
+final class Line34ParserTest extends TestCase
 {
     private function parse(string $content): Transaction
     {

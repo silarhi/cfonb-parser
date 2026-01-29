@@ -16,7 +16,7 @@ namespace Silarhi\Cfonb\Banking;
 
 use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 
-class Statement extends Element
+final class Statement extends Element
 {
     private ?Balance $oldBalance = null;
 

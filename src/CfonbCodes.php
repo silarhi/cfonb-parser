@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb;
 
-class CfonbCodes
+final class CfonbCodes
 {
     /** @var string[][] */
     public static array $codes = [

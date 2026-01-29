@@ -15,4 +15,7 @@
       <directory>./src</directory>
     </include>
   </source>
+  <extensions>
+    <bootstrap class="DG\BypassFinals\PHPUnitExtension"/>
+  </extensions>
 </phpunit>

@@ -18,7 +18,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Header;
 
-class HeaderTest extends TestCase
+final class HeaderTest extends TestCase
 {
     /** @return void */
     public function testGetter()

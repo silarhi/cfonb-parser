@@ -21,7 +21,7 @@ use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\CfonbReader;
 
 #[CoversClass(CfonbReader::class)]
-class CfonbReaderTest extends TestCase
+final class CfonbReaderTest extends TestCase
 {
     public function testOk(): void
     {

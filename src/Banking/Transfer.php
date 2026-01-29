@@ -17,7 +17,7 @@ namespace Silarhi\Cfonb\Banking;
 use Silarhi\Cfonb\Exceptions\HeaderUnavailableException;
 use Silarhi\Cfonb\Exceptions\TotalUnavailableException;
 
-class Transfer extends Element
+final class Transfer extends Element
 {
     private ?Header $header = null;
 
