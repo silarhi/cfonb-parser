@@ -45,9 +45,9 @@ final class TransferTest extends TestCase
     /** @return void */
     public function testOk()
     {
-        $total = $this->createMock(Total::class);
-        $header = $this->createMock(Header::class);
-        $transaction = $this->createMock(Transaction::class);
+        $total = $this->createStub(Total::class);
+        $header = $this->createStub(Header::class);
+        $transaction = $this->createStub(Transaction::class);
 
         $sUT = new Transfer();
         $sUT->setHeader($header);
