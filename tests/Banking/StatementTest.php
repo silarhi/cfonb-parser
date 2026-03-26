@@ -30,8 +30,8 @@ final class StatementTest extends TestCase
         self::assertFalse($sUT->hasNewBalance());
         self::assertFalse($sUT->hasOldBalance());
 
-        $newBalance = $this->createMock(Balance::class);
-        $oldBalance = $this->createMock(Balance::class);
+        $newBalance = $this->createStub(Balance::class);
+        $oldBalance = $this->createStub(Balance::class);
 
         $sUT->setNewBalance($newBalance);
         $sUT->setOldBalance($oldBalance);
