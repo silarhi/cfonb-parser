@@ -1,44 +1,44 @@
 {
-  "name": "silarhi/cfonb-parser",
-  "description": "A PHP Parser for CFONB transactions with zero dependencies",
-  "license": "MIT",
-  "type": "library",
-  "keywords": [
-    "cfonb",
-    "parser",
-    "etebac",
-    "swift"
-  ],
-  "authors": [
-    {
-      "name": "SILARHI",
-      "email": "hello@silarhi.fr"
+    "name": "silarhi/cfonb-parser",
+    "description": "A PHP Parser for CFONB transactions with zero dependencies",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "cfonb",
+        "parser",
+        "etebac",
+        "swift"
+    ],
+    "authors": [
+        {
+            "name": "SILARHI",
+            "email": "hello@silarhi.fr"
+        }
+    ],
+    "require": {
+        "php": ">=8.2"
+    },
+    "config": {
+        "bump-after-update": "dev"
+    },
+    "require-dev": {
+        "dg/bypass-finals": "^1.9",
+        "friendsofphp/php-cs-fixer": "^3.94.2",
+        "phpstan/phpstan": "^2.1.44",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpunit/phpunit": "^11.5|^12|^13.0.5",
+        "rector/rector": "^2.3.9",
+        "rector/swiss-knife": "^2.3.5",
+        "vimeo/psalm": "^5.26|^6.16.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Silarhi\\Cfonb\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Silarhi\\Cfonb\\Tests\\": "tests/"
+        }
     }
-  ],
-  "require": {
-    "php": ">=8.2"
-  },
-  "config": {
-    "bump-after-update": "dev"
-  },
-  "require-dev": {
-    "dg/bypass-finals": "^1.9",
-    "friendsofphp/php-cs-fixer": "^3.94.2",
-    "phpstan/phpstan": "^2.1.44",
-    "phpstan/phpstan-strict-rules": "^2.0",
-    "phpunit/phpunit": "^11.5|^12|^13.0.5",
-    "rector/rector": "^2.3.9",
-    "rector/swiss-knife": "^2.3.5",
-    "vimeo/psalm": "^5.26|^6.16.1"
-  },
-  "autoload": {
-    "psr-4": {
-      "Silarhi\\Cfonb\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Silarhi\\Cfonb\\Tests\\": "tests/"
-    }
-  }
 }
