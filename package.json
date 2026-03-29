@@ -1,12 +1,12 @@
 {
-  "devDependencies": {
-    "husky": ">=9.1.6",
-    "lint-staged": ">=15.2.10"
-  },
-  "lint-staged": {
-    "*.php": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php"
-  },
-  "scripts": {
-    "prepare": "husky"
-  }
+    "devDependencies": {
+        "husky": ">=9.1.6",
+        "lint-staged": ">=15.2.10"
+    },
+    "lint-staged": {
+        "*.php": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php"
+    },
+    "scripts": {
+        "prepare": "husky"
+    }
 }

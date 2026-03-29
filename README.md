@@ -38,7 +38,7 @@ foreach($reader->parse('My Content') as $statement) {
   foreach($statement->getOperations() as $operation) {
     //Gets all statement operations
   }
-  
+
   if ($statement->hasNewBalance()) {
     echo sprintf("New balance : %f\n", $statement->getNewBalance()->getAmount());
   }
@@ -79,17 +79,17 @@ foreach($reader->parse($content) as $statement) {
         echo "Reference: " . $operation->getReference() . "\n";
         echo "Bank Code: " . $operation->getBankCode() . "\n";
         echo "Account: " . $operation->getAccountNumber() . "\n";
-        
+
         // Access optional fields
         if ($operation->getInternalCode()) {
             echo "Internal Code: " . $operation->getInternalCode() . "\n";
         }
-        
+
         // Process operation details (additional information)
         foreach($operation->getDetails() as $detail) {
             echo "Additional Info: " . $detail->getAdditionalInformations() . "\n";
         }
-        
+
         echo "---\n";
     }
 }
@@ -146,7 +146,7 @@ foreach($reader->parse($content) as $transfer) {
     echo "Transfer Date: " . $header->getPrevTransactionFileDate()->format('Y-m-d') . "\n";
     echo "Bank Code: " . $header->getRecipientBankCode1() . "\n";
     echo "Account: " . $header->getRecipientAccountNumber1() . "\n";
-    
+
     // Process all transactions in the transfer
     foreach($transfer->getTransactions() as $transaction) {
         echo "Transaction Date: " . $transaction->getSettlementDate()->format('Y-m-d') . "\n";
@@ -154,7 +154,7 @@ foreach($reader->parse($content) as $transfer) {
         echo "Recipient: " . $transaction->getRecipientName1() . "\n";
         echo "Reference: " . $transaction->getPresenterReference() . "\n";
     }
-    
+
     // Access transfer total
     $total = $transfer->getTotal();
     echo "Total Amount: " . $total->getTotalAmount() . "\n";
@@ -175,7 +175,7 @@ $reader = new Cfonb240Reader();
 
 try {
     $content = file_get_contents('/path/to/cfonb240-file.txt');
-    
+
     foreach($reader->parse($content) as $transfer) {
         // Safely access optional header
         try {
@@ -184,7 +184,7 @@ try {
         } catch (HeaderUnavailableException $e) {
             echo "Transfer header not available\n";
         }
-        
+
         // Process transactions...
     }
 } catch (ParseException $e) {
@@ -228,10 +228,10 @@ $statements = $reader->parse($content);
 // Filter operations by amount
 foreach ($statements as $statement) {
     $largeOperations = array_filter(
-        $statement->getOperations(), 
+        $statement->getOperations(),
         fn(Operation $op) => abs($op->getAmount()) > 1000
     );
-    
+
     foreach ($largeOperations as $operation) {
         echo "Large operation: {$operation->getAmount()} - {$operation->getLabel()}\n";
     }
@@ -290,7 +290,7 @@ foreach ($statements as $statement) {
         'closing_balance' => $statement->hasNewBalance() ? $statement->getNewBalance()->getAmount() : null,
         'operations' => []
     ];
-    
+
     foreach ($statement->getOperations() as $operation) {
         $statementData['operations'][] = [
             'date' => $operation->getDate()->format('Y-m-d'),
@@ -302,7 +302,7 @@ foreach ($statements as $statement) {
             'account_number' => $operation->getAccountNumber()
         ];
     }
-    
+
     $data[] = $statementData;
 }
 
@@ -333,7 +333,7 @@ foreach ($statements as $statement) {
 foreach ($accountStatements as $accountNumber => $statements) {
     echo "Account: $accountNumber\n";
     echo "Number of statements: " . count($statements) . "\n";
-    
+
     $totalBalance = 0;
     foreach ($statements as $statement) {
         if ($statement->hasNewBalance()) {
@@ -364,9 +364,9 @@ try {
     // - Malformed line format
     // - Invalid date format
     // - Invalid amount format
-    
+
     echo "Parse error on line: " . $e->getMessage() . "\n";
-    
+
     // Try non-strict mode to continue parsing
     $statements = $reader->parse($content, false);
 }
@@ -381,23 +381,23 @@ use Silarhi\Cfonb\Cfonb120Reader;
 
 function validateCfonbFormat(string $content): bool {
     $lines = explode("\n", trim($content));
-    
+
     foreach ($lines as $line) {
         // Skip empty lines
         if (empty(trim($line))) continue;
-        
+
         // Check line length for CFONB 120
         if (strlen($line) !== 120) {
             return false;
         }
-        
+
         // Check if line starts with valid CFONB code
         $lineCode = substr($line, 0, 2);
         if (!in_array($lineCode, ['01', '04', '05', '07'])) {
             return false;
         }
     }
-    
+
     return true;
 }
 

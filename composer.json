@@ -3,7 +3,12 @@
     "description": "A PHP Parser for CFONB transactions with zero dependencies",
     "license": "MIT",
     "type": "library",
-    "keywords": ["cfonb", "parser", "etebac", "swift"],
+    "keywords": [
+        "cfonb",
+        "parser",
+        "etebac",
+        "swift"
+    ],
     "authors": [
         {
             "name": "SILARHI",
@@ -20,7 +25,8 @@
         "dg/bypass-finals": "^1.9",
         "friendsofphp/php-cs-fixer": "^3.94.2",
         "phpstan/phpstan": "^2.1.44",
-        "phpunit/phpunit": "^10.5.26|^11.5.55|^12.0|^13.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpunit/phpunit": "^11.5|^12|^13.0.5",
         "rector/rector": "^2.3.9",
         "rector/swiss-knife": "^2.3.5",
         "vimeo/psalm": "^5.26|^6.16.1"
