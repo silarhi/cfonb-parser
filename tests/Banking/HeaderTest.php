@@ -21,7 +21,7 @@ use Silarhi\Cfonb\Banking\Header;
 final class HeaderTest extends TestCase
 {
     /** @return void */
-    public function testGetter()
+    public function testGetter(): void
     {
         $date = new DateTimeImmutable();
 

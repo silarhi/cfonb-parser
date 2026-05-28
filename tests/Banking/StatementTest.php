@@ -22,7 +22,7 @@ use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 final class StatementTest extends TestCase
 {
     /** @return void */
-    public function testGetter()
+    public function testGetter(): void
     {
         $sUT = new Statement();
 
@@ -44,7 +44,7 @@ final class StatementTest extends TestCase
     }
 
     /** @return void */
-    public function testFailGetOldBalance()
+    public function testFailGetOldBalance(): void
     {
         $sUT = new Statement();
 
@@ -55,7 +55,7 @@ final class StatementTest extends TestCase
     }
 
     /** @return void */
-    public function testFailGetNewBalance()
+    public function testFailGetNewBalance(): void
     {
         $sUT = new Statement();
 

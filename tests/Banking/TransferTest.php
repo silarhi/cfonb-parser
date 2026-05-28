@@ -25,7 +25,7 @@ use Silarhi\Cfonb\Exceptions\TotalUnavailableException;
 final class TransferTest extends TestCase
 {
     /** @return void */
-    public function testFailOnHeaderNoAvailable()
+    public function testFailOnHeaderNoAvailable(): void
     {
         $sUT = new Transfer();
 
@@ -34,7 +34,7 @@ final class TransferTest extends TestCase
     }
 
     /** @return void */
-    public function testFailOnTotalNoAvailable()
+    public function testFailOnTotalNoAvailable(): void
     {
         $sUT = new Transfer();
 
@@ -43,7 +43,7 @@ final class TransferTest extends TestCase
     }
 
     /** @return void */
-    public function testOk()
+    public function testOk(): void
     {
         $total = $this->createStub(Total::class);
         $header = $this->createStub(Header::class);
