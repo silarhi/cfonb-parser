@@ -20,7 +20,6 @@ use Silarhi\Cfonb\Banking\Transaction;
 
 final class TransactionTest extends TestCase
 {
-    /** @return void */
     public function testGetter(): void
     {
         $date = new DateTimeImmutable();

@@ -21,7 +21,6 @@ use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 
 final class StatementTest extends TestCase
 {
-    /** @return void */
     public function testGetter(): void
     {
         $sUT = new Statement();
@@ -43,7 +42,6 @@ final class StatementTest extends TestCase
         self::assertSame($oldBalance, $sUT->getOldBalance());
     }
 
-    /** @return void */
     public function testFailGetOldBalance(): void
     {
         $sUT = new Statement();
@@ -54,7 +52,6 @@ final class StatementTest extends TestCase
         $sUT->getOldBalance();
     }
 
-    /** @return void */
     public function testFailGetNewBalance(): void
     {
         $sUT = new Statement();

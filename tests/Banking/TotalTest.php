@@ -20,7 +20,6 @@ use Silarhi\Cfonb\Banking\Total;
 
 final class TotalTest extends TestCase
 {
-    /** @return void */
     public function testGetter(): void
     {
         $date = new DateTimeImmutable();

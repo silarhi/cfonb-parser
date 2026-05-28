@@ -20,7 +20,6 @@ use Silarhi\Cfonb\Banking\OperationDetail;
 
 final class OperationDetailTest extends TestCase
 {
-    /** @return void */
     public function testGetter(): void
     {
         $date = new DateTimeImmutable();
