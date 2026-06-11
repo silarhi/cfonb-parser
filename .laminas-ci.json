@@ -1,0 +1,12 @@
+{
+    "additional_checks": [
+        {
+            "name": "Composer validate & normalize",
+            "job": {
+                "php": "@lowest",
+                "dependencies": "latest",
+                "command": "composer validate --strict && composer normalize --dry-run --diff"
+            }
+        }
+    ]
+}
