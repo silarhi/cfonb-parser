@@ -4,7 +4,8 @@
         "lint-staged": ">=15.2.10"
     },
     "lint-staged": {
-        "*.php": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php"
+        "*.php": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
+        "composer.json": "composer normalize"
     },
     "scripts": {
         "prepare": "husky"
