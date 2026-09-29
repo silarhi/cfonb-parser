@@ -12,6 +12,11 @@
         {
             "matchUpdateTypes": ["major"],
             "automerge": false
+        },
+        {
+            "matchManagers": ["composer"],
+            "matchDepTypes": ["require-dev"],
+            "rangeStrategy": "bump"
         }
     ]
 }
