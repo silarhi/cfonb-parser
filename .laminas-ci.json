@@ -1,4 +1,10 @@
 {
+    "exclude": [
+        {
+            "name": "PHPUnit",
+            "php": "8.6"
+        }
+    ],
     "additional_checks": [
         {
             "name": "Composer validate & normalize",
