@@ -19,7 +19,7 @@
         "php": ">=8.2"
     },
     "require-dev": {
-        "dg/bypass-finals": "^1.10.2",
+        "dg/bypass-finals": "^1.11.0",
         "ergebnis/composer-normalize": "^2.52",
         "friendsofphp/php-cs-fixer": "^3.95.27",
         "phpstan/phpstan": "^2.2.2",
