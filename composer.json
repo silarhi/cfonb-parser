@@ -43,6 +43,9 @@
         "allow-plugins": {
             "ergebnis/composer-normalize": true
         },
+        "audit": {
+            "block-insecure": false
+        },
         "bump-after-update": "dev",
         "sort-packages": true
     }
