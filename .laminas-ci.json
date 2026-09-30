@@ -1,10 +1,4 @@
 {
-    "exclude": [
-        {
-            "name": "PHPUnit",
-            "php": "8.6"
-        }
-    ],
     "additional_checks": [
         {
             "name": "Composer validate & normalize",
@@ -14,5 +8,8 @@
                 "command": "composer validate --strict && composer normalize --dry-run --diff"
             }
         }
-    ]
+    ],
+    "ignore_php_platform_requirements": {
+        "8.6": true
+    }
 }
