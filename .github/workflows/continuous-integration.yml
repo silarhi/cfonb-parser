@@ -4,8 +4,8 @@ on:
     pull_request:
     push:
         branches:
-            - 'refs/pull/*'
-            - '6.x'
+            - '*.x'
+            - 'main'
 
 jobs:
     matrix:
@@ -37,6 +37,6 @@ jobs:
         if: always()
         runs-on: ubuntu-latest
         steps:
-            - name: Check that all QA jobs succeeded
+            - name: Check that all required jobs succeeded
               if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
               run: exit 1
