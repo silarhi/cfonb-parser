@@ -30,6 +30,24 @@ jobs:
               uses: laminas/laminas-continuous-integration-action@v1
               with:
                   job: ${{ matrix.job }}
+            - name: Upload coverage
+              if: ${{ !cancelled() && startsWith(matrix.name, 'PHPUnit [') && endsWith(matrix.name, ', latest]') }}
+              uses: actions/upload-artifact@v7
+              with:
+                  name: clover-${{ fromJSON(matrix.job).php }}
+                  path: coverage/clover.xml
+                  if-no-files-found: ignore
+                  retention-days: 30
+
+    coverage:
+        name: Coverage
+        needs: [qa]
+        if: ${{ !cancelled() }}
+        permissions:
+            actions: read
+            contents: read
+            pull-requests: write
+        uses: silarhi/.github/.github/workflows/coverage-report.yml@main
 
     ci-passed:
         name: CI passed
