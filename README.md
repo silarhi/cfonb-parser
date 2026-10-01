@@ -1,6 +1,7 @@
 # cfonb-parser
 
 ![Build Status](https://github.com/silarhi/cfonb-parser/actions/workflows/continuous-integration.yml/badge.svg?branch=6.x)
+[![Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsilarhi%2Fcfonb-parser%2Fbadges%2Fcoverage.json)](https://github.com/silarhi/cfonb-parser/actions/workflows/continuous-integration.yml)
 [![Latest Stable Version](https://poser.pugx.org/silarhi/cfonb-parser/v/stable)](https://packagist.org/packages/silarhi/cfonb-parser)
 [![Total Downloads](https://poser.pugx.org/silarhi/cfonb-parser/downloads)](https://packagist.org/packages/silarhi/cfonb-parser)
 [![License](https://poser.pugx.org/silarhi/cfonb-parser/license)](https://packagist.org/packages/silarhi/cfonb-parser)
