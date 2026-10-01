@@ -45,7 +45,7 @@ jobs:
         if: ${{ !cancelled() }}
         permissions:
             actions: read
-            contents: read
+            contents: write
             pull-requests: write
         uses: silarhi/.github/.github/workflows/coverage-report.yml@main
 
