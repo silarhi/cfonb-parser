@@ -2,6 +2,9 @@
     "extensions": ["pcov"],
     "exclude": [
         {
+            "name": "README Linting"
+        },
+        {
             "name": "PHPUnit",
             "php": "8.6"
         }
