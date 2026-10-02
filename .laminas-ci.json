@@ -14,7 +14,7 @@
             "name": "Composer validate & normalize",
             "job": {
                 "php": "@lowest",
-                "dependencies": "latest",
+                "dependencies": "locked",
                 "command": "composer validate --strict && composer normalize --dry-run --diff"
             }
         }
