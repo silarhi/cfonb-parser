@@ -26,7 +26,7 @@
         "phpstan/phpstan-strict-rules": "^2.0.12",
         "phpunit/phpunit": "^11.5.55 || ^12 || ^13.0.5",
         "rector/rector": "^2.6.7",
-        "rector/swiss-knife": "^2.4.4",
+        "rector/swiss-knife": "^2.6.0",
         "vimeo/psalm": "^5.26 || ^6.16.1"
     },
     "autoload": {
