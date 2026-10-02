@@ -17,6 +17,11 @@
             "matchManagers": ["composer"],
             "matchDepTypes": ["require-dev"],
             "rangeStrategy": "bump"
+        },
+        {
+            "description": "rector/swiss-knife >= 2.4.5 requires PHP >= 8.3, while this library supports PHP 8.2",
+            "matchPackageNames": ["rector/swiss-knife"],
+            "allowedVersions": "<2.4.5"
         }
     ]
 }
