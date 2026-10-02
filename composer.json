@@ -47,6 +47,9 @@
             "block-insecure": false
         },
         "bump-after-update": "dev",
+        "platform": {
+            "php": "8.2.31"
+        },
         "sort-packages": true
     }
 }
