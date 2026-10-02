@@ -7,6 +7,9 @@ on:
             - '*.x'
             - 'main'
 
+permissions:
+    contents: read
+
 jobs:
     matrix:
         name: Generate job matrix
