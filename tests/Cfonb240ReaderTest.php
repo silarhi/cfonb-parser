@@ -49,7 +49,7 @@ final class Cfonb240ReaderTest extends CfonbTestCase
 
     public function testComplexTest(): void
     {
-        $transfers = (new Cfonb240Reader())->parse($this->loadFixture('cfonb.240-complex-test.txt', false));
+        $transfers = (new Cfonb240Reader())->parse(self::loadFixture('cfonb.240-complex-test.txt', false));
 
         self::assertCount(2, $transfers);
 

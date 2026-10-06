@@ -118,7 +118,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
     public function testComplexTest(bool $oneLine): void
     {
         $reader = new Cfonb120Reader();
-        $statements = $reader->parse($this->loadFixture('complex-test.txt', $oneLine));
+        $statements = $reader->parse(self::loadFixture('complex-test.txt', $oneLine));
 
         self::assertCount(8, $statements);
 
@@ -240,14 +240,14 @@ final class Cfonb120ReaderTest extends CfonbTestCase
     {
         self::expectException(ParseException::class);
         $reader = new Cfonb120Reader();
-        $reader->parse($this->loadFixture('non-strict-test.txt', $oneLine));
+        $reader->parse(self::loadFixture('non-strict-test.txt', $oneLine));
     }
 
     #[DataProvider('provideOneLineOrNot')]
     public function testNonStrictModeTest(bool $oneLine): void
     {
         $reader = new Cfonb120Reader();
-        $statements = $reader->parse($this->loadFixture('non-strict-test.txt', $oneLine), false);
+        $statements = $reader->parse(self::loadFixture('non-strict-test.txt', $oneLine), false);
 
         self::assertCount(8, $statements);
 

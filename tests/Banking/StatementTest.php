@@ -29,8 +29,8 @@ final class StatementTest extends TestCase
         self::assertFalse($sUT->hasNewBalance());
         self::assertFalse($sUT->hasOldBalance());
 
-        $newBalance = $this->createStub(Balance::class);
-        $oldBalance = $this->createStub(Balance::class);
+        $newBalance = self::createStub(Balance::class);
+        $oldBalance = self::createStub(Balance::class);
 
         $sUT->setNewBalance($newBalance);
         $sUT->setOldBalance($oldBalance);
