@@ -30,7 +30,7 @@ abstract class CfonbTestCase extends TestCase
         }
 
         if ($oneline) {
-            $result = str_replace("\n", '', $result);
+            return str_replace("\n", '', $result);
         }
 
         return $result;
