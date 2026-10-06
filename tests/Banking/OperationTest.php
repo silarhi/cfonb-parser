@@ -59,7 +59,7 @@ final class OperationTest extends TestCase
         self::assertSame('test11', $sUT->getBankOperationReference());
         self::assertCount(0, $sUT->getDetails());
 
-        $detail = $this->createStub(OperationDetail::class);
+        $detail = self::createStub(OperationDetail::class);
 
         $sUT->addDetails($detail);
 

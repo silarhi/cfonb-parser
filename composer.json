@@ -22,6 +22,7 @@
         "dg/bypass-finals": "^1.11.0",
         "ergebnis/composer-normalize": "^2.54.0",
         "friendsofphp/php-cs-fixer": "^3.95.27",
+        "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan": "^2.2.16",
         "phpstan/phpstan-strict-rules": "^2.0.12",
         "phpunit/phpunit": "^11.5.55 || ^12 || ^13.0.5",
@@ -41,7 +42,8 @@
     },
     "config": {
         "allow-plugins": {
-            "ergebnis/composer-normalize": true
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true
         },
         "audit": {
             "block-insecure": false

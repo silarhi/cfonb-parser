@@ -42,9 +42,9 @@ final class TransferTest extends TestCase
 
     public function testOk(): void
     {
-        $total = $this->createStub(Total::class);
-        $header = $this->createStub(Header::class);
-        $transaction = $this->createStub(Transaction::class);
+        $total = self::createStub(Total::class);
+        $header = self::createStub(Header::class);
+        $transaction = self::createStub(Transaction::class);
 
         $sUT = new Transfer();
         $sUT->setHeader($header);

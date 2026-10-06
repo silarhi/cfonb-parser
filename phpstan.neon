@@ -7,6 +7,8 @@ parameters:
 	ignoreErrors:
 		- identifier: method.unresolvableReturnType
 		  path: tests/*
+		- identifier: staticMethod.unresolvableReturnType
+		  path: tests/*
 		- identifier: method.nonObject
 		  path: tests/*
 		- identifier: argument.unresolvableType
