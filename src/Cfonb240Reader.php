@@ -29,20 +29,18 @@ use function sprintf;
 
 final readonly class Cfonb240Reader
 {
-    final public const LINE_LENGTH = 240;
+    public const LINE_LENGTH = 240;
 
     private FileParser $fileParser;
 
     public function __construct(?FileParser $fileParser = null)
     {
-        if (null === $fileParser) {
-            $fileParser = new FileParser(
-                new Line31Parser(),
-                new Line34Parser(),
-                new Line39Parser(),
-                new EmptyParser()
-            );
-        }
+        $fileParser ??= new FileParser(
+            new Line31Parser(),
+            new Line34Parser(),
+            new Line39Parser(),
+            new EmptyParser()
+        );
 
         $this->fileParser = $fileParser;
     }
