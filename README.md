@@ -58,7 +58,7 @@
 - **CFONB 240 transfers** — `Transfer` objects with a header (`31`), transactions (`34`) and a total (`39`).
 - **Signed amounts** — decimals and sign characters are decoded: credits are positive, debits are negative.
 - **Typed value objects** — getters return floats, `DateTimeInterface` dates and nullable strings, not raw arrays.
-- **Tolerant input** — handles `\n` and `\r\n` line endings, and files with no line breaks at all.
+- **Tolerant input** — handles `\n`, `\r\n` and `\r` line endings, and files with no line breaks at all.
 - **Strict by default** — malformed lines throw a `ParseException` instead of producing silent garbage.
 
 ## Requirements
@@ -421,7 +421,8 @@ try {
     // - Invalid line length (should be 120 characters)
     // - Unknown record code (CFONB 120 supports 01, 04, 05 and 07)
     // - Malformed line format
-    // - Invalid date format
+    // - Invalid or out-of-range date (e.g. day 32)
+    // - CFONB 240 record outside a transfer (no "31" header before it)
     // - Invalid amount format
 
     echo "Parse error: " . $e->getMessage() . "\n";
@@ -441,7 +442,7 @@ use Silarhi\Cfonb\Cfonb120Reader;
 
 function validateCfonbFormat(string $content): bool {
     // Normalize line endings, but keep trailing spaces: they are part of the 120 characters
-    $lines = explode("\n", trim(str_replace("\r\n", "\n", $content), "\n"));
+    $lines = explode("\n", trim(str_replace(["\r\n", "\r"], "\n", $content), "\n"));
 
     foreach ($lines as $line) {
         // Skip empty lines

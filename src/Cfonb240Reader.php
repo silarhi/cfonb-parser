@@ -57,13 +57,15 @@ final readonly class Cfonb240Reader
                 $instance->setHeader($result);
             } elseif ($result instanceof Total) {
                 if (null === $instance) {
-                    throw new ParseException(sprintf('Unable to attach a total for operation with internal code %s', $result->getSequenceNumber()));
+                    throw new ParseException(sprintf('Unable to attach the total with sequence number %s: missing "31" header record before it', $result->getSequenceNumber()));
                 }
                 $instance->setTotal($result);
                 $list[] = $instance;
+                // The "39" record closes the transfer: any further record needs a new "31" header.
+                $instance = null;
             } elseif ($result instanceof Transaction) {
                 if (null === $instance) {
-                    throw new ParseException(sprintf('Unable to attach a total for operation with internal code %s', $result->getSequenceNumber()));
+                    throw new ParseException(sprintf('Unable to attach the transaction with sequence number %s: missing "31" header record before it', $result->getSequenceNumber()));
                 }
                 $instance->addTransaction($result);
             }

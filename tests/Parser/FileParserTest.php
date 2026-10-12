@@ -29,6 +29,7 @@ final class FileParserTest extends TestCase
         yield 'empty string' => [''];
         yield 'lf' => ["\n"];
         yield 'crlf' => ["\r\n"];
+        yield 'cr' => ["\r"];
     }
 
     #[DataProvider('provideEmptyCase')]
@@ -183,6 +184,31 @@ final class FileParserTest extends TestCase
             ],
             'expected' => [$object1],
             'content' => "aaaaaaaaaa\n",
+            'lineLength' => 10,
+            'strict' => true,
+        ];
+
+        yield 'with cr line endings' => [
+            'invokedCountSupport' => 2,
+            'supportArgs' => [
+                1 => ['aaaaaaaaaa'],
+                2 => ['bbbbbbbbbb'],
+            ],
+            'supportReturnValue' => [
+                1 => true,
+                2 => true,
+            ],
+            'invokedCountParse' => 2,
+            'parseArgs' => [
+                1 => 'aaaaaaaaaa',
+                2 => 'bbbbbbbbbb',
+            ],
+            'parseReturnValue' => [
+                1 => $object1,
+                2 => $object2,
+            ],
+            'expected' => [$object1, $object2],
+            'content' => "\raaaaaaaaaa\rbbbbbbbbbb\r",
             'lineLength' => 10,
             'strict' => true,
         ];

@@ -52,4 +52,11 @@ final class Line01ParserTest extends TestCase
         self::assertSame('00012345603', $balance->getAccountNumber());
         self::assertSame(16695.65, $balance->getAmount());
     }
+
+    public function testOkWithoutDecimals(): void
+    {
+        $balance = $this->parse('0110278    02204EUR0 00012345603  060420                                                  0000000166956E060420070420    ');
+
+        self::assertSame(1669565.0, $balance->getAmount());
+    }
 }
