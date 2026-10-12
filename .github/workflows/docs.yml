@@ -1,0 +1,21 @@
+name: 'Documentation'
+
+on:
+    pull_request:
+        paths: ['docs/**', '.github/workflows/docs.yml']
+    push:
+        branches: ['6.x']
+        paths: ['docs/**', '.github/workflows/docs.yml']
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    docs:
+        name: Docs
+        permissions:
+            contents: read
+            pages: write
+            id-token: write
+        uses: silarhi/docs-kit/.github/workflows/docs-site.yml@main

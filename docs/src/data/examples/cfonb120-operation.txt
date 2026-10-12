@@ -1,0 +1,31 @@
+array(14) {
+  ["bankCode"]=>
+  string(5) "10556"
+  ["deskCode"]=>
+  string(5) "02204"
+  ["accountNumber"]=>
+  string(11) "00012345603"
+  ["internalCode"]=>
+  string(4) "6772"
+  ["currencyCode"]=>
+  string(3) "EUR"
+  ["code"]=>
+  string(2) "B1"
+  ["date"]=>
+  string(10) "2020-04-07"
+  ["valueDate"]=>
+  string(10) "2020-04-07"
+  ["rejectCode"]=>
+  NULL
+  ["label"]=>
+  string(20) "PRLV SEPA ONLINE SAS"
+  ["reference"]=>
+  string(7) "0000000"
+  ["exemptCode"]=>
+  string(1) "0"
+  ["amount"]=>
+  float(-22.79)
+  ["bankOperationReference"]=>
+  NULL
+}
+Detail LIB: DEDIBOX 3706114

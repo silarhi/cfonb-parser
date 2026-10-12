@@ -1,0 +1,42 @@
+---
+title: Recipes
+description: Filter operations, compute totals, convert statements to arrays or JSON, group them by account.
+sidebar:
+    order: 3
+---
+
+import Example from '../../../components/Example.astro'
+
+The recipes parse the [sample statement file](/getting-started/quick-start/): three statements of two accounts.
+
+## Filtering operations
+
+Operations above 100 in absolute value, debits and credits alike:
+
+<Example name="recipe-filter" />
+
+## Building a transaction summary
+
+<Example name="recipe-summary" />
+
+Amounts are floats: round them, or add cents (`(int) round($amount * 100)`), when the result must be exact.
+
+## Converting to an array or JSON
+
+For an API response, or to store the statements:
+
+<Example name="recipe-array" />
+
+## Handling multiple account statements
+
+A file can hold the statements of several accounts. Group them with the account number of their balance:
+
+<Example name="recipe-accounts" />
+
+## Labeling operation codes
+
+`CfonbCodes::$codes` gives the label of an operation code, its direction and its SWIFT equivalent:
+
+<Example name="operation-codes" />
+
+The whole list: [operation codes](/reference/operation-codes/).

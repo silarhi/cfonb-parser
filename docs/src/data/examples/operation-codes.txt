@@ -1,0 +1,4 @@
+PRLV SEPA ONLINE SAS    B1  Prélèvements SEPA domiciliés (DDT, D)
+PRLV SEPA FREE MOBILE   B1  Prélèvements SEPA domiciliés (DDT, D)
+VIR JOHNDOE / FOOBAR    05  Virements reçus (TRF, C)
+VIR BOR TEST / FOOBAR   06  Virements émis (TRF, D)

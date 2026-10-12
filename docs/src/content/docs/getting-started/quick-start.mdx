@@ -1,0 +1,40 @@
+---
+title: Quick start
+description: Parse a CFONB 120 bank statement file in a few lines of PHP.
+sidebar:
+    order: 2
+---
+
+import Example from '../../../components/Example.astro'
+import SampleFile from '../../../components/SampleFile.astro'
+
+A CFONB 120 file is a list of 120 characters lines. This one holds three statements of two accounts:
+
+<SampleFile name="statements.txt" />
+
+Give its contents to a `Cfonb120Reader`: `parse()` returns one `Statement` per opening (`01`) and closing (`07`)
+balance pair, with the operations (`04`) between them.
+
+<Example name="quick-start" />
+
+Every example of this documentation parses the files of
+[`docs/examples/`](https://github.com/silarhi/cfonb-parser/tree/6.x/docs/examples), and the outputs shown are what the
+library really prints.
+
+## Both formats
+
+`CfonbReader` reads both formats, through a `Cfonb120Reader` and a `Cfonb240Reader`:
+
+<Example name="cfonb-reader" />
+
+| Method                                                       | Same as                                  |
+| ------------------------------------------------------------ | ---------------------------------------- |
+| `parseCfonb120(string $content, bool $strict = true): array` | `Cfonb120Reader::parse()`, `Statement[]` |
+| `parseCfonb240(string $content, bool $strict = true): array` | `Cfonb240Reader::parse()`, `Transfer[]`  |
+
+## Next steps
+
+- [CFONB 120 statements](/guides/cfonb-120/): balances, operations, details and the strict mode
+- [CFONB 240 transfers](/guides/cfonb-240/): header, transactions and total
+- [Recipes](/guides/recipes/): filtering, totals, arrays and JSON, several accounts
+- [Troubleshooting](/guides/troubleshooting/): parse errors and malformed files

@@ -1,0 +1,28 @@
+---
+title: Operation codes
+description: The CFONB operation codes of CfonbCodes, with their labels and SWIFT equivalents.
+sidebar:
+    order: 4
+---
+
+import Example from '../../../components/Example.astro'
+import OperationCodes from '../../../components/OperationCodes.astro'
+
+`Operation::getCode()` returns the CFONB operation code of a CFONB 120 operation (positions 33–34). The static array
+`Silarhi\Cfonb\CfonbCodes::$codes` describes each code:
+
+| Key           | Value                                              |
+| ------------- | -------------------------------------------------- |
+| `label`       | The French label of the CFONB                      |
+| `way`         | `D` debit, `C` credit, `D/C` or `C/D` either       |
+| `swift_code`  | The SWIFT MT940 transaction type                   |
+| `swift_label` | Its English label                                  |
+| `swift_way`   | The direction on the SWIFT side, the same as `way` |
+
+<Example name="operation-codes" />
+
+A bank can send a code missing from the list: read it with `?? null`, as above.
+
+## All codes
+
+<OperationCodes />

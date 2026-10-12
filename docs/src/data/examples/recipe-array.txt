@@ -1,0 +1,61 @@
+[
+    {
+        "account_number": "00012345603",
+        "date": "2020-04-07",
+        "opening_balance": 16695.65,
+        "closing_balance": 16672.86,
+        "operations": [
+            {
+                "date": "2020-04-07",
+                "value_date": "2020-04-07",
+                "amount": -22.79,
+                "label": "PRLV SEPA ONLINE SAS",
+                "reference": "0000000",
+                "bank_code": "10556",
+                "account_number": "00012345603"
+            }
+        ]
+    },
+    {
+        "account_number": "00020427603",
+        "date": "2020-04-08",
+        "opening_balance": 16672.86,
+        "closing_balance": 21632.64,
+        "operations": [
+            {
+                "date": "2020-04-08",
+                "value_date": "2020-04-08",
+                "amount": -20.11,
+                "label": "PRLV SEPA FREE MOBILE",
+                "reference": "0000000",
+                "bank_code": "10556",
+                "account_number": "00020427603"
+            },
+            {
+                "date": "2020-04-08",
+                "value_date": "2020-04-08",
+                "amount": 5000,
+                "label": "VIR JOHNDOE \/ FOOBAR",
+                "reference": "0000000",
+                "bank_code": "10278",
+                "account_number": "00020427603"
+            },
+            {
+                "date": "2020-04-08",
+                "value_date": "2020-04-08",
+                "amount": -20.11,
+                "label": "VIR BOR TEST \/ FOOBAR",
+                "reference": "0000000",
+                "bank_code": "10278",
+                "account_number": "00020427603"
+            }
+        ]
+    },
+    {
+        "account_number": "00020427603",
+        "date": "2020-04-09",
+        "opening_balance": 21632.64,
+        "closing_balance": 21632.64,
+        "operations": []
+    }
+]

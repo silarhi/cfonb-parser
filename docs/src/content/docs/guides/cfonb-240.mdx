@@ -1,0 +1,133 @@
+---
+title: CFONB 240 transfers
+description: Read CFONB 240 transfer files, their header, transactions and total.
+sidebar:
+    order: 2
+---
+
+import Flow from '@silarhi/docs-kit/components/Flow.astro'
+import Example from '../../../components/Example.astro'
+import SampleFile from '../../../components/SampleFile.astro'
+
+CFONB 240 files hold batches of transfers: one record of 240 characters per line, its first two characters being the
+record code.
+
+<Flow
+    caption="One transfer: its records, in the order of the file."
+    steps={[
+        { title: '31', detail: 'header' },
+        { title: '34', detail: 'transaction, repeated', accent: true },
+        { title: '39', detail: 'total' },
+    ]}
+/>
+
+| Record | Parsed into                                                | Reached with                   |
+| ------ | ---------------------------------------------------------- | ------------------------------ |
+| `31`   | [`Header`](/reference/cfonb-240-objects/#header)           | `$transfer->getHeader()`       |
+| `34`   | [`Transaction`](/reference/cfonb-240-objects/#transaction) | `$transfer->getTransactions()` |
+| `39`   | [`Total`](/reference/cfonb-240-objects/#total)             | `$transfer->getTotal()`        |
+
+## Reading a file
+
+`Cfonb240Reader::parse()` takes the contents of the file and returns a list of
+[`Transfer`](/reference/cfonb-240-objects/#transfer):
+
+```php
+use Silarhi\Cfonb\Banking\Transfer;
+use Silarhi\Cfonb\Cfonb240Reader;
+
+$reader = new Cfonb240Reader();
+
+foreach ($reader->parse(file_get_contents('/path/to/cfonb240-file.txt')) as $transfer) {
+    assert($transfer instanceof Transfer);
+}
+```
+
+With this file:
+
+<SampleFile name="transfers.txt" />
+
+<Example name="cfonb240" />
+
+The same, with more fields:
+
+```php
+foreach ($reader->parse($content) as $transfer) {
+    // Transfer header
+    $header = $transfer->getHeader();
+    echo "Transfer Date: " . $header->getPrevTransactionFileDate()->format('Y-m-d') . "\n";
+    echo "Bank Code: " . $header->getRecipientBankCode1() . "\n";
+    echo "Account: " . $header->getRecipientAccountNumber1() . "\n";
+
+    // Transactions of the transfer
+    foreach ($transfer->getTransactions() as $transaction) {
+        echo "Transaction Date: " . $transaction->getSettlementDate()->format('Y-m-d') . "\n";
+        echo "Amount: " . $transaction->getTransactionAmount() . "\n";
+        echo "Recipient: " . $transaction->getRecipientName1() . "\n";
+        echo "Reference: " . $transaction->getPresenterReference() . "\n";
+    }
+
+    // Transfer total
+    $total = $transfer->getTotal();
+    echo "Total Amount: " . $total->getTotalAmount() . "\n";
+    echo "Sequence Number: " . $total->getSequenceNumber() . "\n";
+}
+```
+
+All the fields, with their positions in the line: [CFONB 240 objects](/reference/cfonb-240-objects/).
+
+## How transfers are built
+
+- a header line (`31`) starts a new transfer.
+- a transaction line (`34`) is added to the current transfer.
+- a total line (`39`) is set on the current transfer, which is then added to the list and closed: the next transaction
+  or total line needs a new header.
+- a blank line is ignored.
+
+So every transfer returned has a header and a total: `getHeader()` and `getTotal()` never throw on them. A transfer
+without a total line is dropped. A transaction or a total line outside a transfer, before the first header or between a
+total and the next header, throws a `ParseException`:
+
+```text
+Unable to attach the transaction with sequence number 2: missing "31" header record before it
+Unable to attach the total with sequence number 3: missing "31" header record before it
+```
+
+## Amounts
+
+Transaction and total amounts are 12 digits in cents, read as floats with 2 decimals: `000000171200` is `1712.00`.
+Unlike CFONB 120 amounts, they have no sign: they are never negative. The reader does not check that the total is the
+sum of the transactions.
+
+## Dates and strict mode
+
+Dates are `DateTimeImmutable` objects at midnight, read from `DDMMYY`, like the
+[CFONB 120 dates](/guides/cfonb-120/#dates): a date that does not exist, such as `320420`, throws a `ParseException`.
+`getInitialTransactionSettlementDate()` is `null` when blank.
+
+`parse()` accepts the same `$strict` argument as `Cfonb120Reader::parse()`, but no CFONB 240 rule depends on it:
+malformed lines always throw a `ParseException`.
+
+## Error handling
+
+```php
+use Silarhi\Cfonb\Cfonb240Reader;
+use Silarhi\Cfonb\Exceptions\ParseException;
+
+$reader = new Cfonb240Reader();
+
+try {
+    $content = file_get_contents('/path/to/cfonb240-file.txt');
+
+    foreach ($reader->parse($content) as $transfer) {
+        echo "Processing transfer from: " . $transfer->getHeader()->getRecipientBankCode1() . "\n";
+
+        // Process transactions...
+    }
+} catch (ParseException $e) {
+    echo "Failed to parse CFONB file: " . $e->getMessage() . "\n";
+}
+```
+
+`HeaderUnavailableException` and `TotalUnavailableException` are only thrown by a `Transfer` built by hand, without
+`setHeader()` or `setTotal()`: see [exceptions](/reference/exceptions/).
