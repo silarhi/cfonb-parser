@@ -25,7 +25,9 @@ final class DateParser
     public function parse(string $date): DateTimeImmutable
     {
         $datetime = DateTimeImmutable::createFromFormat('!dmy', $date);
-        if (false === $datetime) {
+        // createFromFormat() overflows out-of-range values (day 32 becomes the 1st or 2nd of the next month):
+        // the round-trip rejects them.
+        if (false === $datetime || $datetime->format('dmy') !== $date) {
             throw new ParseException(sprintf('Unable to parse date "%s"', $date));
         }
 

@@ -20,6 +20,8 @@ use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\DateParser;
 
+use function sprintf;
+
 final class DateParserTest extends TestCase
 {
     public function testFail(): void
@@ -32,10 +34,35 @@ final class DateParserTest extends TestCase
         $sUT->parse('test');
     }
 
+    /** @return iterable<string, array<string>> */
+    public static function provideOutOfRangeCase(): iterable
+    {
+        yield 'day 32' => ['320420'];
+        yield 'day 0' => ['000420'];
+        yield 'month 13' => ['011320'];
+        yield 'month 0' => ['010020'];
+        yield '31 April' => ['310420'];
+        yield '29 February of a non-leap year' => ['290221'];
+    }
+
+    #[DataProvider('provideOutOfRangeCase')]
+    public function testFailOutOfRange(string $content): void
+    {
+        $sUT = new DateParser();
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage(sprintf('Unable to parse date "%s"', $content));
+
+        $sUT->parse($content);
+    }
+
     /** @return Generator<int, array<int, string>> */
     public static function provideOkCase(): iterable
     {
         yield ['101020', '2020-10-10 00:00:00'];
+        yield ['290220', '2020-02-29 00:00:00'];
+        yield ['311299', '1999-12-31 00:00:00'];
+        yield ['010100', '2000-01-01 00:00:00'];
     }
 
     #[DataProvider('provideOkCase')]

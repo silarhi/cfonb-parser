@@ -47,7 +47,7 @@
 - **CFONB 240 transfers** — `Transfer` objects with a header (`31`), transactions (`34`) and a total (`39`).
 - **Signed amounts** — CFONB 120 decimals and sign characters are decoded: credits are positive, debits are negative.
 - **Typed value objects** — getters return floats, `DateTimeImmutable` dates and nullable strings, not raw arrays.
-- **Tolerant input** — handles `\n` and `\r\n` line endings, and files with no line breaks at all.
+- **Tolerant input** — handles `\n`, `\r\n` and `\r` line endings, and files with no line breaks at all.
 - **Strict by default** — malformed lines throw a `ParseException` instead of producing silent garbage.
 
 ## Requirements

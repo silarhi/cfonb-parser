@@ -27,7 +27,7 @@ final class AmountParserTest extends TestCase
         $sUT = new AmountParser();
 
         $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to parse amount "tes.test"');
+        $this->expectExceptionMessage('Unable to parse amount "test"');
 
         $sUT->parse('test', 5);
     }
@@ -57,6 +57,12 @@ final class AmountParserTest extends TestCase
         yield ['10R', 1, -10.9];
         yield ['10}', 1, -10.0];
         yield ['10.10}', 1, -10.10];
+        // No decimals (position 20 of a CFONB 120 line set to 0): the amount is an integer
+        yield ['0000000166956E', 0, 1669565.0];
+        yield ['0000000166956N', 0, -1669565.0];
+        yield ['0000000000000{', 0, 0.0];
+        yield ['0000000166956E', 2, 16695.65];
+        yield ['0000000166956N', 3, -1669.565];
     }
 
     #[DataProvider('provideOkCase')]
