@@ -35,27 +35,35 @@ final class LineParser
     public const AMOUNT = '(\d{%d}[{}A-R]{1})';
 
     public const ALL = '(.{%d})';
+
+    /** @var non-empty-string */
     private readonly string $regexAsString;
+
+    /** @var list<string> */
+    private readonly array $matchingKeys;
 
     /** @param array<string, RegexParts> $regexParts */
     public function __construct(private array $regexParts)
     {
         $regexParts = [];
-        foreach ($this->regexParts as $part) {
+        $matchingKeys = [];
+        foreach ($this->regexParts as $key => $part) {
             $regexParts[] = $part->toString();
+            if ($part->isMatching()) {
+                $matchingKeys[] = $key;
+            }
         }
+        $this->matchingKeys = $matchingKeys;
 
-        $this->regexAsString = implode('', $regexParts);
+        $this->regexAsString = '/^' . implode('', $regexParts) . '$/';
     }
 
     public function parse(string $content): RegexMatch
     {
-        $regex = sprintf('/^%s$/', $this->regexAsString);
-
-        if (1 !== preg_match($regex, $content, $matches)) {
+        if (1 !== preg_match($this->regexAsString, $content, $matches)) {
             throw new ParseException(sprintf('Regex does not match the line "%s"', $content));
         }
 
-        return new RegexMatch($this->regexParts, $matches);
+        return RegexMatch::fromMatchingKeys($this->matchingKeys, $matches);
     }
 }

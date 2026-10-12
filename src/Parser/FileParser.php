@@ -50,9 +50,18 @@ final readonly class FileParser
             $content = chunk_split($content, $lineLength, "\n");
         }
 
-        foreach (explode("\n", $content) as $line) {
+        // Iterate lines without materialising an array of every line (same semantics as explode("\n")).
+        $offset = 0;
+        while (false !== ($pos = strpos($content, "\n", $offset))) {
+            $line = substr($content, $offset, $pos - $offset);
+            $offset = $pos + 1;
+
             yield $this->findSupportedParserForLine($line)->parse($line, $strict);
         }
+
+        $line = substr($content, $offset);
+
+        yield $this->findSupportedParserForLine($line)->parse($line, $strict);
     }
 
     private function findSupportedParserForLine(string $line): ParserInterface
