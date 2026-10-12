@@ -1,0 +1,13 @@
+Account 00012345603, EUR
+  2020-04-06  Opening balance           16695.65
+  2020-04-07  PRLV SEPA ONLINE SAS        -22.79
+  2020-04-07  Closing balance           16672.86
+Account 00020427603, EUR
+  2020-04-07  Opening balance           16672.86
+  2020-04-08  PRLV SEPA FREE MOBILE       -20.11
+  2020-04-08  VIR JOHNDOE / FOOBAR       5000.00
+  2020-04-08  VIR BOR TEST / FOOBAR       -20.11
+  2020-04-08  Closing balance           21632.64
+Account 00020427603, EUR
+  2020-04-08  Opening balance           21632.64
+  2020-04-09  Closing balance           21632.64

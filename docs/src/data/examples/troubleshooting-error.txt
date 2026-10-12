@@ -1,0 +1,2 @@
+Parse error: Unable to find a parser for the line :
+"0110278    02204EUR2 00012345603  060420                                                  0000000166956E060420070420   "

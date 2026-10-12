@@ -27,6 +27,8 @@ $finder = PhpCsFixer\Finder::create()
     ->notPath([
         'node_modules',
         'var',
+        // Shown as is by the documentation: no license header
+        'docs/examples',
     ])
 ;
 

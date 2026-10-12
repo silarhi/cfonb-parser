@@ -1,0 +1,23 @@
+---
+/**
+ * A sample bank file of docs/examples/, the one the examples parse.
+ *
+ *     import SampleFile from '../../../components/SampleFile.astro'
+ *     <SampleFile name="statements.txt" />
+ */
+import { Code } from '@astrojs/starlight/components'
+
+interface Props {
+    name: string
+}
+
+const files = import.meta.glob<string>('../../examples/*.txt', { query: '?raw', import: 'default', eager: true })
+
+const { name } = Astro.props
+const content = files[`../../examples/${name}`]
+if (content === undefined) {
+    throw new Error(`Sample file "${name}" not found in docs/examples/`)
+}
+---
+
+<Code code={content.replace(/\n+$/, '')} lang="text" title={name} />

@@ -1,0 +1,34 @@
+---
+/**
+ * The table of the operation codes of CfonbCodes::$codes, dumped to docs/src/data/operation-codes.json by
+ * `php docs/scripts/render-examples.php`.
+ */
+import codes from '../data/operation-codes.json'
+---
+
+<table>
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th><code>label</code></th>
+            <th><code>way</code></th>
+            <th><code>swift_code</code></th>
+            <th><code>swift_label</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        {
+            codes.map((code) => (
+                <tr>
+                    <td>
+                        <code>{code.code}</code>
+                    </td>
+                    <td>{code.label}</td>
+                    <td>{code.way}</td>
+                    <td>{code.swift_code}</td>
+                    <td>{code.swift_label}</td>
+                </tr>
+            ))
+        }
+    </tbody>
+</table>

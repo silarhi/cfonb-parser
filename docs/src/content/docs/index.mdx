@@ -1,0 +1,45 @@
+---
+title: CFONB Parser
+description: A PHP parser for CFONB 120 and 240 bank files, with zero dependencies.
+template: splash
+hero:
+    tagline: Parse French CFONB 120 and 240 bank files into typed PHP objects. Bank statements and transfers, with zero runtime dependencies.
+    actions:
+        - text: Get started
+          link: /getting-started/installation/
+          icon: right-arrow
+        - text: View on GitHub
+          link: https://github.com/silarhi/cfonb-parser
+          icon: github
+          variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+
+```bash
+composer require silarhi/cfonb-parser
+```
+
+<CardGrid>
+    <Card title="Zero dependencies" icon="seti:php">
+        Only PHP 8.2+ is required: nothing else gets pulled into your project.
+    </Card>
+    <Card title="CFONB 120 statements" icon="document">
+        `Statement` objects with their opening and closing balances (`01`/`07`), operations (`04`) and operation details
+        (`05`).
+    </Card>
+    <Card title="CFONB 240 transfers" icon="list-format">
+        `Transfer` objects with a header (`31`), transactions (`34`) and a total (`39`).
+    </Card>
+    <Card title="Signed amounts" icon="approve-check">
+        CFONB 120 amounts are decoded from their sign character and number of decimals: credits are positive, debits
+        negative.
+    </Card>
+    <Card title="Typed value objects" icon="setting">
+        Getters return floats, `DateTimeImmutable` dates and nullable strings, not raw arrays.
+    </Card>
+    <Card title="Tolerant input, strict parsing" icon="warning">
+        `\n` and `\r\n` line endings and files without line breaks are read alike; a malformed line throws a
+        `ParseException` instead of producing silent garbage.
+    </Card>
+</CardGrid>

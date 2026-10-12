@@ -1,0 +1,75 @@
+---
+title: Troubleshooting
+description: Understand parse errors, validate a file before parsing it, and handle line endings.
+sidebar:
+    order: 4
+---
+
+import Example from '../../../components/Example.astro'
+
+## Common parsing errors
+
+The readers throw a `ParseException` on the first line they cannot parse. The message tells what failed:
+
+| Message                                                       | Cause                                                                                                                                                                          |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Unable to find a parser for the line : "…"`                  | The line is not 120 (CFONB 120) or 240 (CFONB 240) characters long, or its record code is unknown: CFONB 120 supports `01`, `04`, `05` and `07`, CFONB 240 `31`, `34` and `39` |
+| `Regex does not match the line "…"`                           | A field holds unexpected characters: letters in a numeric field, a date or an amount, an invalid sign character                                                                |
+| `The value of key "…" is not a string`                        | A required field is blank, e.g. the currency of a balance, or the reference of an operation in strict mode                                                                     |
+| `The value of key "…" is not numeric`                         | A numeric field is blank, e.g. the number of decimals of an amount                                                                                                             |
+| `Unable to attach a detail for operation with code …`         | A `05` detail line with no `04` operation before it in its statement                                                                                                           |
+| `Unable to attach a total for operation with internal code …` | A `34` transaction or a `39` total line before the first `31` header                                                                                                           |
+
+<Example name="troubleshooting-error" />
+
+```php
+use Silarhi\Cfonb\Cfonb120Reader;
+use Silarhi\Cfonb\Exceptions\ParseException;
+
+$reader = new Cfonb120Reader();
+
+try {
+    $statements = $reader->parse($content);
+} catch (ParseException $e) {
+    // Common issues:
+    // - Invalid line length (should be 120 characters)
+    // - Unknown record code (CFONB 120 supports 01, 04, 05 and 07)
+    // - Malformed line format
+    // - Invalid date format
+    // - Invalid amount format
+
+    echo "Parse error: " . $e->getMessage() . "\n";
+
+    // Non-strict mode only tolerates blank operation references,
+    // any other error is still thrown
+    $statements = $reader->parse($content, false);
+}
+```
+
+Non-strict mode only tolerates blank operation references: see
+[strict mode](/guides/cfonb-120/#strict-mode-default-vs-non-strict-mode).
+
+:::caution[What is not checked]
+The readers check the shape of each line, not the consistency of the file: an out-of-range date such as `320420` rolls
+over to the next month (2 May 2020), the closing balance is not compared with the opening balance and the operations,
+and the total of a transfer is not compared with its transactions.
+:::
+
+## Validating file format before parsing
+
+To reject a file before parsing it, e.g. to tell an uploader it is not a CFONB 120 statement:
+
+<Example name="troubleshooting-validate" />
+
+## Line endings and trailing spaces
+
+`\n` and `\r\n` line endings are read alike, as are files with no line breaks at all, split every 120 (or 240)
+characters. Blank lines are ignored.
+
+<Example name="troubleshooting-line-endings" />
+
+Lines ending with `\r` only (classic Mac OS) are not split, and fail with `Unable to find a parser for the line`.
+
+The trailing spaces of a line are part of its 120 or 240 characters: an editor, a transfer tool or a `trim()` removing
+them makes the line too short. Normalize line endings with `str_replace("\r\n", "\n", $content)`, never with `trim()` on
+each line.

@@ -1,0 +1,156 @@
+---
+title: CFONB 120 statements
+description: Read CFONB 120 bank statements, their balances, operations and operation details.
+sidebar:
+    order: 1
+---
+
+import Flow from '@silarhi/docs-kit/components/Flow.astro'
+import Example from '../../../components/Example.astro'
+import SampleFile from '../../../components/SampleFile.astro'
+
+CFONB 120 is the French bank statement format (_relevé de compte_, also known as ETEBAC 3): one record of 120
+characters per line, its first two characters being the record code.
+
+<Flow
+    caption="One statement: its records, in the order of the file."
+    steps={[
+        { title: '01', detail: 'opening balance' },
+        { title: '04', detail: 'operation, repeated', accent: true },
+        { title: '05', detail: 'detail of the operation above, optional', muted: true },
+        { title: '07', detail: 'closing balance' },
+    ]}
+/>
+
+| Record | Parsed into                                                        | Reached with                  |
+| ------ | ------------------------------------------------------------------ | ----------------------------- |
+| `01`   | [`Balance`](/reference/cfonb-120-objects/#balance)                 | `$statement->getOldBalance()` |
+| `04`   | [`Operation`](/reference/cfonb-120-objects/#operation)             | `$statement->getOperations()` |
+| `05`   | [`OperationDetail`](/reference/cfonb-120-objects/#operationdetail) | `$operation->getDetails()`    |
+| `07`   | [`Balance`](/reference/cfonb-120-objects/#balance)                 | `$statement->getNewBalance()` |
+
+## Reading a file
+
+`Cfonb120Reader::parse()` takes the contents of the file, not its path, and returns a list of
+[`Statement`](/reference/cfonb-120-objects/#statement):
+
+```php
+use Silarhi\Cfonb\Cfonb120Reader;
+
+$reader = new Cfonb120Reader();
+$content = file_get_contents('/path/to/cfonb120-file.txt');
+
+foreach ($reader->parse($content) as $statement) {
+    // Process each statement
+    echo "Statement date: " . $statement->getNewBalance()->getDate()->format('Y-m-d') . "\n";
+}
+```
+
+The examples of this page parse this file:
+
+<SampleFile name="statements.txt" />
+
+## How statements are built
+
+The reader goes through the lines in order:
+
+- a balance line (`01` or `07`) opens a statement when none is open, and closes the open one otherwise: the statement is
+  then added to the list. The reader pairs balance lines by their order, not by their code.
+- an operation line (`04`) is added to the open statement, or to the next one when none is open.
+- a detail line (`05`) is added to the last operation read. A detail line with no operation before it in the statement
+  throws a `ParseException`.
+- a blank line is ignored.
+
+So every statement returned has both balances: `hasOldBalance()` and `hasNewBalance()` are always `true` on them, and
+`getOldBalance()` and `getNewBalance()` never throw. Lines after the last closing balance, a statement never closed, are
+dropped. A bank usually sends one statement per account and per day: a file can hold several days and several
+accounts, in the order the bank wrote them.
+
+## Operations
+
+<Example name="cfonb120-operation" />
+
+- `getCode()` is the operation code of the CFONB, `B1` here: [operation codes](/reference/operation-codes/) gives its
+  label.
+- `getDate()` is the operation date, `getValueDate()` the value date.
+- Fields left blank in the file are `null` for the nullable getters (`getRejectCode()`, `getBankOperationReference()`
+  above); the others throw a `ParseException` when blank, except the reference in
+  [non-strict mode](#strict-mode-default-vs-non-strict-mode).
+- `getDetails()` lists the `05` lines of the operation, in order: their `getQualifier()` (`LIB` for an extra label line)
+  tells what `getAdditionalInformations()` holds.
+
+All the fields, with their positions in the line: [CFONB 120 objects](/reference/cfonb-120-objects/).
+
+```php
+foreach ($reader->parse($content) as $statement) {
+    foreach ($statement->getOperations() as $operation) {
+        echo "Date: " . $operation->getDate()->format('Y-m-d') . "\n";
+        echo "Value Date: " . $operation->getValueDate()->format('Y-m-d') . "\n";
+        echo "Amount: " . $operation->getAmount() . "\n";
+        echo "Label: " . $operation->getLabel() . "\n";
+        echo "Reference: " . $operation->getReference() . "\n";
+        echo "Bank Code: " . $operation->getBankCode() . "\n";
+        echo "Account: " . $operation->getAccountNumber() . "\n";
+
+        // Optional fields are null when blank
+        if (null !== $operation->getInternalCode()) {
+            echo "Internal Code: " . $operation->getInternalCode() . "\n";
+        }
+
+        // Operation details (additional information)
+        foreach ($operation->getDetails() as $detail) {
+            echo "Additional Info: " . $detail->getAdditionalInformations() . "\n";
+        }
+    }
+}
+```
+
+## Amounts
+
+Balance and operation amounts are floats, signed: credits are positive, debits are negative. In the file, an amount is
+13 digits and a sign character, which also holds the last digit; the number of decimals comes from position 20 of the
+line:
+
+| Last character | Sign     | Last digit |
+| -------------- | -------- | ---------- |
+| `{`, `A`…`I`   | positive | 0, 1…9     |
+| `}`, `J`…`R`   | negative | 0, 1…9     |
+
+`0000000166956E` with 2 decimals is `16695.65`, `0000000000227R` is `-22.79`.
+
+:::tip[Floats and money]
+Round the amounts before comparing or adding them, or convert them to cents: `(int) round($amount * 100)`.
+:::
+
+## Dates
+
+Dates are `DateTimeImmutable` objects at midnight, in the default time zone of PHP, read from `DDMMYY`: years `00` to
+`69` are 2000 to 2069, `70` to `99` are 1970 to 1999.
+
+## Strict mode (default) vs non-strict mode
+
+In strict mode, any line that cannot be parsed throws a `ParseException`. Non-strict mode only relaxes one rule: a blank
+operation reference on a `04` line becomes an empty string instead of an error. Every other error is still thrown.
+
+```php
+use Silarhi\Cfonb\Cfonb120Reader;
+use Silarhi\Cfonb\Exceptions\ParseException;
+
+$reader = new Cfonb120Reader();
+
+// Strict mode (default) - throws an exception on parsing errors
+try {
+    $statements = $reader->parse($content); // strict=true by default
+} catch (ParseException $e) {
+    echo "Parsing error: " . $e->getMessage() . "\n";
+}
+
+// Non-strict mode - blank operation references are returned as ''
+$statements = $reader->parse($content, false); // strict=false
+```
+
+With a file whose two operations have no reference:
+
+<SampleFile name="blank-references.txt" />
+
+<Example name="cfonb120-strict" />

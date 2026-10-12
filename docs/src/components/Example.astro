@@ -1,0 +1,31 @@
+---
+/**
+ * A PHP example and the output it really prints.
+ *
+ *     import Example from '../../../components/Example.astro'
+ *     <Example name="quick-start" />
+ *
+ * Reads docs/examples/<name>.php and its output, docs/src/data/examples/<name>.txt
+ * (`php docs/scripts/render-examples.php`).
+ */
+import { Code } from '@astrojs/starlight/components'
+
+interface Props {
+    name: string
+}
+
+const sources = import.meta.glob<string>('../../examples/*.php', { query: '?raw', import: 'default', eager: true })
+const outputs = import.meta.glob<string>('../data/examples/*.txt', { query: '?raw', import: 'default', eager: true })
+
+const { name } = Astro.props
+const source = sources[`../../examples/${name}.php`]
+const output = outputs[`../data/examples/${name}.txt`]
+if (source === undefined || output === undefined) {
+    throw new Error(
+        `Example "${name}" not found: add docs/examples/${name}.php, then run php docs/scripts/render-examples.php`
+    )
+}
+---
+
+<Code code={source.trimEnd()} lang="php" title={`${name}.php`} />
+<Code code={output.trimEnd()} lang="text" title="Output" />

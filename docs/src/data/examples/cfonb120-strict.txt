@@ -1,0 +1,3 @@
+Strict: The value of key "reference" is not a string
+Non-strict: PRLV SEPA FREE MOBILE, reference ''
+Non-strict: VIR JOHNDOE / FOOBAR, reference ''

@@ -5,3 +5,9 @@
 /.*                     export-ignore
 /psalm.xml              export-ignore
 /rector.php             export-ignore
+/docs/                  export-ignore
+/CONTRIBUTING.md        export-ignore
+/package.json           export-ignore
+/yarn.lock              export-ignore
+/psalm_baseline.xml     export-ignore
+/renovate.json          export-ignore

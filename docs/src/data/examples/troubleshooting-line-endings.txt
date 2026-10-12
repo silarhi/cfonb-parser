@@ -1,0 +1,3 @@
+LF: 3 statements
+CRLF: 3 statements
+No line breaks: 3 statements
