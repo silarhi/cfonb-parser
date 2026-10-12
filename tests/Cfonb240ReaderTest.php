@@ -36,15 +36,37 @@ final class Cfonb240ReaderTest extends CfonbTestCase
     public function testFailCauseNoHeaderWithTotal(): void
     {
         $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to attach a total for operation with internal code 3');
+        $this->expectExceptionMessage('Unable to attach the total with sequence number 3: missing "31" header record before it');
         (new Cfonb240Reader())->parse('3900000320221220E    300661077100020030401                                   300661077100020030401                                                                                                                                  000000063330');
     }
 
     public function testFailCauseNoHeaderWithTransaction(): void
     {
         $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to attach a total for operation with internal code 2');
+        $this->expectExceptionMessage('Unable to attach the transaction with sequence number 2: missing "31" header record before it');
         (new Cfonb240Reader())->parse('3400000220221220E0066300030302100020116383CHIC WWW WWWWWWW                   300661077100020030401ZZZZ ZZZZ                                             F2012017                                                        221220      000000011760');
+    }
+
+    public function testFailCauseTransactionAfterTotal(): void
+    {
+        $lines = explode("\n", trim(self::loadFixture('cfonb.240-complex-test.txt', false), "\n"));
+        // Move the second transfer's "31" header after its "34" detail record: the detail now follows the first "39" total.
+        [$lines[4], $lines[5]] = [$lines[5], $lines[4]];
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to attach the transaction with sequence number 2: missing "31" header record before it');
+        (new Cfonb240Reader())->parse(implode("\n", $lines));
+    }
+
+    public function testFailCauseTotalAfterTotal(): void
+    {
+        $lines = explode("\n", trim(self::loadFixture('cfonb.240-complex-test.txt', false), "\n"));
+        // Drop the second transfer's "31" header and "34" detail: its "39" total now follows the first "39" total.
+        unset($lines[4], $lines[5]);
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to attach the total with sequence number 3: missing "31" header record before it');
+        (new Cfonb240Reader())->parse(implode("\n", $lines));
     }
 
     public function testComplexTest(): void

@@ -49,6 +49,23 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         $reader->parse('0510556677202204EUR2 00012345603B1070420     LIBDEDIBOX 3706114                                                         ');
     }
 
+    public function testFailCauseOutOfRangeDate(): void
+    {
+        $reader = new Cfonb120Reader();
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to parse date "320420"');
+        $reader->parse('0110278    02204EUR2 00012345603  320420                                                  0000000166956E060420070420    ');
+    }
+
+    public function testCrLineEndings(): void
+    {
+        $reader = new Cfonb120Reader();
+        $statements = $reader->parse(str_replace("\n", "\r", self::loadFixture('complex-test.txt', false)));
+
+        self::assertEquals($reader->parse(self::loadFixture('complex-test.txt', false)), $statements);
+    }
+
     /** @return array<string, array<int, string>> */
     public static function provideMalformedLine(): array
     {
