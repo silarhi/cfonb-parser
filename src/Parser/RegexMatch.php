@@ -21,10 +21,8 @@ use Silarhi\Cfonb\Exceptions\KeyDoesNotExistException;
 use Silarhi\Cfonb\Exceptions\ValueOfKeyIsNotAStringException;
 use Silarhi\Cfonb\Exceptions\ValueOfKeyIsNotNumericException;
 
-use function strlen;
-
 /** @internal */
-final readonly class RegexMatch
+final class RegexMatch
 {
     /** @var array<string, string|null> */
     private array $values;
@@ -45,16 +43,31 @@ final readonly class RegexMatch
                 continue;
             }
             ++$index;
-
-            if (!array_key_exists($index, $matches)) {
-                throw new KeyDoesNotExistException((string) $index);
-            }
-
-            $value = trim($matches[$index]);
-            $values[$key] = 0 !== strlen($value) ? $value : null;
+            $value = trim($matches[$index] ?? throw new KeyDoesNotExistException((string) $index));
+            $values[$key] = '' !== $value ? $value : null;
         }
 
         $this->values = $values;
+    }
+
+    /**
+     * Fast path used by LineParser: $keys are the names of the capturing parts, in order.
+     *
+     * @param list<string>             $keys
+     * @param array<array-key, string> $matches
+     */
+    public static function fromMatchingKeys(array $keys, array $matches): self
+    {
+        $values = [];
+        foreach ($keys as $i => $key) {
+            $value = trim($matches[$i + 1] ?? throw new KeyDoesNotExistException((string) ($i + 1)));
+            $values[$key] = '' !== $value ? $value : null;
+        }
+
+        $self = new self([], []);
+        $self->values = $values;
+
+        return $self;
     }
 
     public function getString(string $key, ?string $default = null): string
