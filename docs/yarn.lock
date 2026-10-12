@@ -728,10 +728,10 @@
   resolved "https://registry.yarnpkg.com/@shikijs/vscode-textmate/-/vscode-textmate-10.0.2.tgz#a90ab31d0cc1dfb54c66a69e515bf624fa7b2224"
   integrity sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==
 
-"@silarhi/docs-kit@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@silarhi/docs-kit/-/docs-kit-0.2.0.tgz#9f3e475f8f6629b39bf7a645ba6d3d224c175ec8"
-  integrity sha512-G2fPiVqUJ4zNdZY6zMggz5Sg8JKcdQSabcXSsgy0vqHb7vNYdvZ1/uexpQFbYdb/ZwQOnwIQ+1FUVWOkzfAtpg==
+"@silarhi/docs-kit@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@silarhi/docs-kit/-/docs-kit-0.3.0.tgz#a1355dc0137e4fcaaa24813995625458f2f6838e"
+  integrity sha512-pqmG3s3K4G7hcTaKvGiCks6xIbLoD3YwyqzCanybYkWOmXykRzAij4ciCHUKMxxg9Qig7e282e5TolWFEg5jzg==
   dependencies:
     "@fontsource-variable/montserrat" "^5.3.0"
     starlight-llms-txt "^0.12.0"

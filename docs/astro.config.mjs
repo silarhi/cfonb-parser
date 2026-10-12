@@ -9,8 +9,6 @@ export default defineSilarhiDocs({
         { label: 'Guides', items: [{ autogenerate: { directory: 'guides' } }] },
         { label: 'Reference', items: [{ autogenerate: { directory: 'reference' } }] },
     ],
-    starlight: {
-        // The default branch is 6.x (one branch per major), not main
-        editLink: { baseUrl: 'https://github.com/silarhi/cfonb-parser/edit/6.x/docs/' },
-    },
+    // One branch per major: "Edit page" links open the default branch
+    branch: '6.x',
 })
