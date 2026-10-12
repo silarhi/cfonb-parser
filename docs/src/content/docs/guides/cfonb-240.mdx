@@ -80,15 +80,18 @@ All the fields, with their positions in the line: [CFONB 240 objects](/reference
 
 - a header line (`31`) starts a new transfer.
 - a transaction line (`34`) is added to the current transfer.
-- a total line (`39`) is set on the current transfer, which is then added to the list.
+- a total line (`39`) is set on the current transfer, which is then added to the list and closed: the next transaction
+  or total line needs a new header.
 - a blank line is ignored.
 
 So every transfer returned has a header and a total: `getHeader()` and `getTotal()` never throw on them. A transfer
-without a total line is dropped. A transaction or a total line before the first header throws a `ParseException`.
+without a total line is dropped. A transaction or a total line outside a transfer, before the first header or between a
+total and the next header, throws a `ParseException`:
 
-:::caution
-A transaction line between a total line and the next header is added to the transfer that total closed, without error.
-:::
+```text
+Unable to attach the transaction with sequence number 2: missing "31" header record before it
+Unable to attach the total with sequence number 3: missing "31" header record before it
+```
 
 ## Amounts
 
@@ -99,7 +102,8 @@ sum of the transactions.
 ## Dates and strict mode
 
 Dates are `DateTimeImmutable` objects at midnight, read from `DDMMYY`, like the
-[CFONB 120 dates](/guides/cfonb-120/#dates). `getInitialTransactionSettlementDate()` is `null` when blank.
+[CFONB 120 dates](/guides/cfonb-120/#dates): a date that does not exist, such as `320420`, throws a `ParseException`.
+`getInitialTransactionSettlementDate()` is `null` when blank.
 
 `parse()` accepts the same `$strict` argument as `Cfonb120Reader::parse()`, but no CFONB 240 rule depends on it:
 malformed lines always throw a `ParseException`.

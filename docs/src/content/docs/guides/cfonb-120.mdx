@@ -116,7 +116,8 @@ line:
 | `{`, `A`…`I`   | positive | 0, 1…9     |
 | `}`, `J`…`R`   | negative | 0, 1…9     |
 
-`0000000166956E` with 2 decimals is `16695.65`, `0000000000227R` is `-22.79`.
+`0000000166956E` with 2 decimals is `16695.65`, with 0 decimals `1669565`; `0000000000227R` with 2 decimals is
+`-22.79`.
 
 :::tip[Floats and money]
 Round the amounts before comparing or adding them, or convert them to cents: `(int) round($amount * 100)`.
@@ -126,6 +127,9 @@ Round the amounts before comparing or adding them, or convert them to cents: `(i
 
 Dates are `DateTimeImmutable` objects at midnight, in the default time zone of PHP, read from `DDMMYY`: years `00` to
 `69` are 2000 to 2069, `70` to `99` are 1970 to 1999.
+
+A date that does not exist throws a `ParseException` instead of rolling over to the next month: day `00` or `32`, month
+`00` or `13`, 31 April, 29 February of a non-leap year. `320420` fails with `Unable to parse date "320420"`.
 
 ## Strict mode (default) vs non-strict mode
 

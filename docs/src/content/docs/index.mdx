@@ -39,7 +39,7 @@ composer require silarhi/cfonb-parser
         Getters return floats, `DateTimeImmutable` dates and nullable strings, not raw arrays.
     </Card>
     <Card title="Tolerant input, strict parsing" icon="warning">
-        `\n` and `\r\n` line endings and files without line breaks are read alike; a malformed line throws a
+        `\n`, `\r\n` and `\r` line endings and files without line breaks are read alike; a malformed line throws a
         `ParseException` instead of producing silent garbage.
     </Card>
 </CardGrid>

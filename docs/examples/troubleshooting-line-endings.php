@@ -8,6 +8,7 @@ $content = file_get_contents('statements.txt');
 $variants = [
     'LF' => $content,
     'CRLF' => str_replace("\n", "\r\n", $content),
+    'CR' => str_replace("\n", "\r", $content),
     'No line breaks' => str_replace("\n", '', $content),
 ];
 

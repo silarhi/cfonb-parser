@@ -5,7 +5,7 @@ use Silarhi\Cfonb\Cfonb120Reader;
 function validateCfonbFormat(string $content): bool
 {
     // Normalize line endings, but keep trailing spaces: they are part of the 120 characters
-    $lines = explode("\n", trim(str_replace("\r\n", "\n", $content), "\n"));
+    $lines = explode("\n", trim(str_replace(["\r\n", "\r"], "\n", $content), "\n"));
 
     foreach ($lines as $line) {
         if ('' === $line) {
