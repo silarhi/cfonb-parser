@@ -17,8 +17,14 @@ namespace Silarhi\Cfonb\Parser\Cfonb120;
 use Override;
 
 /** @internal */
-final class Line07Parser extends Line01Parser
+final class Line07Parser extends AbstractBalanceParser
 {
+    #[Override]
+    public function parse(string $content, bool $strict): NewBalance
+    {
+        return new NewBalance($this->parseBalance($content));
+    }
+
     #[Override]
     protected function getSupportedCode(): string
     {

@@ -69,6 +69,28 @@ final class Cfonb240ReaderTest extends CfonbTestCase
         (new Cfonb240Reader())->parse(implode("\n", $lines));
     }
 
+    public function testFailCauseHeaderAfterHeader(): void
+    {
+        $lines = explode("\n", trim(self::loadFixture('cfonb.240-complex-test.txt', false), "\n"));
+        // Drop the first transfer's "39" total: the second transfer's "31" header now follows an open transfer.
+        unset($lines[3]);
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to start a transfer with the "31" header record of sequence number 1: the previous transfer has no "39" total record');
+        (new Cfonb240Reader())->parse(implode("\n", $lines));
+    }
+
+    public function testFailCauseTransferNeverClosed(): void
+    {
+        $lines = explode("\n", trim(self::loadFixture('cfonb.240-complex-test.txt', false), "\n"));
+        // Drop the second transfer's "39" total, the last line of the file.
+        array_pop($lines);
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to close the transfer of the "31" header record of sequence number 1: missing "39" total record at the end of the file');
+        (new Cfonb240Reader())->parse(implode("\n", $lines));
+    }
+
     public function testComplexTest(): void
     {
         $transfers = (new Cfonb240Reader())->parse(self::loadFixture('cfonb.240-complex-test.txt', false));

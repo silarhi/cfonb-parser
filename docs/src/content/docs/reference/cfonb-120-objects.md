@@ -10,8 +10,8 @@ The objects of the `Silarhi\Cfonb\Banking` namespace returned by
 
 Strings are trimmed. A nullable getter returns `null` when its field is blank; a field read by a non-nullable getter
 must not be blank, or parsing fails (see [strict mode](/guides/cfonb-120/#strict-mode-default-vs-non-strict-mode) for
-the reference). Dates are `DateTimeImmutable` at midnight, amounts are signed floats:
-[amounts](/guides/cfonb-120/#amounts).
+the reference). Dates are `DateTimeImmutable` at midnight and mandatory, a zero-filled date fails too:
+[dates](/guides/cfonb-120/#dates). Amounts are signed floats: [amounts](/guides/cfonb-120/#amounts).
 
 ## Statement
 

@@ -54,17 +54,22 @@ The examples of this page parse this file:
 
 The reader goes through the lines in order:
 
-- a balance line (`01` or `07`) opens a statement when none is open, and closes the open one otherwise: the statement is
-  then added to the list. The reader pairs balance lines by their order, not by their code.
-- an operation line (`04`) is added to the open statement, or to the next one when none is open.
-- a detail line (`05`) is added to the last operation read. A detail line with no operation before it in the statement
-  throws a `ParseException`.
+- an old balance line (`01`) opens a statement.
+- an operation line (`04`) is added to the open statement.
+- a detail line (`05`) is added to the last operation read.
+- a new balance line (`07`) closes the open statement, which is then added to the list: the next operation line needs a
+  new `01` line.
 - a blank line is ignored.
 
+Any other order throws a `ParseException`, in strict and non-strict mode alike: a `07` line, an operation or a detail
+line with no open statement, a `01` line while a statement is still open, a statement still open at the end of the file
+(a truncated file).
+
+<Example name="cfonb120-sequence" />
+
 So every statement returned has both balances: `hasOldBalance()` and `hasNewBalance()` are always `true` on them, and
-`getOldBalance()` and `getNewBalance()` never throw. Lines after the last closing balance, a statement never closed, are
-dropped. A bank usually sends one statement per account and per day: a file can hold several days and several
-accounts, in the order the bank wrote them.
+`getOldBalance()` and `getNewBalance()` never throw. A bank usually sends one statement per account and per day: a file
+can hold several days and several accounts, in the order the bank wrote them.
 
 ## Operations
 
@@ -131,10 +136,15 @@ Dates are `DateTimeImmutable` objects at midnight, in the default time zone of P
 A date that does not exist throws a `ParseException` instead of rolling over to the next month: day `00` or `32`, month
 `00` or `13`, 31 April, 29 February of a non-leap year. `320420` fails with `Unable to parse date "320420"`.
 
+Every CFONB 120 date is mandatory, the value date of an operation included. Some banks write a date they do not have
+as zeros: `000000` fails with `Unable to parse date "000000": the date is zero-filled (empty), but this field is
+mandatory`, in strict and non-strict mode alike.
+
 ## Strict mode (default) vs non-strict mode
 
 In strict mode, any line that cannot be parsed throws a `ParseException`. Non-strict mode only relaxes one rule: a blank
-operation reference on a `04` line becomes an empty string instead of an error. Every other error is still thrown.
+operation reference on a `04` line becomes an empty string instead of an error. Every other error is still thrown, the
+[order of the records](#how-statements-are-built) and zero-filled [dates](#dates) included.
 
 ```php
 use Silarhi\Cfonb\Cfonb120Reader;

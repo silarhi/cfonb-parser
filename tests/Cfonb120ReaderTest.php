@@ -23,6 +23,11 @@ use function sprintf;
 
 final class Cfonb120ReaderTest extends CfonbTestCase
 {
+    private const OLD_BALANCE = '0110278    02204EUR2 00012345603  060420                                                  0000000166956E060420070420    ';
+    private const OPERATION = '0410556677202204EUR2 00012345603B1070420  070420PRLV SEPA ONLINE SAS             0000000000000000000227R                ';
+    private const DETAIL = '0510556677202204EUR2 00012345603B1070420     LIBDEDIBOX 3706114                                                         ';
+    private const NEW_BALANCE = '0710278    02204EUR2 00012345603  070420                                                  0000000166728F                ';
+
     public function testEmpty(): void
     {
         $reader = new Cfonb120Reader();
@@ -56,6 +61,61 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         $this->expectException(ParseException::class);
         $this->expectExceptionMessage('Unable to parse date "320420"');
         $reader->parse('0110278    02204EUR2 00012345603  320420                                                  0000000166956E060420070420    ');
+    }
+
+    public function testFailCauseZeroFilledValueDate(): void
+    {
+        $reader = new Cfonb120Reader();
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to parse date "000000": the date is zero-filled (empty), but this field is mandatory');
+        $reader->parse(implode("\n", [self::OLD_BALANCE, substr_replace(self::OPERATION, '000000', 42, 6), self::NEW_BALANCE]));
+    }
+
+    /** @return iterable<string, array{list<string>, string}> */
+    public static function provideOutOfSequenceCase(): iterable
+    {
+        yield 'new balance first' => [
+            [self::NEW_BALANCE, self::OLD_BALANCE, self::OPERATION, self::NEW_BALANCE],
+            'Unable to close a statement with the "07" new balance of account 00012345603 dated 2020-04-07: missing "01" old balance record before it',
+        ];
+        yield 'operation before any old balance' => [
+            [self::OPERATION, self::OLD_BALANCE, self::NEW_BALANCE],
+            'Unable to attach the operation with code B1 dated 2020-04-07: missing "01" old balance record before it',
+        ];
+        yield 'operation after a new balance' => [
+            [self::OLD_BALANCE, self::NEW_BALANCE, self::OPERATION],
+            'Unable to attach the operation with code B1 dated 2020-04-07: missing "01" old balance record before it',
+        ];
+        yield 'detail after a new balance' => [
+            [self::OLD_BALANCE, self::OPERATION, self::NEW_BALANCE, self::DETAIL],
+            'Unable to attach a detail for operation with code B1',
+        ];
+        yield 'old balance while a statement is open' => [
+            [self::OLD_BALANCE, self::OPERATION, self::OLD_BALANCE, self::NEW_BALANCE],
+            'Unable to open a statement with the "01" old balance of account 00012345603 dated 2020-04-06: the statement of account 00012345603 opened on 2020-04-06 has no "07" new balance record',
+        ];
+        yield 'statement never closed' => [
+            [self::OLD_BALANCE, self::NEW_BALANCE, self::OLD_BALANCE, self::OPERATION, self::DETAIL],
+            'Unable to close the statement of account 00012345603 opened on 2020-04-06: missing "07" new balance record at the end of the file',
+        ];
+    }
+
+    /** @param list<string> $lines */
+    #[DataProvider('provideOutOfSequenceCase')]
+    public function testFailOutOfSequence(array $lines, string $message): void
+    {
+        $reader = new Cfonb120Reader();
+
+        // The sequence of the records is checked in strict and non-strict mode alike.
+        foreach ([true, false] as $strict) {
+            try {
+                $reader->parse(implode("\n", $lines), $strict);
+                self::fail(sprintf('A ParseException should be thrown in %s mode', $strict ? 'strict' : 'non-strict'));
+            } catch (ParseException $e) {
+                self::assertSame($message, $e->getMessage());
+            }
+        }
     }
 
     public function testCrLineEndings(): void

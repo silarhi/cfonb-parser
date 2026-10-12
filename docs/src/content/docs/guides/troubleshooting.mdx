@@ -11,16 +11,23 @@ import Example from '../../../components/Example.astro'
 
 The readers throw a `ParseException` on the first line they cannot parse. The message tells what failed:
 
-| Message                                                                                         | Cause                                                                                                                                                                          |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Unable to find a parser for the line : "…"`                                                    | The line is not 120 (CFONB 120) or 240 (CFONB 240) characters long, or its record code is unknown: CFONB 120 supports `01`, `04`, `05` and `07`, CFONB 240 `31`, `34` and `39` |
-| `Regex does not match the line "…"`                                                             | A field holds unexpected characters: letters in a numeric field, a date or an amount, an invalid sign character                                                                |
-| `The value of key "…" is not a string`                                                          | A required field is blank, e.g. the currency of a balance, or the reference of an operation in strict mode                                                                     |
-| `The value of key "…" is not numeric`                                                           | A numeric field is blank, e.g. the number of decimals of an amount                                                                                                             |
-| `Unable to attach a detail for operation with code …`                                           | A `05` detail line with no `04` operation before it in its statement                                                                                                           |
-| `Unable to parse date "…"`                                                                      | A date that does not exist: day `00` or `32`, month `00` or `13`, 31 April, 29 February of a non-leap year                                                                     |
-| `Unable to attach the transaction with sequence number …: missing "31" header record before it` | A `34` transaction line outside a transfer: before the first `31` header, or after a `39` total without a new `31` header                                                      |
-| `Unable to attach the total with sequence number …: missing "31" header record before it`       | A `39` total line outside a transfer: before the first `31` header, or after a `39` total without a new `31` header                                                            |
+| Message                                                                                                                                            | Cause                                                                                                                                                                          |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Unable to find a parser for the line : "…"`                                                                                                       | The line is not 120 (CFONB 120) or 240 (CFONB 240) characters long, or its record code is unknown: CFONB 120 supports `01`, `04`, `05` and `07`, CFONB 240 `31`, `34` and `39` |
+| `Regex does not match the line "…"`                                                                                                                | A field holds unexpected characters: letters in a numeric field, a date or an amount, an invalid sign character                                                                |
+| `The value of key "…" is not a string`                                                                                                             | A required field is blank, e.g. the currency of a balance, or the reference of an operation in strict mode                                                                     |
+| `The value of key "…" is not numeric`                                                                                                              | A numeric field is blank, e.g. the number of decimals of an amount                                                                                                             |
+| `Unable to attach a detail for operation with code …`                                                                                              | A `05` detail line with no `04` operation before it in its statement                                                                                                           |
+| `Unable to attach the operation with code … dated …: missing "01" old balance record before it`                                                    | A `04` operation line outside a statement: before the first `01` old balance, or after a `07` new balance without a new `01` old balance                                       |
+| `Unable to close a statement with the "07" new balance of account … dated …: missing "01" old balance record before it`                            | A `07` new balance line with no open statement: before the first `01` old balance, or right after another `07` new balance                                                     |
+| `Unable to open a statement with the "01" old balance of account … dated …: the statement of account … opened on … has no "07" new balance record` | A `01` old balance line while a statement is still open: the `07` new balance of that statement is missing                                                                     |
+| `Unable to close the statement of account … opened on …: missing "07" new balance record at the end of the file`                                   | The last statement has no `07` new balance: the file is likely truncated                                                                                                       |
+| `Unable to parse date "…"`                                                                                                                         | A date that does not exist: day `00` or `32`, month `00` or `13`, 31 April, 29 February of a non-leap year                                                                     |
+| `Unable to parse date "000000": the date is zero-filled (empty), but this field is mandatory`                                                      | A mandatory date written as zeros, e.g. the value date of an operation: some banks write a date they do not have this way                                                      |
+| `Unable to attach the transaction with sequence number …: missing "31" header record before it`                                                    | A `34` transaction line outside a transfer: before the first `31` header, or after a `39` total without a new `31` header                                                      |
+| `Unable to attach the total with sequence number …: missing "31" header record before it`                                                          | A `39` total line outside a transfer: before the first `31` header, or after a `39` total without a new `31` header                                                            |
+| `Unable to start a transfer with the "31" header record of sequence number …: the previous transfer has no "39" total record`                      | A `31` header line while a transfer is still open: the `39` total of that transfer is missing                                                                                  |
+| `Unable to close the transfer of the "31" header record of sequence number …: missing "39" total record at the end of the file`                    | The last transfer has no `39` total: the file is likely truncated                                                                                                              |
 
 <Example name="troubleshooting-error" />
 
@@ -37,7 +44,8 @@ try {
     // - Invalid line length (should be 120 characters)
     // - Unknown record code (CFONB 120 supports 01, 04, 05 and 07)
     // - Malformed line format
-    // - Invalid or out-of-range date (e.g. day 32)
+    // - Invalid, out-of-range (e.g. day 32) or zero-filled date
+    // - Records out of order (e.g. a missing "07" new balance)
     // - Invalid amount format
 
     echo "Parse error: " . $e->getMessage() . "\n";
@@ -52,8 +60,7 @@ Non-strict mode only tolerates blank operation references: see
 [strict mode](/guides/cfonb-120/#strict-mode-default-vs-non-strict-mode).
 
 :::caution[What is not checked]
-The readers check each line, and that every detail, transaction and total has a record to attach to, not the
-consistency of the file: the closing balance is not compared with the opening balance and the operations, and the total
+The readers check each line and the order of the records, not the consistency of the file: the closing balance is not compared with the opening balance and the operations, and the total
 of a transfer is not compared with its transactions.
 :::
 

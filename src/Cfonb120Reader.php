@@ -23,6 +23,7 @@ use Silarhi\Cfonb\Parser\Cfonb120\Line01Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line04Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line05Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\Line07Parser;
+use Silarhi\Cfonb\Parser\Cfonb120\NewBalance;
 use Silarhi\Cfonb\Parser\EmptyParser;
 use Silarhi\Cfonb\Parser\FileParser;
 
@@ -52,20 +53,32 @@ final readonly class Cfonb120Reader
     {
         $statementList = [];
         $lastOperation = null;
-        $statement = new Statement();
+        // The statement opened by a "01" old balance, until its "07" new balance closes it.
+        $statement = null;
 
         foreach ($this->fileParser->parse($content, self::LINE_LENGTH, $strict) as $result) {
             if ($result instanceof Balance) {
-                $lastOperation = null;
-
-                if (false === $statement->hasOldBalance()) {
-                    $statement->setOldBalance($result);
-                } else {
-                    $statement->setNewBalance($result);
-                    $statementList[] = $statement;
-                    $statement = new Statement();
+                if (null !== $statement) {
+                    throw new ParseException(sprintf('Unable to open a statement with the "01" old balance of account %s dated %s: the statement of account %s opened on %s has no "07" new balance record', $result->getAccountNumber(), $result->getDate()->format('Y-m-d'), $statement->getOldBalance()->getAccountNumber(), $statement->getOldBalance()->getDate()->format('Y-m-d')));
                 }
+
+                $lastOperation = null;
+                $statement = new Statement();
+                $statement->setOldBalance($result);
+            } elseif ($result instanceof NewBalance) {
+                if (null === $statement) {
+                    throw new ParseException(sprintf('Unable to close a statement with the "07" new balance of account %s dated %s: missing "01" old balance record before it', $result->balance->getAccountNumber(), $result->balance->getDate()->format('Y-m-d')));
+                }
+
+                $lastOperation = null;
+                $statement->setNewBalance($result->balance);
+                $statementList[] = $statement;
+                $statement = null;
             } elseif ($result instanceof Operation) {
+                if (null === $statement) {
+                    throw new ParseException(sprintf('Unable to attach the operation with code %s dated %s: missing "01" old balance record before it', $result->getCode(), $result->getDate()->format('Y-m-d')));
+                }
+
                 $lastOperation = $result;
                 $statement->addOperation($result);
             } elseif ($result instanceof OperationDetail) {
@@ -75,6 +88,10 @@ final readonly class Cfonb120Reader
 
                 $lastOperation->addDetails($result);
             }
+        }
+
+        if (null !== $statement) {
+            throw new ParseException(sprintf('Unable to close the statement of account %s opened on %s: missing "07" new balance record at the end of the file', $statement->getOldBalance()->getAccountNumber(), $statement->getOldBalance()->getDate()->format('Y-m-d')));
         }
 
         return $statementList;
