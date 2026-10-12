@@ -1,0 +1,2 @@
+Unable to close the statement of account 00020427603 opened on 2020-04-08: missing "07" new balance record at the end of the file
+Unable to attach the operation with code B1 dated 2020-04-07: missing "01" old balance record before it

@@ -79,7 +79,7 @@ final class Line34Parser extends AbstractCfonb240Parser
             $regexMatch->getStringOrNull('recipient_name_2'),
             $regexMatch->getStringOrNull('presenter_reference'),
             $regexMatch->getStringOrNull('description'),
-            $regexMatch->isNull('initial_transaction_settlement_date') ? null : $this->parseDate->parse($regexMatch->getString('initial_transaction_settlement_date')),
+            $this->parseDate->parseOrNull($regexMatch->getStringOrNull('initial_transaction_settlement_date')),
             $regexMatch->getStringOrNull('initial_operation_presenter_reference'),
             $this->parseAmount->parser($regexMatch->getFloat('transaction_amount'))
         );

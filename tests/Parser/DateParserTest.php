@@ -56,6 +56,35 @@ final class DateParserTest extends TestCase
         $sUT->parse($content);
     }
 
+    public function testFailZeroFilled(): void
+    {
+        $sUT = new DateParser();
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to parse date "000000": the date is zero-filled (empty), but this field is mandatory');
+
+        $sUT->parse('000000');
+    }
+
+    public function testParseOrNull(): void
+    {
+        $sUT = new DateParser();
+
+        self::assertNull($sUT->parseOrNull(null));
+        self::assertNull($sUT->parseOrNull('000000'));
+        self::assertSame('2020-10-10 00:00:00', $sUT->parseOrNull('101020')?->format('Y-m-d H:i:s'));
+    }
+
+    public function testParseOrNullFailOutOfRange(): void
+    {
+        $sUT = new DateParser();
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to parse date "320420"');
+
+        $sUT->parseOrNull('320420');
+    }
+
     /** @return Generator<int, array<int, string>> */
     public static function provideOkCase(): iterable
     {

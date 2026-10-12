@@ -66,4 +66,12 @@ final class Line34ParserTest extends TestCase
         self::assertSame('22140469732', $balance->getRecipientAccountNumber1());
         self::assertSame('20', $balance->getOperationCode());
     }
+
+    public function testZeroFilledInitialSettlementDate(): void
+    {
+        // Some banks zero-fill an empty date instead of leaving it blank.
+        $transaction = $this->parse('3400000220211220E0066149890000122140469732OFFICE NATL DU AAAAAAAA            300661077100020030401ZZZZZZZZ                                                                                                              000000      000000171200');
+
+        self::assertNull($transaction->getInitialTransactionSettlementDate());
+    }
 }

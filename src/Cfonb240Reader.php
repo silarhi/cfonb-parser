@@ -53,6 +53,9 @@ final readonly class Cfonb240Reader
 
         foreach ($this->fileParser->parse($content, self::LINE_LENGTH, $strict) as $result) {
             if ($result instanceof Header) {
+                if (null !== $instance) {
+                    throw new ParseException(sprintf('Unable to start a transfer with the "31" header record of sequence number %s: the previous transfer has no "39" total record', $result->getSequenceNumber()));
+                }
                 $instance = new Transfer();
                 $instance->setHeader($result);
             } elseif ($result instanceof Total) {
@@ -69,6 +72,10 @@ final readonly class Cfonb240Reader
                 }
                 $instance->addTransaction($result);
             }
+        }
+
+        if (null !== $instance) {
+            throw new ParseException(sprintf('Unable to close the transfer of the "31" header record of sequence number %s: missing "39" total record at the end of the file', $instance->getHeader()->getSequenceNumber()));
         }
 
         return $list;
