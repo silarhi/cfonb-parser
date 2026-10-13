@@ -1,4 +1,4 @@
-# 6.5 (unreleased)
+# 6.5
 
 ## Upgrade note
 
