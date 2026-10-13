@@ -82,7 +82,7 @@ All the fields, with their positions in the line: [CFONB 240 objects](/reference
 - a transaction line (`34`) is added to the current transfer.
 - a total line (`39`) is set on the current transfer, which is then added to the list and closed: the next transaction
   or total line needs a new header.
-- a blank line is ignored.
+- an empty line is ignored; a line of spaces or tabs throws a `ParseException`.
 
 So every transfer returned has a header and a total: `getHeader()` and `getTotal()` never throw on them. Any other order
 throws a `ParseException`: a transaction or a total line outside a transfer (before the first header, or between a
@@ -95,6 +95,11 @@ Unable to start a transfer with the "31" header record of sequence number 1: the
 Unable to close the transfer of the "31" header record of sequence number 1: missing "39" total record at the end of the file
 ```
 
+:::note[Since 6.5]
+6.4 did not check this order: such records were attached to the wrong transfer, or dropped, instead of throwing. The
+date checks below are new in 6.5 too.
+:::
+
 ## Amounts
 
 Transaction and total amounts are 12 digits in cents, read as floats with 2 decimals: `000000171200` is `1712.00`.
@@ -103,7 +108,7 @@ sum of the transactions.
 
 ## Dates and strict mode
 
-Dates are `DateTimeImmutable` objects at midnight, read from `DDMMYY`, like the
+Dates are typed `DateTimeInterface` and are `DateTimeImmutable` objects at midnight, read from `DDMMYY`, like the
 [CFONB 120 dates](/guides/cfonb-120/#dates): a date that does not exist, such as `320420`, throws a `ParseException`.
 `getInitialTransactionSettlementDate()` is `null` when blank or zero-filled (`000000`); the other dates are mandatory, and
 `000000` there throws a `ParseException`.

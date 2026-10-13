@@ -70,8 +70,9 @@ foreach ($reader->parseCfonb240('My Content') as $transfer) {
 ## Input
 
 - `$content` is the contents of the file, not its path: read it with `file_get_contents()` or from an upload.
-- Lines are separated by `\n`, `\r\n` or `\r`; a file without line breaks is split every `LINE_LENGTH` characters. Blank
-  lines, and line breaks at the start and the end, are ignored.
+- Lines are separated by `\n`, `\r\n` or `\r` (`\r` since 6.5); a file without line breaks is split every `LINE_LENGTH`
+  characters. Empty lines, and line breaks at the start and the end, are ignored; a line of spaces or tabs is not, and
+  throws a `ParseException`.
 - The characters are kept as they are: no encoding conversion, only the whitespace around each field is trimmed.
 - An empty string gives an empty list.
 

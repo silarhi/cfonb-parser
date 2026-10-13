@@ -14,6 +14,11 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+/**
+ * Base type of the parsed records.
+ *
+ * @internal
+ */
 abstract class Element
 {
 }

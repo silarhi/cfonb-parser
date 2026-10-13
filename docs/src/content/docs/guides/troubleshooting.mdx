@@ -11,9 +11,17 @@ import Example from '../../../components/Example.astro'
 
 The readers throw a `ParseException` on the first line they cannot parse. The message tells what failed:
 
+:::caution[Upgrading to 6.5]
+6.5, not released yet, rejects files that 6.4 accepted: records out of order and zero-filled or out-of-range dates
+throw since 6.5, in strict and non-strict mode alike, where 6.4 returned wrong data silently. The messages about the
+order of the records (`missing "01" old balance`, `has no "07" new balance`, `missing "31" header`, `has no "39" total`)
+and about dates are new in 6.5. Parse a sample of the files you receive before upgrading: see the
+[changelog](https://github.com/silarhi/cfonb-parser/blob/6.x/CHANGELOG.md).
+:::
+
 | Message                                                                                                                                            | Cause                                                                                                                                                                          |
 | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Unable to find a parser for the line : "…"`                                                                                                       | The line is not 120 (CFONB 120) or 240 (CFONB 240) characters long, or its record code is unknown: CFONB 120 supports `01`, `04`, `05` and `07`, CFONB 240 `31`, `34` and `39` |
+| `Unable to find a parser for the line :`<br />`"…"`                                                                                                | The line is not 120 (CFONB 120) or 240 (CFONB 240) characters long, or its record code is unknown: CFONB 120 supports `01`, `04`, `05` and `07`, CFONB 240 `31`, `34` and `39` |
 | `Regex does not match the line "…"`                                                                                                                | A field holds unexpected characters: letters in a numeric field, a date or an amount, an invalid sign character                                                                |
 | `The value of key "…" is not a string`                                                                                                             | A required field is blank, e.g. the currency of a balance, or the reference of an operation in strict mode                                                                     |
 | `The value of key "…" is not numeric`                                                                                                              | A numeric field is blank, e.g. the number of decimals of an amount                                                                                                             |
@@ -72,8 +80,9 @@ To reject a file before parsing it, e.g. to tell an uploader it is not a CFONB 1
 
 ## Line endings and trailing spaces
 
-`\n`, `\r\n` and `\r` (classic Mac OS) line endings are read alike, as are files with no line breaks at all, split
-every 120 (or 240) characters. Blank lines are ignored.
+`\n`, `\r\n` and `\r` (classic Mac OS, since 6.5) line endings are read alike, as are files with no line breaks at
+all, split every 120 (or 240) characters. Empty lines are ignored, but not a line of spaces or tabs: it throws
+`Unable to find a parser for the line`.
 
 <Example name="troubleshooting-line-endings" />
 
