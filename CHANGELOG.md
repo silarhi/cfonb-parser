@@ -1,4 +1,12 @@
-# 6.5
+# 6.5 (unreleased)
+
+## Upgrade note
+
+**6.5 rejects files that 6.4 accepted.** The record order of CFONB 120 and 240 files and the dates are now checked, in
+strict and non-strict mode alike: a file whose records are out of order, or that holds a zero-filled or out-of-range
+mandatory date, now throws a `ParseException` where 6.4 returned wrong data silently. `$strict = false` does not restore
+the 6.4 behaviour. Before upgrading, parse a sample of the files you receive with 6.5 and catch `ParseException`: the
+[troubleshooting guide](https://cfonb-parser.silarhi.dev/guides/troubleshooting/) lists the new messages.
 
 ## Changed
 
@@ -19,6 +27,36 @@ Files that parsed with 6.4 can now throw a `ParseException`: every case below us
 ## Added
 
 - Support `\r` (classic Mac OS) line endings
+
+# 6.4
+
+## Changed
+
+- 6.4.2: CFONB 120 and 240 parsing is about 20% faster, with 12–17% less peak memory, and gives the same results
+
+6.4.0 and 6.4.1 hold no change to the library itself: same code as 6.3, development tooling only.
+
+# 6.3
+
+## Changed
+
+- [BC] Every class is now `final`: the `Banking` objects (`Statement`, `Balance`, `Operation`, `OperationDetail`,
+  `Transfer`, `Header`, `Transaction`, `Total`), `CfonbCodes` and the readers, which are also `readonly`
+  (`final readonly class Cfonb120Reader`, `Cfonb240Reader` and `CfonbReader`). Wrap them instead of extending them
+
+# 6.2
+
+## Fixed
+
+- 6.2.1: CFONB 120: `Operation::getBankOperationReference()` accepts any character, not only letters, digits and
+  spaces: a reference holding e.g. `-` or `/` no longer makes the `04` line fail to parse
+
+# 6.1
+
+## Added
+
+- CFONB 120: `Operation::getBankOperationReference()`, the bank operation reference (positions 105 to 120 of the `04`
+  line) that identifies an operation, `null` when blank
 
 # 6.0
 

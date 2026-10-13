@@ -14,8 +14,9 @@ yarn install # Git hooks: lint-staged formats the staged files on commit
 
 ## Quality checks
 
-The CI runs them all, on every supported PHP version. Please make sure your changes pass them before submitting a pull
-request:
+Please make sure your changes pass them before submitting a pull request. The CI runs PHPUnit on every supported PHP
+version, with the lowest and the latest dependencies, and the other checks once (PHPStan, Psalm, PHP CS Fixer,
+`composer validate` and `composer normalize`, the documentation examples). Rector is not run by the CI: run it locally.
 
 ```bash
 # Run tests
@@ -47,7 +48,9 @@ php docs/scripts/render-examples.php --check
 All at once:
 
 ```bash
-vendor/bin/phpunit && vendor/bin/phpstan analyse && vendor/bin/psalm && vendor/bin/php-cs-fixer fix --dry-run --diff
+vendor/bin/phpunit && vendor/bin/phpstan analyse && vendor/bin/psalm && vendor/bin/php-cs-fixer fix --dry-run --diff \
+    && vendor/bin/rector process --dry-run && composer validate --strict && composer normalize --dry-run \
+    && php docs/scripts/render-examples.php --check
 ```
 
 ## Documentation

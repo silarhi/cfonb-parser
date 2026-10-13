@@ -14,6 +14,11 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+/**
+ * Result of an empty line, skipped by the readers.
+ *
+ * @internal
+ */
 final class Noop extends Element
 {
 }

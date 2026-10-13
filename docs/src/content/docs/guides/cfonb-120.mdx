@@ -59,11 +59,16 @@ The reader goes through the lines in order:
 - a detail line (`05`) is added to the last operation read.
 - a new balance line (`07`) closes the open statement, which is then added to the list: the next operation line needs a
   new `01` line.
-- a blank line is ignored.
+- an empty line is ignored; a line of spaces or tabs throws a `ParseException`.
 
 Any other order throws a `ParseException`, in strict and non-strict mode alike: a `07` line, an operation or a detail
 line with no open statement, a `01` line while a statement is still open, a statement still open at the end of the file
 (a truncated file).
+
+:::note[Since 6.5]
+6.4 did not check this order: it paired the balance lines by their position in the file, so records out of order
+produced wrong statements silently instead of throwing.
+:::
 
 <Example name="cfonb120-sequence" />
 
@@ -139,6 +144,11 @@ A date that does not exist throws a `ParseException` instead of rolling over to 
 Every CFONB 120 date is mandatory, the value date of an operation included. Some banks write a date they do not have
 as zeros: `000000` fails with `Unable to parse date "000000": the date is zero-filled (empty), but this field is
 mandatory`, in strict and non-strict mode alike.
+
+:::note[Since 6.5]
+6.4 read a zero-filled date as 30 November 1999, and a date that does not exist as a date of the next month, instead of
+throwing.
+:::
 
 ## Strict mode (default) vs non-strict mode
 

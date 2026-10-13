@@ -16,6 +16,7 @@ namespace Silarhi\Cfonb\Contracts;
 
 use Silarhi\Cfonb\Banking\Element;
 
+/** @internal */
 interface ParserInterface
 {
     /**

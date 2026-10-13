@@ -1,13 +1,12 @@
 {
     "name": "silarhi/cfonb-parser",
-    "description": "A PHP Parser for CFONB transactions with zero dependencies",
+    "description": "A PHP parser for CFONB 120 and 240 bank files (statements and transfers), with zero dependencies",
     "license": "MIT",
     "type": "library",
     "keywords": [
         "cfonb",
         "parser",
-        "etebac",
-        "swift"
+        "etebac"
     ],
     "authors": [
         {

@@ -36,10 +36,11 @@ composer require silarhi/cfonb-parser
         negative.
     </Card>
     <Card title="Typed value objects" icon="setting">
-        Getters return floats, `DateTimeImmutable` dates and nullable strings, not raw arrays.
+        Getters return floats, dates (`DateTimeImmutable`, typed `DateTimeInterface` for CFONB 240) and nullable
+        strings, not raw arrays.
     </Card>
     <Card title="Tolerant input, strict parsing" icon="warning">
-        `\n`, `\r\n` and `\r` line endings and files without line breaks are read alike; a malformed line or a record
-        out of order throws a `ParseException` instead of producing silent garbage.
+        `\n`, `\r\n` and `\r` (since 6.5) line endings and files without line breaks are read alike; a malformed line,
+        or since 6.5 a record out of order, throws a `ParseException` instead of producing silent garbage.
     </Card>
 </CardGrid>
