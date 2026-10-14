@@ -8,6 +8,7 @@
 /docs/                  export-ignore
 /CONTRIBUTING.md        export-ignore
 /package.json           export-ignore
-/yarn.lock              export-ignore
+/pnpm-lock.yaml         export-ignore
+/pnpm-workspace.yaml    export-ignore
 /psalm_baseline.xml     export-ignore
 /renovate.json          export-ignore
