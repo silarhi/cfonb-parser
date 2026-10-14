@@ -11,5 +11,6 @@
         "@astrojs/starlight": "^0.42.5",
         "@silarhi/docs-kit": "^0.6.0",
         "astro": "^7.3.8"
-    }
+    },
+    "packageManager": "pnpm@12.11.2"
 }

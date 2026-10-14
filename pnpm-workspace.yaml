@@ -1,0 +1,3 @@
+# Dependencies allowed to run install scripts (pnpm blocks them by default).
+# None needed so far: add an entry here if `pnpm install` fails with ERR_PNPM_IGNORED_BUILDS.
+allowBuilds: {}

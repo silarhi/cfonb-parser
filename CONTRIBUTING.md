@@ -9,7 +9,7 @@ the current major version.
 ```bash
 # Install dependencies
 composer install
-yarn install # Git hooks: lint-staged formats the staged files on commit
+pnpm install # Git hooks: lint-staged formats the staged files on commit
 ```
 
 ## Quality checks
@@ -60,8 +60,8 @@ The documentation site, [cfonb-parser.silarhi.dev](https://cfonb-parser.silarhi.
 
 ```bash
 cd docs
-yarn install
-yarn dev # http://localhost:4321
+pnpm install
+pnpm dev # http://localhost:4321
 ```
 
 The examples of the pages are real: `docs/examples/*.php` parse the sample files of `docs/examples/`, and
