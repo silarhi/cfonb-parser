@@ -1,3 +1,8 @@
 # Dependencies allowed to run install scripts (pnpm blocks them by default).
 # None needed so far: add an entry here if `pnpm install` fails with ERR_PNPM_IGNORED_BUILDS.
 allowBuilds: {}
+
+# Our own theme, released by us (github.com/silarhi/docs-kit): installed as soon as it is published, without
+# waiting out pnpm's minimum release age
+minimumReleaseAgeExclude:
+  - '@silarhi/docs-kit'
