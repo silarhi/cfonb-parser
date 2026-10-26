@@ -8,9 +8,9 @@
         "preview": "astro preview"
     },
     "dependencies": {
-        "@astrojs/starlight": "^0.42.6",
-        "@silarhi/docs-kit": "^0.8.0",
-        "astro": "^7.4.0"
+        "@astrojs/starlight": "^0.42.7",
+        "@silarhi/docs-kit": "^0.8.1",
+        "astro": "^7.4.2"
     },
     "packageManager": "pnpm@12.15.0"
 }
