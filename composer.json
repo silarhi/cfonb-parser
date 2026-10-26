@@ -18,16 +18,16 @@
         "php": ">=8.2"
     },
     "require-dev": {
-        "dg/bypass-finals": "^1.11.0",
+        "dg/bypass-finals": "^1.11.1",
         "ergebnis/composer-normalize": "^2.54.0",
         "friendsofphp/php-cs-fixer": "^3.95.27",
         "phpstan/extension-installer": "^1.4.3",
-        "phpstan/phpstan": "^2.3.1",
+        "phpstan/phpstan": "^2.3.2",
         "phpstan/phpstan-strict-rules": "^2.1.0",
         "phpunit/phpunit": "^11.5.57 || ^12.5.38 || ^13.4.1",
         "rector/rector": "^2.7.0",
         "rector/swiss-knife": "^2.7.0",
-        "vimeo/psalm": "^5.26.1 || ^6.20.0"
+        "vimeo/psalm": "^5.26.1 || ^6.20.1"
     },
     "autoload": {
         "psr-4": {
