@@ -6,7 +6,12 @@
     "keywords": [
         "cfonb",
         "parser",
-        "etebac"
+        "etebac",
+        "bank",
+        "bank-statement",
+        "cfonb120",
+        "cfonb240",
+        "ebics"
     ],
     "authors": [
         {
@@ -14,6 +19,12 @@
             "email": "hello@silarhi.fr"
         }
     ],
+    "homepage": "https://cfonb-parser.silarhi.dev",
+    "support": {
+        "issues": "https://github.com/silarhi/cfonb-parser/issues",
+        "source": "https://github.com/silarhi/cfonb-parser",
+        "docs": "https://cfonb-parser.silarhi.dev"
+    },
     "require": {
         "php": ">=8.2"
     },
