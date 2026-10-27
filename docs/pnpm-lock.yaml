@@ -170,8 +170,8 @@ importers:
         specifier: ^0.42.7
         version: 0.42.7(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1))
       '@silarhi/docs-kit':
-        specifier: ^0.8.1
-        version: 0.8.1(@astrojs/markdown-satteri@0.4.5)(@astrojs/starlight@0.42.7(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1)))(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1))
+        specifier: ^0.9.0
+        version: 0.9.0(@astrojs/markdown-satteri@0.4.5)(@astrojs/starlight@0.42.7(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1)))(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1))
       astro:
         specifier: ^7.4.2
         version: 7.4.2(@types/node@24.19.2)(yaml@2.9.1)
@@ -747,8 +747,8 @@ packages:
   '@shikijs/vscode-textmate@10.1.0':
     resolution: {integrity: sha512-cVBuhDQjBZaNMTwBquYfPydrUP+E3hE6oYGasx8h6ZrODIM7/r+gxLDXdd66oszbrggZHEntdE6j+5gYIVyMWQ==}
 
-  '@silarhi/docs-kit@0.8.1':
-    resolution: {integrity: sha512-RQrwHjU6FI6WqE1YpRjElWngPcCmeFd+X4wZVkW3bd0i4O4q1OpLbPjOGhAwI4ZH2/dV1OJxLIqOXpwlnfBH8A==}
+  '@silarhi/docs-kit@0.9.0':
+    resolution: {integrity: sha512-SqwcrjJ3QJy5nOzh7LrvOwn6cTMEYtXB1GVJhqOKbJu6GGAF/lAa+pIa7PprlLJQr3F/dBJ/52pHqTCRIff+2w==}
     peerDependencies:
       '@astrojs/starlight': '>=0.42.0'
       astro: ^7.2.10
@@ -801,6 +801,9 @@ packages:
   '@ungap/structured-clone@1.4.0':
     resolution: {integrity: sha512-1mEZtMKPM09vDmQt5y7YvmN2+DFTP7Tg0EWXdic8/C6VRnpb33e4ghisCIE3WZjsE2N8mf+QV1Zqh7ZFYLWInQ==}
 
+  '@webgpu/types@0.1.21':
+    resolution: {integrity: sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==}
+
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -834,6 +837,11 @@ packages:
     peerDependencies:
       astro: ^4.0.0-beta || ^5.0.0-beta || ^3.3.0 || ^6.0.0-beta || ^7.0.0
 
+  astro-og-canvas@0.13.2:
+    resolution: {integrity: sha512-nD3KIXR2L27tJMYquxDzGuAwaR4DwK1XjvaEWMJXtcakWcHWahOyMAfOuPMET5qJaHc1wETxOeRQGq5KnPVH7w==}
+    peerDependencies:
+      astro: ^5.0.0 || ^6.0.0 || ^7.0.0
+
   astro@7.4.2:
     resolution: {integrity: sha512-FAH4cdDlFaVnQGjazLTEIC5vJqGlo5XANc1wIbzQHIqAjJTll/RWTUs+SPNW1JdezG4YGxMZllaE5A41T2kzhA==}
     engines: {node: '>=22.23.4', npm: '>=9.6.5', pnpm: '>=7.1.0'}
@@ -851,6 +859,9 @@ packages:
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
 
+  base-64@1.0.0:
+    resolution: {integrity: sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==}
+
   bcp-47-match@2.0.3:
     resolution: {integrity: sha512-JtTezzbAibu8G0R9op9zb3vcWZd9JF6M0xOYGPn0fNCd7wOpRB1mU2mH9T8gaBGbAAyIIVgB2G7xG0GP98zMAQ==}
 
@@ -863,6 +874,9 @@ packages:
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
+
+  canvaskit-wasm@0.42.0:
+    resolution: {integrity: sha512-N3ikotmzYwDVAcpQKDMptBT2P5pIEWS9ywdmrQA2awwaMF9cxKEFuxZZHv9ay1Em9kDjxDsPtwUzDm1uNj136g==}
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -965,6 +979,10 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
+  deterministic-object-hash@2.0.2:
+    resolution: {integrity: sha512-KxektNH63SrbfUyDiwXqRb1rLwKt33AmMv+5Nhsw1kqZ13SJBRTgZHtGbE+hH3a1mVW1cz+4pqSWVPAtLVXTzQ==}
+    engines: {node: '>=18'}
+
   devalue@6.0.3:
     resolution: {integrity: sha512-3woMEITftG1wKeO/4d/QXH1DVKctTSZg3jNGPpjp9hNr5Hos8MCFF5McTML5ZtgKDObm2R591B0spRp2IVernA==}
     engines: {node: '>=18'}
@@ -1004,6 +1022,10 @@ packages:
   entities@6.0.1:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
     engines: {node: '>=0.12'}
+
+  entities@8.1.0:
+    resolution: {integrity: sha512-kxL7msIffSuh9aaFAMD7rxAIuTRMAHMeBtgHW2yUdWw732ZNh4MehkF2gdjvtdmikkaIP9bFDDJOPlsvm7avrA==}
+    engines: {node: '>=20.19.0'}
 
   es-module-lexer@3.0.4:
     resolution: {integrity: sha512-BldNY5mwkVu+cQ5Ymn3e6hB9Sx8XHx4ZevWbiUyZbfKxJxYO27Hf0wfzkxIaD5CAJMaGl3YspKELj0ff/7nCMA==}
@@ -2424,11 +2446,12 @@ snapshots:
 
   '@shikijs/vscode-textmate@10.1.0': {}
 
-  '@silarhi/docs-kit@0.8.1(@astrojs/markdown-satteri@0.4.5)(@astrojs/starlight@0.42.7(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1)))(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1))':
+  '@silarhi/docs-kit@0.9.0(@astrojs/markdown-satteri@0.4.5)(@astrojs/starlight@0.42.7(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1)))(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1))':
     dependencies:
       '@astrojs/starlight': 0.42.7(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1))
       '@fontsource-variable/montserrat': 5.3.0
       astro: 7.4.2(@types/node@24.19.2)(yaml@2.9.1)
+      astro-og-canvas: 0.13.2(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1))
       starlight-llms-txt: 0.12.0(@astrojs/markdown-satteri@0.4.5)(@astrojs/starlight@0.42.7(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1)))(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1))
       starlight-versions: 0.10.1(@astrojs/starlight@0.42.7(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1)))
     transitivePeerDependencies:
@@ -2487,6 +2510,8 @@ snapshots:
 
   '@ungap/structured-clone@1.4.0': {}
 
+  '@webgpu/types@0.1.21': {}
+
   acorn-jsx@5.3.2(acorn@8.19.0):
     dependencies:
       acorn: 8.19.0
@@ -2513,6 +2538,13 @@ snapshots:
       astro: 7.4.2(@types/node@24.19.2)(yaml@2.9.1)
       rehype-expressive-code: 0.44.3
       url-extras: 0.1.0
+
+  astro-og-canvas@0.13.2(astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1)):
+    dependencies:
+      astro: 7.4.2(@types/node@24.19.2)(yaml@2.9.1)
+      canvaskit-wasm: 0.42.0
+      deterministic-object-hash: 2.0.2
+      entities: 8.1.0
 
   astro@7.4.2(@types/node@24.19.2)(yaml@2.9.1):
     dependencies:
@@ -2607,6 +2639,8 @@ snapshots:
 
   bail@2.0.2: {}
 
+  base-64@1.0.0: {}
+
   bcp-47-match@2.0.3: {}
 
   bcp-47@2.1.2:
@@ -2620,6 +2654,10 @@ snapshots:
   braces@3.0.3:
     dependencies:
       fill-range: 7.1.1
+
+  canvaskit-wasm@0.42.0:
+    dependencies:
+      '@webgpu/types': 0.1.21
 
   ccount@2.0.1: {}
 
@@ -2697,6 +2735,10 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
+  deterministic-object-hash@2.0.2:
+    dependencies:
+      base-64: 1.0.0
+
   devalue@6.0.3: {}
 
   devlop@1.1.0:
@@ -2730,6 +2772,8 @@ snapshots:
   entities@4.5.0: {}
 
   entities@6.0.1: {}
+
+  entities@8.1.0: {}
 
   es-module-lexer@3.0.4: {}
 
