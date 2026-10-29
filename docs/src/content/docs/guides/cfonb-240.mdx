@@ -103,8 +103,8 @@ date checks below are new in 6.5 too.
 ## Amounts
 
 Transaction and total amounts are 12 digits in cents, read as floats with 2 decimals: `000000171200` is `1712.00`.
-Unlike CFONB 120 amounts, they have no sign: they are never negative. `getTransactionAmount(false)` and
-`getTotalAmount(false)` (since 6.6) give the exact amount as a decimal string, `"1712.00"`: store, add and compare these
+Unlike CFONB 120 amounts, they have no sign: they are never negative. `getTransactionAmount(true)` and
+`getTotalAmount(true)` (since 6.6) give the exact amount as a decimal string, `"1712.00"`: store, add and compare these
 instead of the floats. Without the argument, they return the float until 7.0.
 
 The reader does not check that the total is the sum of the transactions: `$transfer->validate()` (since 6.6) does, and

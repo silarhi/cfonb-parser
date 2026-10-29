@@ -62,13 +62,13 @@ final class Balance extends Element
     }
 
     /**
-     * The amount as a float by default, rounded like any float: pass false for the exact amount as a decimal string,
+     * The amount as a float by default, rounded like any float: pass true for the exact amount as a decimal string,
      * "16695.65", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
      *
-     * @return ($asFloat is true ? float : string)
+     * @return ($asString is true ? string : float)
      */
-    public function getAmount(bool $asFloat = true): float|string
+    public function getAmount(bool $asString = false): float|string
     {
-        return $asFloat ? $this->amount : $this->exactAmount;
+        return $asString ? $this->exactAmount : $this->amount;
     }
 }

@@ -110,13 +110,13 @@ final class Total extends Element
     }
 
     /**
-     * The amount as a float by default, rounded like any float: pass false for the exact amount as a decimal string,
+     * The amount as a float by default, rounded like any float: pass true for the exact amount as a decimal string,
      * "4652.70", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
      *
-     * @return ($asFloat is true ? float : string)
+     * @return ($asString is true ? string : float)
      */
-    public function getTotalAmount(bool $asFloat = true): float|string
+    public function getTotalAmount(bool $asString = false): float|string
     {
-        return $asFloat ? $this->totalAmount : $this->exactTotalAmount;
+        return $asString ? $this->exactTotalAmount : $this->totalAmount;
     }
 }

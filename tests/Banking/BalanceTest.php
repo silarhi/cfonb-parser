@@ -33,7 +33,7 @@ final class BalanceTest extends TestCase
         self::assertSame('test4', $sUT->getAccountNumber());
         self::assertSame($date, $sUT->getDate());
         self::assertSame(16695.65, $sUT->getAmount());
-        self::assertSame('16695.65', $sUT->getAmount(false));
+        self::assertSame('16695.65', $sUT->getAmount(true));
     }
 
     public function testExactAmountDerivedFromTheAmount(): void
@@ -41,11 +41,11 @@ final class BalanceTest extends TestCase
         // Built by hand without the exact amount: the float with 2 decimals, (int) (0.29 * 100) would be 28
         $sUT = new Balance('test', 'test2', 'test3', 'test4', new DateTimeImmutable(), 0.29);
 
-        self::assertSame('0.29', $sUT->getAmount(false));
+        self::assertSame('0.29', $sUT->getAmount(true));
 
         $sUT = new Balance('test', 'test2', 'test3', 'test4', new DateTimeImmutable(), -0.0);
 
-        self::assertSame('0.00', $sUT->getAmount(false));
+        self::assertSame('0.00', $sUT->getAmount(true));
     }
 
     public function testRejectsAnExactAmountThatIsNotADecimal(): void

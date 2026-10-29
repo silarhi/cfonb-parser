@@ -106,9 +106,9 @@ final class Cfonb240ReaderTest extends CfonbTestCase
         self::assertCount(2, $firstTransfers->getTransactions());
         self::assertSame('E', $firstTransfers->getHeader()->getCurrencyIndex());
         self::assertSame(4652.7, $firstTransfers->getTotal()->getTotalAmount());
-        self::assertSame('4652.70', $firstTransfers->getTotal()->getTotalAmount(false));
-        self::assertSame('1712.00', $firstTransfers->getTransactions()[0]->getTransactionAmount(false));
-        self::assertSame('2872.80', $firstTransfers->getTransactions()[1]->getTransactionAmount(false));
+        self::assertSame('4652.70', $firstTransfers->getTotal()->getTotalAmount(true));
+        self::assertSame('1712.00', $firstTransfers->getTransactions()[0]->getTransactionAmount(true));
+        self::assertSame('2872.80', $firstTransfers->getTransactions()[1]->getTransactionAmount(true));
     }
 
     public function testValidate(): void

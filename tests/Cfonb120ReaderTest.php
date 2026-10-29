@@ -344,9 +344,9 @@ final class Cfonb120ReaderTest extends CfonbTestCase
     {
         $statement = (new Cfonb120Reader())->parse(implode("\n", [self::OLD_BALANCE, self::OPERATION, self::NEW_BALANCE]))[0];
 
-        self::assertSame('16695.65', $statement->getOldBalance()->getAmount(false));
-        self::assertSame('-22.79', $statement->getOperations()[0]->getAmount(false));
-        self::assertSame('16672.86', $statement->getNewBalance()->getAmount(false));
+        self::assertSame('16695.65', $statement->getOldBalance()->getAmount(true));
+        self::assertSame('-22.79', $statement->getOperations()[0]->getAmount(true));
+        self::assertSame('16672.86', $statement->getNewBalance()->getAmount(true));
 
         // 0.29: (int) ($operation->getAmount() * 100) is 28
         $operation = substr_replace(self::OPERATION, '0000000000002I', 90, 14);
@@ -354,13 +354,13 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         $statement = (new Cfonb120Reader())->parse(implode("\n", [self::OLD_BALANCE, $operation, $newBalance]))[0];
 
         self::assertSame(0.29, $statement->getOperations()[0]->getAmount());
-        self::assertSame('0.29', $statement->getOperations()[0]->getAmount(false));
+        self::assertSame('0.29', $statement->getOperations()[0]->getAmount(true));
         $statement->validate();
 
         // 0 decimals (position 20)
         $statement = (new Cfonb120Reader())->parse(implode("\n", [substr_replace(self::OLD_BALANCE, '0', 19, 1), substr_replace(self::NEW_BALANCE, '0', 19, 1)]))[0];
 
-        self::assertSame('1669565', $statement->getOldBalance()->getAmount(false));
+        self::assertSame('1669565', $statement->getOldBalance()->getAmount(true));
     }
 
     /** @return iterable<string, array{string, bool}> */

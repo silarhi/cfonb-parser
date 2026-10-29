@@ -107,7 +107,7 @@ final class Statement extends Element
         $this->assertSameField(ValidationCheck::AccountNumber, 'account number', $oldBalance->getAccountNumber(), $newBalance->getAccountNumber(), $record);
         $this->assertSameField(ValidationCheck::Currency, 'currency', $oldBalance->getCurrencyCode(), $newBalance->getCurrencyCode(), $record);
 
-        $amounts = [$oldBalance->getAmount(false), $newBalance->getAmount(false)];
+        $amounts = [$oldBalance->getAmount(true), $newBalance->getAmount(true)];
         $number = 0;
         foreach ($this->operations as $operation) {
             $record = sprintf('the operation %d (code %s, dated %s)', ++$number, $operation->getCode(), $operation->getDate()->format('Y-m-d'));
@@ -118,16 +118,16 @@ final class Statement extends Element
                 $this->assertSameRecordAccount($oldBalance, sprintf('the detail %d of %s', ++$detailNumber, $record), $detail->getDeskCode(), $detail->getAccountNumber(), $detail->getCurrencyCode());
             }
 
-            $amounts[] = $operation->getAmount(false);
+            $amounts[] = $operation->getAmount(true);
         }
 
         // Every amount in the same minor units: the balances and the operations can have a different number of decimals.
         $decimals = ExactAmount::decimals(...$amounts);
-        $old = ExactAmount::toMinorUnits($oldBalance->getAmount(false), $decimals);
-        $new = ExactAmount::toMinorUnits($newBalance->getAmount(false), $decimals);
+        $old = ExactAmount::toMinorUnits($oldBalance->getAmount(true), $decimals);
+        $new = ExactAmount::toMinorUnits($newBalance->getAmount(true), $decimals);
         $sum = 0;
         foreach ($this->operations as $operation) {
-            $sum += ExactAmount::toMinorUnits($operation->getAmount(false), $decimals);
+            $sum += ExactAmount::toMinorUnits($operation->getAmount(true), $decimals);
         }
 
         if ($old + $sum !== $new) {

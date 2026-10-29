@@ -56,13 +56,13 @@ final class TotalTest extends TestCase
         self::assertSame('test12', $sUT->getProcessingCenterCode());
         self::assertSame(25.2, $sUT->getTotalAmount());
         // Built by hand without the exact amount: derived from the float amount
-        self::assertSame('25.20', $sUT->getTotalAmount(false));
+        self::assertSame('25.20', $sUT->getTotalAmount(true));
     }
 
     public function testExactAmount(): void
     {
         $sUT = new Total(1, null, new DateTimeImmutable(), 'E', 'test', 'test2', 'test3', null, 'test4', 'test5', 'test6', null, null, 4652.7, '4652.70');
 
-        self::assertSame('4652.70', $sUT->getTotalAmount(false));
+        self::assertSame('4652.70', $sUT->getTotalAmount(true));
     }
 }

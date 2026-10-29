@@ -65,7 +65,7 @@ final class TransactionTest extends TestCase
         self::assertSame('test15', $sUT->getInitialOperationPresenterReference());
         self::assertSame(12.25, $sUT->getTransactionAmount());
         // Built by hand without the exact amount: derived from the float amount
-        self::assertSame('12.25', $sUT->getTransactionAmount(false));
+        self::assertSame('12.25', $sUT->getTransactionAmount(true));
     }
 
     public function testExactAmount(): void
@@ -74,10 +74,10 @@ final class TransactionTest extends TestCase
 
         $sUT = new Transaction(1, null, $date, 'E', 'test', 'test2', null, null, null, 'test3', 'test4', 'test5', null, null, null, null, null, 1712.0, '1712.00');
 
-        self::assertSame('1712.00', $sUT->getTransactionAmount(false));
+        self::assertSame('1712.00', $sUT->getTransactionAmount(true));
 
         $sUT = new Transaction(1, null, $date, 'E', 'test', 'test2', null, null, null, 'test3', 'test4', 'test5', null, null, null, null, null, 0.29);
 
-        self::assertSame('0.29', $sUT->getTransactionAmount(false));
+        self::assertSame('0.29', $sUT->getTransactionAmount(true));
     }
 }

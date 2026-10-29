@@ -53,7 +53,7 @@ final class OperationTest extends TestCase
         self::assertSame('test6', $sUT->getReference());
         self::assertSame(10.0, $sUT->getAmount());
         // Built by hand without the exact amount: derived from the float amount, with 2 decimals
-        self::assertSame('10.00', $sUT->getAmount(false));
+        self::assertSame('10.00', $sUT->getAmount(true));
         self::assertSame('test7', $sUT->getInternalCode());
         self::assertSame('test8', $sUT->getCurrencyCode());
         self::assertSame('test9', $sUT->getRejectCode());
@@ -76,11 +76,11 @@ final class OperationTest extends TestCase
         $sUT = new Operation('test', 'test2', 'test3', 'test4', $date, $date, 'test5', 'test6', -1669.565, null, null, null, null, null, '-1669.565');
 
         self::assertSame(-1669.565, $sUT->getAmount());
-        self::assertSame('-1669.565', $sUT->getAmount(false));
+        self::assertSame('-1669.565', $sUT->getAmount(true));
 
         // (int) (0.29 * 100) is 28: the derived exact amount is rounded
         $sUT = new Operation('test', 'test2', 'test3', 'test4', $date, $date, 'test5', 'test6', 0.29, null, null, null, null, null);
 
-        self::assertSame('0.29', $sUT->getAmount(false));
+        self::assertSame('0.29', $sUT->getAmount(true));
     }
 }
