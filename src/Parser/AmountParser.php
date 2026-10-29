@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser;
 
-use Silarhi\Cfonb\Banking\MinorUnits;
+use Silarhi\Cfonb\Banking\ExactAmount;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
 use function sprintf;
@@ -64,7 +64,7 @@ final class AmountParser
     {
         [$sign, $digits] = $this->decode($content);
 
-        return MinorUnits::format($sign * (int) $digits, $nbDecimals);
+        return ExactAmount::fromMinorUnits($sign * (int) $digits, $nbDecimals);
     }
 
     /** @return array{int, string} the sign (1 or -1) and the digits, the sign character replaced by its digit */

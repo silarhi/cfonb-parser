@@ -20,19 +20,20 @@ use function sprintf;
 use function strlen;
 
 /**
- * Integer arithmetic on exact amounts, the decimal strings of the getters: "-22.79" is -2279 minor units with 2
- * decimals. Used by the validation of statements and transfers, which must not add floats.
+ * Exact amounts, the decimal strings of the getters, and their integer arithmetic: "-22.79" is -2279 minor units with 2
+ * decimals. Used by the parsers and the objects, and by the validation of statements and transfers, which must not add
+ * floats.
  *
  * @internal
  */
-final class MinorUnits
+final class ExactAmount
 {
     private const DECIMAL = '/^-?\d+(?:\.\d+)?$/';
 
     /**
      * @throws InvalidArgumentException when the amount is not a decimal string such as "-22.79"
      */
-    public static function checkDecimal(string $amount): string
+    public static function check(string $amount): string
     {
         if (1 !== preg_match(self::DECIMAL, $amount)) {
             throw new InvalidArgumentException(sprintf('The exact amount "%s" is not a decimal string such as "-22.79".', $amount));
@@ -41,13 +42,19 @@ final class MinorUnits
         return $amount;
     }
 
-    /** The decimal string of a float amount with 2 decimals, for objects built by hand: 0.29 is "0.29", never "0.28". */
+    /**
+     * The decimal string of a float amount with 2 decimals, for objects built by hand: 0.29 is "0.29", never "0.28".
+     * number_format() ignores the locale and never writes "-0.00".
+     *
+     * @throws InvalidArgumentException when the amount is INF or NAN, which number_format() writes "inf" and "nan"
+     */
     public static function fromFloat(float $amount): string
     {
-        $decimal = number_format($amount, 2, '.', '');
+        if (!is_finite($amount)) {
+            throw new InvalidArgumentException(sprintf('The amount %F is not a finite number.', $amount));
+        }
 
-        // number_format() keeps the sign of a negative zero
-        return '-0.00' === $decimal ? '0.00' : $decimal;
+        return number_format($amount, 2, '.', '');
     }
 
     /** The largest number of decimals of exact amounts: 2 for "12.5" and "-0.25". */
@@ -65,7 +72,7 @@ final class MinorUnits
     /**
      * An exact amount as an integer with $decimals decimals, at least its own: "-0.25" with 3 decimals is -250.
      *
-     * @param string $amount a decimal string, checked by {@see checkDecimal()}
+     * @param string $amount a decimal string, checked by {@see check()}
      */
     public static function toMinorUnits(string $amount, int $decimals): int
     {
@@ -76,7 +83,7 @@ final class MinorUnits
     }
 
     /** Formats an amount in minor units as a decimal string: -2279 with 2 decimals is "-22.79". */
-    public static function format(int $minorUnits, int $decimals): string
+    public static function fromMinorUnits(int $minorUnits, int $decimals): string
     {
         $digits = str_pad((string) abs($minorUnits), $decimals + 1, '0', \STR_PAD_LEFT);
         if ($decimals > 0) {

@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser;
 
-use Silarhi\Cfonb\Banking\MinorUnits;
+use Silarhi\Cfonb\Banking\ExactAmount;
 
 /** @internal */
 final class MoneyParser
@@ -27,6 +27,6 @@ final class MoneyParser
     /** The exact amount of a field in cents, as a decimal string: "000000171200" is "1712.00". */
     public function parseExact(string $cents): string
     {
-        return MinorUnits::format((int) $cents, 2);
+        return ExactAmount::fromMinorUnits((int) $cents, 2);
     }
 }

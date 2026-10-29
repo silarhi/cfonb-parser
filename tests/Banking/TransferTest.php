@@ -17,8 +17,8 @@ namespace Silarhi\Cfonb\Tests\Banking;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Silarhi\Cfonb\Banking\ExactAmount;
 use Silarhi\Cfonb\Banking\Header;
-use Silarhi\Cfonb\Banking\MinorUnits;
 use Silarhi\Cfonb\Banking\Total;
 use Silarhi\Cfonb\Banking\Transaction;
 use Silarhi\Cfonb\Banking\Transfer;
@@ -71,12 +71,12 @@ final class TransferTest extends TestCase
 
     private static function transaction(int $sequenceNumber, int $amount, string $currencyIndex = 'E'): Transaction
     {
-        return new Transaction($sequenceNumber, null, new DateTimeImmutable('2020-12-21'), $currencyIndex, '00661', '49890', '00012214046', 'OFFICE NATL', null, '30066', '10771', self::ACCOUNT, null, null, null, null, null, $amount / 100, MinorUnits::format($amount, 2));
+        return new Transaction($sequenceNumber, null, new DateTimeImmutable('2020-12-21'), $currencyIndex, '00661', '49890', '00012214046', 'OFFICE NATL', null, '30066', '10771', self::ACCOUNT, null, null, null, null, null, $amount / 100, ExactAmount::fromMinorUnits($amount, 2));
     }
 
     private static function total(int $amount, string $bankCode = '30066', string $counterCode = '10771', string $accountNumber = self::ACCOUNT, string $currencyIndex = 'E'): Total
     {
-        return new Total(4, null, new DateTimeImmutable('2020-12-21'), $currencyIndex, $bankCode, $counterCode, $accountNumber, null, '30066', '10771', self::ACCOUNT, null, null, $amount / 100, MinorUnits::format($amount, 2));
+        return new Total(4, null, new DateTimeImmutable('2020-12-21'), $currencyIndex, $bankCode, $counterCode, $accountNumber, null, '30066', '10771', self::ACCOUNT, null, null, $amount / 100, ExactAmount::fromMinorUnits($amount, 2));
     }
 
     private static function transfer(Total $total, Transaction ...$transactions): Transfer

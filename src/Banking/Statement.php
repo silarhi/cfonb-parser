@@ -122,16 +122,16 @@ final class Statement extends Element
         }
 
         // Every amount in the same minor units: the balances and the operations can have a different number of decimals.
-        $decimals = MinorUnits::decimals(...$amounts);
-        $old = MinorUnits::toMinorUnits($oldBalance->getAmount(false), $decimals);
-        $new = MinorUnits::toMinorUnits($newBalance->getAmount(false), $decimals);
+        $decimals = ExactAmount::decimals(...$amounts);
+        $old = ExactAmount::toMinorUnits($oldBalance->getAmount(false), $decimals);
+        $new = ExactAmount::toMinorUnits($newBalance->getAmount(false), $decimals);
         $sum = 0;
         foreach ($this->operations as $operation) {
-            $sum += MinorUnits::toMinorUnits($operation->getAmount(false), $decimals);
+            $sum += ExactAmount::toMinorUnits($operation->getAmount(false), $decimals);
         }
 
         if ($old + $sum !== $new) {
-            throw new ValidationException(ValidationCheck::Balance, sprintf('%s: the "01" old balance (%s) plus the sum of the operations (%s) is %s, not the "07" new balance (%s)', $this->describe(), MinorUnits::format($old, $decimals), MinorUnits::format($sum, $decimals), MinorUnits::format($old + $sum, $decimals), MinorUnits::format($new, $decimals)));
+            throw new ValidationException(ValidationCheck::Balance, sprintf('%s: the "01" old balance (%s) plus the sum of the operations (%s) is %s, not the "07" new balance (%s)', $this->describe(), ExactAmount::fromMinorUnits($old, $decimals), ExactAmount::fromMinorUnits($sum, $decimals), ExactAmount::fromMinorUnits($old + $sum, $decimals), ExactAmount::fromMinorUnits($new, $decimals)));
         }
     }
 

@@ -44,7 +44,7 @@ final class Operation extends Element
         private readonly ?string $bankOperationReference,
         ?string $exactAmount = null,
     ) {
-        $this->exactAmount = null === $exactAmount ? MinorUnits::fromFloat($amount) : MinorUnits::checkDecimal($exactAmount);
+        $this->exactAmount = null === $exactAmount ? ExactAmount::fromFloat($amount) : ExactAmount::check($exactAmount);
     }
 
     public function getBankCode(): string

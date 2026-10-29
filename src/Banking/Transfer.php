@@ -100,14 +100,14 @@ final class Transfer extends Element
             $amounts[] = $transaction->getTransactionAmount(false);
         }
 
-        $decimals = MinorUnits::decimals($total->getTotalAmount(false), ...$amounts);
-        $expected = MinorUnits::toMinorUnits($total->getTotalAmount(false), $decimals);
+        $decimals = ExactAmount::decimals($total->getTotalAmount(false), ...$amounts);
+        $expected = ExactAmount::toMinorUnits($total->getTotalAmount(false), $decimals);
         $sum = 0;
         foreach ($amounts as $amount) {
-            $sum += MinorUnits::toMinorUnits($amount, $decimals);
+            $sum += ExactAmount::toMinorUnits($amount, $decimals);
         }
         if ($sum !== $expected) {
-            throw new ValidationException(ValidationCheck::Total, sprintf('%s: the sum of the transactions (%s) is not the "39" total (%s)', $this->describe(), MinorUnits::format($sum, $decimals), MinorUnits::format($expected, $decimals)));
+            throw new ValidationException(ValidationCheck::Total, sprintf('%s: the sum of the transactions (%s) is not the "39" total (%s)', $this->describe(), ExactAmount::fromMinorUnits($sum, $decimals), ExactAmount::fromMinorUnits($expected, $decimals)));
         }
     }
 

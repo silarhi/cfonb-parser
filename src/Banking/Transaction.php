@@ -45,7 +45,7 @@ final class Transaction extends Element
         private readonly float $transactionAmount,
         ?string $exactTransactionAmount = null,
     ) {
-        $this->exactTransactionAmount = null === $exactTransactionAmount ? MinorUnits::fromFloat($transactionAmount) : MinorUnits::checkDecimal($exactTransactionAmount);
+        $this->exactTransactionAmount = null === $exactTransactionAmount ? ExactAmount::fromFloat($transactionAmount) : ExactAmount::check($exactTransactionAmount);
     }
 
     public function getSequenceNumber(): int

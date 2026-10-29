@@ -33,7 +33,7 @@ final class Balance extends Element
         private readonly float $amount,
         ?string $exactAmount = null,
     ) {
-        $this->exactAmount = null === $exactAmount ? MinorUnits::fromFloat($amount) : MinorUnits::checkDecimal($exactAmount);
+        $this->exactAmount = null === $exactAmount ? ExactAmount::fromFloat($amount) : ExactAmount::check($exactAmount);
     }
 
     public function getBankCode(): string

@@ -41,7 +41,7 @@ final class Total extends Element
         private readonly float $totalAmount,
         ?string $exactTotalAmount = null,
     ) {
-        $this->exactTotalAmount = null === $exactTotalAmount ? MinorUnits::fromFloat($totalAmount) : MinorUnits::checkDecimal($exactTotalAmount);
+        $this->exactTotalAmount = null === $exactTotalAmount ? ExactAmount::fromFloat($totalAmount) : ExactAmount::check($exactTotalAmount);
     }
 
     public function getSequenceNumber(): int
