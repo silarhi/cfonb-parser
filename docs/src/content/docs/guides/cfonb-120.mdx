@@ -134,9 +134,10 @@ line:
 `-22.79`.
 
 :::tip[Floats and money]
-Add and compare `getAmountInMinorUnits()` (since 6.6) instead of the floats: the exact amount as an integer, `1669565`
-for `16695.65` with 2 decimals, `getNumberOfDecimals()` giving the decimals. Converting a float yourself loses cents:
-`(int) (0.29 * 100)` is `28`.
+`getAmount(false)` (since 6.6) returns the exact amount as a decimal string, with the decimals of the line: `"16695.65"`,
+or `"1669565"` with 0 decimals. Store it in a `DECIMAL` column, add and compare it with bcmath, instead of the floats:
+converting a float yourself loses cents, `(int) (0.29 * 100)` is `28`. `getAmount()` returns the float until 7.0, which
+returns the string only.
 :::
 
 ## Dates

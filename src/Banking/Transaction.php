@@ -18,11 +18,11 @@ use DateTimeInterface;
 
 final class Transaction extends Element
 {
-    private readonly int $transactionAmountInMinorUnits;
+    private readonly string $exactTransactionAmount;
 
     /**
-     * @param int|null $transactionAmountInMinorUnits the amount in cents; when null, e.g. on a transaction built by
-     *                                                hand, the float amount rounded to cents
+     * @param string|null $exactTransactionAmount the exact amount, a decimal string such as "1712.00"; when null, e.g.
+     *                                            on a transaction built by hand, the float amount with 2 decimals
      */
     public function __construct(
         private readonly int $sequenceNumber,
@@ -43,9 +43,9 @@ final class Transaction extends Element
         private readonly ?DateTimeInterface $initialTransactionSettlementDate,
         private readonly ?string $initialOperationPresenterReference,
         private readonly float $transactionAmount,
-        ?int $transactionAmountInMinorUnits = null,
+        ?string $exactTransactionAmount = null,
     ) {
-        $this->transactionAmountInMinorUnits = $transactionAmountInMinorUnits ?? (int) round($transactionAmount * 100.0);
+        $this->exactTransactionAmount = null === $exactTransactionAmount ? MinorUnits::fromFloat($transactionAmount) : MinorUnits::checkDecimal($exactTransactionAmount);
     }
 
     public function getSequenceNumber(): int
@@ -133,17 +133,14 @@ final class Transaction extends Element
         return $this->initialOperationPresenterReference;
     }
 
-    public function getTransactionAmount(): float
-    {
-        return $this->transactionAmount;
-    }
-
     /**
-     * The exact amount, in cents as in the file: 1712.00 is 171200. Add and compare these instead of the floats of
-     * {@see getTransactionAmount()}.
+     * The amount as a float by default, rounded like any float: pass false for the exact amount as a decimal string,
+     * "1712.00", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asFloat is true ? float : string)
      */
-    public function getTransactionAmountInMinorUnits(): int
+    public function getTransactionAmount(bool $asFloat = true): float|string
     {
-        return $this->transactionAmountInMinorUnits;
+        return $asFloat ? $this->transactionAmount : $this->exactTransactionAmount;
     }
 }

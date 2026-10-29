@@ -14,18 +14,44 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Banking;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\MinorUnits;
 
 final class MinorUnitsTest extends TestCase
 {
-    public function testScale(): void
+    public function testDecimals(): void
     {
-        self::assertSame(12500, MinorUnits::scale(1250, 2, 3));
-        self::assertSame(-1250, MinorUnits::scale(-1250, 2, 2));
-        self::assertSame(1669565, MinorUnits::scale(1669565, 0, 0));
-        self::assertSame(1669565000, MinorUnits::scale(1669565, 2, 5));
+        self::assertSame(3, MinorUnits::decimals('12.5', '-0.025', '0.003'));
+        self::assertSame(2, MinorUnits::decimals('16695.65', '-12.50'));
+        self::assertSame(0, MinorUnits::decimals('1669565', '-0'));
+        self::assertSame(0, MinorUnits::decimals());
+    }
+
+    public function testToMinorUnits(): void
+    {
+        self::assertSame(12500, MinorUnits::toMinorUnits('12.5', 3));
+        self::assertSame(-25, MinorUnits::toMinorUnits('-0.025', 3));
+        self::assertSame(1669565, MinorUnits::toMinorUnits('16695.65', 2));
+        self::assertSame(166956500, MinorUnits::toMinorUnits('1669565', 2));
+        self::assertSame(0, MinorUnits::toMinorUnits('-0', 0));
+    }
+
+    public function testCheckDecimal(): void
+    {
+        self::assertSame('-22.79', MinorUnits::checkDecimal('-22.79'));
+        self::assertSame('1669565', MinorUnits::checkDecimal('1669565'));
+
+        $this->expectException(InvalidArgumentException::class);
+        MinorUnits::checkDecimal('1.2e3');
+    }
+
+    public function testFromFloat(): void
+    {
+        self::assertSame('0.29', MinorUnits::fromFloat(0.29));
+        self::assertSame('-22.79', MinorUnits::fromFloat(-22.79));
+        self::assertSame('0.00', MinorUnits::fromFloat(-0.0));
     }
 
     /** @return iterable<string, array{int, int, string}> */

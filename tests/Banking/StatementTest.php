@@ -18,6 +18,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Balance;
+use Silarhi\Cfonb\Banking\MinorUnits;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Banking\Statement;
@@ -72,14 +73,14 @@ final class StatementTest extends TestCase
 
     private static function balance(int $amount, string $date = '2020-04-06', string $bankCode = '10278', string $deskCode = '02204', string $accountNumber = self::ACCOUNT, string $currencyCode = 'EUR', int $decimals = 2): Balance
     {
-        return new Balance($bankCode, $deskCode, $currencyCode, $accountNumber, new DateTimeImmutable($date), $amount / 10 ** $decimals, $amount, $decimals);
+        return new Balance($bankCode, $deskCode, $currencyCode, $accountNumber, new DateTimeImmutable($date), $amount / 10 ** $decimals, MinorUnits::format($amount, $decimals));
     }
 
     private static function operation(int $amount, string $bankCode = '10278', string $deskCode = '02204', string $accountNumber = self::ACCOUNT, ?string $currencyCode = 'EUR', int $decimals = 2): Operation
     {
         $date = new DateTimeImmutable('2020-04-07');
 
-        return new Operation($bankCode, $deskCode, $accountNumber, 'B1', $date, $date, 'PRLV SEPA ONLINE SAS', 'REF', $amount / 10 ** $decimals, null, $currencyCode, null, null, null, $amount, $decimals);
+        return new Operation($bankCode, $deskCode, $accountNumber, 'B1', $date, $date, 'PRLV SEPA ONLINE SAS', 'REF', $amount / 10 ** $decimals, null, $currencyCode, null, null, null, MinorUnits::format($amount, $decimals));
     }
 
     private static function detail(string $accountNumber = self::ACCOUNT, ?string $currencyCode = 'EUR'): OperationDetail

@@ -75,8 +75,7 @@ final class Line39Parser extends AbstractCfonb240Parser
             $regexMatch->getStringOrNull('recipient_customer_name_2'),
             $regexMatch->getStringOrNull('processing_center_code'),
             $this->parseAmount->parser($regexMatch->getFloat('total_amount')),
-            // In cents in the file
-            $regexMatch->getInt('total_amount')
+            $this->parseAmount->parseExact($regexMatch->getString('total_amount'))
         );
     }
 

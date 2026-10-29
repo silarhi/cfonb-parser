@@ -77,8 +77,7 @@ final class Line04Parser extends AbstractCfonb120Parser
             $regexMatch->getStringOrNull('reject_code'),
             $regexMatch->getStringOrNull('exempt_code'),
             $regexMatch->getStringOrNull('bank_operation_reference'),
-            $this->parseAmount->parseInMinorUnits($amount),
-            $nbDecimals
+            $this->parseAmount->parseExact($amount, $nbDecimals)
         );
     }
 

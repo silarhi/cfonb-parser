@@ -18,11 +18,11 @@ use DateTimeInterface;
 
 final class Total extends Element
 {
-    private readonly int $totalAmountInMinorUnits;
+    private readonly string $exactTotalAmount;
 
     /**
-     * @param int|null $totalAmountInMinorUnits the amount in cents; when null, e.g. on a total built by hand, the
-     *                                          float amount rounded to cents
+     * @param string|null $exactTotalAmount the exact amount, a decimal string such as "4652.70"; when null, e.g. on a
+     *                                      total built by hand, the float amount with 2 decimals
      */
     public function __construct(
         private readonly int $sequenceNumber,
@@ -39,9 +39,9 @@ final class Total extends Element
         private readonly ?string $recipientName2,
         private readonly ?string $processingCenterCode,
         private readonly float $totalAmount,
-        ?int $totalAmountInMinorUnits = null,
+        ?string $exactTotalAmount = null,
     ) {
-        $this->totalAmountInMinorUnits = $totalAmountInMinorUnits ?? (int) round($totalAmount * 100.0);
+        $this->exactTotalAmount = null === $exactTotalAmount ? MinorUnits::fromFloat($totalAmount) : MinorUnits::checkDecimal($exactTotalAmount);
     }
 
     public function getSequenceNumber(): int
@@ -109,17 +109,14 @@ final class Total extends Element
         return $this->processingCenterCode;
     }
 
-    public function getTotalAmount(): float
-    {
-        return $this->totalAmount;
-    }
-
     /**
-     * The exact amount, in cents as in the file: 4652.70 is 465270. Compare it with the sum of
-     * {@see Transaction::getTransactionAmountInMinorUnits()} instead of the floats of {@see getTotalAmount()}.
+     * The amount as a float by default, rounded like any float: pass false for the exact amount as a decimal string,
+     * "4652.70", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asFloat is true ? float : string)
      */
-    public function getTotalAmountInMinorUnits(): int
+    public function getTotalAmount(bool $asFloat = true): float|string
     {
-        return $this->totalAmountInMinorUnits;
+        return $asFloat ? $this->totalAmount : $this->exactTotalAmount;
     }
 }

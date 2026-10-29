@@ -11,7 +11,7 @@ The objects of the `Silarhi\Cfonb\Banking` namespace returned by
 Strings are trimmed. A nullable getter returns `null` when its field is blank; a field read by a non-nullable getter
 must not be blank, or parsing fails (see [strict mode](/guides/cfonb-120/#strict-mode-default-vs-non-strict-mode) for
 the reference). Dates are `DateTimeImmutable` at midnight and mandatory, a zero-filled date fails too:
-[dates](/guides/cfonb-120/#dates). Amounts are signed floats, and exact integers in minor units since 6.6:
+[dates](/guides/cfonb-120/#dates). Amounts are signed floats, and exact decimal strings with `false` since 6.6:
 [amounts](/guides/cfonb-120/#amounts).
 
 ## Statement
@@ -37,40 +37,36 @@ the reader calls them.
 
 An opening (`01`) or closing (`07`) balance line.
 
-| Method                         | Field          | Positions                                          |
-| ------------------------------ | -------------- | -------------------------------------------------- |
-| `getBankCode(): string`        | Bank code      | 3–7                                                |
-| `getDeskCode(): string`        | Desk code      | 12–16                                              |
-| `getCurrencyCode(): string`    | Currency, ISO  | 17–19                                              |
-| `getAccountNumber(): string`   | Account number | 22–32                                              |
-| `getDate(): DateTimeImmutable` | Balance date   | 35–40                                              |
-| `getAmount(): float`           | Balance        | 91–104, with the number of decimals of position 20 |
-| `getAmountInMinorUnits(): int` | Balance, exact | 91–104, in minor units (cents): since 6.6          |
-| `getNumberOfDecimals(): int`   | Decimals       | 20: since 6.6                                      |
+| Method                                           | Field                                                    | Positions                                          |
+| ------------------------------------------------ | -------------------------------------------------------- | -------------------------------------------------- |
+| `getBankCode(): string`                          | Bank code                                                | 3–7                                                |
+| `getDeskCode(): string`                          | Desk code                                                | 12–16                                              |
+| `getCurrencyCode(): string`                      | Currency, ISO                                            | 17–19                                              |
+| `getAccountNumber(): string`                     | Account number                                           | 22–32                                              |
+| `getDate(): DateTimeImmutable`                   | Balance date                                             | 35–40                                              |
+| `getAmount(bool $asFloat = true): float\|string` | Balance: float, or exact string with `false` (since 6.6) | 91–104, with the number of decimals of position 20 |
 
 ## Operation
 
 An operation line (`04`).
 
-| Method                                 | Field                                         | Positions                                          |
-| -------------------------------------- | --------------------------------------------- | -------------------------------------------------- |
-| `getBankCode(): string`                | Bank code                                     | 3–7                                                |
-| `getInternalCode(): ?string`           | Internal operation code of the bank           | 8–11                                               |
-| `getDeskCode(): string`                | Desk code                                     | 12–16                                              |
-| `getCurrencyCode(): ?string`           | Currency, ISO                                 | 17–19                                              |
-| `getAccountNumber(): string`           | Account number                                | 22–32                                              |
-| `getCode(): string`                    | [Operation code](/reference/operation-codes/) | 33–34                                              |
-| `getDate(): DateTimeImmutable`         | Operation date                                | 35–40                                              |
-| `getRejectCode(): ?string`             | Reject code                                   | 41–42                                              |
-| `getValueDate(): DateTimeImmutable`    | Value date                                    | 43–48                                              |
-| `getLabel(): string`                   | Label                                         | 49–79                                              |
-| `getReference(): string`               | Reference, `''` when blank in non-strict mode | 82–88                                              |
-| `getExemptCode(): ?string`             | Exempt code                                   | 89                                                 |
-| `getAmount(): float`                   | Amount                                        | 91–104, with the number of decimals of position 20 |
-| `getAmountInMinorUnits(): int`         | Amount, exact                                 | 91–104, in minor units (cents): since 6.6          |
-| `getNumberOfDecimals(): int`           | Decimals of the amount                        | 20: since 6.6                                      |
-| `getBankOperationReference(): ?string` | Bank operation reference                      | 105–120                                            |
-| `getDetails(): OperationDetail[]`      | The detail lines (`05`) following it          |                                                    |
+| Method                                           | Field                                                   | Positions                                          |
+| ------------------------------------------------ | ------------------------------------------------------- | -------------------------------------------------- |
+| `getBankCode(): string`                          | Bank code                                               | 3–7                                                |
+| `getInternalCode(): ?string`                     | Internal operation code of the bank                     | 8–11                                               |
+| `getDeskCode(): string`                          | Desk code                                               | 12–16                                              |
+| `getCurrencyCode(): ?string`                     | Currency, ISO                                           | 17–19                                              |
+| `getAccountNumber(): string`                     | Account number                                          | 22–32                                              |
+| `getCode(): string`                              | [Operation code](/reference/operation-codes/)           | 33–34                                              |
+| `getDate(): DateTimeImmutable`                   | Operation date                                          | 35–40                                              |
+| `getRejectCode(): ?string`                       | Reject code                                             | 41–42                                              |
+| `getValueDate(): DateTimeImmutable`              | Value date                                              | 43–48                                              |
+| `getLabel(): string`                             | Label                                                   | 49–79                                              |
+| `getReference(): string`                         | Reference, `''` when blank in non-strict mode           | 82–88                                              |
+| `getExemptCode(): ?string`                       | Exempt code                                             | 89                                                 |
+| `getAmount(bool $asFloat = true): float\|string` | Amount: float, or exact string with `false` (since 6.6) | 91–104, with the number of decimals of position 20 |
+| `getBankOperationReference(): ?string`           | Bank operation reference                                | 105–120                                            |
+| `getDetails(): OperationDetail[]`                | The detail lines (`05`) following it                    |                                                    |
 
 `addDetails(OperationDetail $details)` adds a detail; the reader calls it.
 

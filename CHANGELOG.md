@@ -11,11 +11,12 @@
     - CFONB 240: the `39` total belongs to the account of the `31` header (bank code, counter code, account number,
       currency index), the `34` transactions have its currency index, and the total is the sum of the transactions
     - The amounts are added as integers in minor units, never as floats
-- Exact amounts, as integers in minor units, next to the float getters: `Balance::getAmountInMinorUnits()` and
-  `Operation::getAmountInMinorUnits()` with `getNumberOfDecimals()` (position 20),
-  `Transaction::getTransactionAmountInMinorUnits()` and `Total::getTotalAmountInMinorUnits()` in cents. `16695.65` is
-  `1669565`; converting the float yourself loses cents, `(int) (0.29 * 100)` being `28`. The constructors take them as
-  new optional arguments: on an object built by hand without them, they are the float amount rounded
+- Exact amounts, as decimal strings: pass `false` to `Balance::getAmount()`, `Operation::getAmount()`,
+  `Transaction::getTransactionAmount()` and `Total::getTotalAmount()`. `getAmount(false)` is `"-22.79"`, with the
+  number of decimals of the line (`"1669565"` with 0 decimals), ready for a `DECIMAL` column or bcmath; the float loses
+  cents, `(int) (0.29 * 100)` being `28`. The return type follows the argument for PHPStan and Psalm (`float` by
+  default, `string` with `false`). The constructors take the exact amount as a new optional argument: on an object
+  built by hand without it, it is the float amount with 2 decimals
 - `ParseException::getRawContent()`: the line (or, for an amount, the field) that failed to parse, now kept out of the
   message
 
@@ -29,6 +30,12 @@
     - `Unable to parse amount "…"` is now `Unable to parse amount: its last character "…" is not a sign character`
 
 # 6.5
+
+
+## Deprecated
+
+- The float returned by `getAmount()`, `getTransactionAmount()` and `getTotalAmount()` without an argument: 7.0 returns
+  the exact decimal string only. Pass `false` to get it now
 
 ## Upgrade note
 

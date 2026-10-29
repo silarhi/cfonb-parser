@@ -14,22 +14,68 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+use InvalidArgumentException;
+
+use function sprintf;
 use function strlen;
 
 /**
- * Integer arithmetic on amounts in minor units, for the validation of statements and transfers.
+ * Integer arithmetic on exact amounts, the decimal strings of the getters: "-22.79" is -2279 minor units with 2
+ * decimals. Used by the validation of statements and transfers, which must not add floats.
  *
  * @internal
  */
 final class MinorUnits
 {
-    /** Converts an amount in minor units to more decimals: 1250 with 2 decimals is 12500 with 3. */
-    public static function scale(int $minorUnits, int $fromDecimals, int $toDecimals): int
+    private const DECIMAL = '/^-?\d+(?:\.\d+)?$/';
+
+    /**
+     * @throws InvalidArgumentException when the amount is not a decimal string such as "-22.79"
+     */
+    public static function checkDecimal(string $amount): string
     {
-        return $minorUnits * 10 ** ($toDecimals - $fromDecimals);
+        if (1 !== preg_match(self::DECIMAL, $amount)) {
+            throw new InvalidArgumentException(sprintf('The exact amount "%s" is not a decimal string such as "-22.79".', $amount));
+        }
+
+        return $amount;
     }
 
-    /** Formats an amount in minor units for a message: -2279 with 2 decimals is "-22.79". */
+    /** The decimal string of a float amount with 2 decimals, for objects built by hand: 0.29 is "0.29", never "0.28". */
+    public static function fromFloat(float $amount): string
+    {
+        $decimal = number_format($amount, 2, '.', '');
+
+        // number_format() keeps the sign of a negative zero
+        return '-0.00' === $decimal ? '0.00' : $decimal;
+    }
+
+    /** The largest number of decimals of exact amounts: 2 for "12.5" and "-0.25". */
+    public static function decimals(string ...$amounts): int
+    {
+        $decimals = 0;
+        foreach ($amounts as $amount) {
+            $point = strpos($amount, '.');
+            $decimals = max($decimals, false === $point ? 0 : strlen($amount) - $point - 1);
+        }
+
+        return $decimals;
+    }
+
+    /**
+     * An exact amount as an integer with $decimals decimals, at least its own: "-0.25" with 3 decimals is -250.
+     *
+     * @param string $amount a decimal string, checked by {@see checkDecimal()}
+     */
+    public static function toMinorUnits(string $amount, int $decimals): int
+    {
+        [$integer, $fraction] = explode('.', ltrim($amount, '-'), 2) + [1 => ''];
+        $minorUnits = (int) ($integer . str_pad($fraction, $decimals, '0'));
+
+        return str_starts_with($amount, '-') ? -$minorUnits : $minorUnits;
+    }
+
+    /** Formats an amount in minor units as a decimal string: -2279 with 2 decimals is "-22.79". */
     public static function format(int $minorUnits, int $decimals): string
     {
         $digits = str_pad((string) abs($minorUnits), $decimals + 1, '0', \STR_PAD_LEFT);

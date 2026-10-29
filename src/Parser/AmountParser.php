@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Parser;
 
+use Silarhi\Cfonb\Banking\MinorUnits;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
 use function sprintf;
@@ -58,15 +59,12 @@ final class AmountParser
         return (float) $sign * (float) $digits;
     }
 
-    /**
-     * The amount as an integer number of minor units (e.g. cents with 2 decimals): exact, unlike the float of
-     * {@see parse()}.
-     */
-    public function parseInMinorUnits(string $content): int
+    /** The exact amount as a decimal string, "-22.79": unlike the float of {@see parse()}, it never loses a cent. */
+    public function parseExact(string $content, int $nbDecimals): string
     {
         [$sign, $digits] = $this->decode($content);
 
-        return $sign * (int) $digits;
+        return MinorUnits::format($sign * (int) $digits, $nbDecimals);
     }
 
     /** @return array{int, string} the sign (1 or -1) and the digits, the sign character replaced by its digit */

@@ -21,11 +21,11 @@ final class Operation extends Element
     /** @var OperationDetail[] */
     private array $details = [];
 
-    private readonly int $amountInMinorUnits;
+    private readonly string $exactAmount;
 
     /**
-     * @param int|null $amountInMinorUnits the amount in minor units; when null, e.g. on an operation built by hand,
-     *                                     the float amount rounded to $numberOfDecimals
+     * @param string|null $exactAmount the exact amount, a decimal string such as "-22.79"; when null, e.g. on an
+     *                                 operation built by hand, the float amount with 2 decimals
      */
     public function __construct(
         private readonly string $bankCode,
@@ -42,10 +42,9 @@ final class Operation extends Element
         private readonly ?string $rejectCode,
         private readonly ?string $exemptCode,
         private readonly ?string $bankOperationReference,
-        ?int $amountInMinorUnits = null,
-        private readonly int $numberOfDecimals = 2,
+        ?string $exactAmount = null,
     ) {
-        $this->amountInMinorUnits = $amountInMinorUnits ?? (int) round($amount * (float) (10 ** $numberOfDecimals));
+        $this->exactAmount = null === $exactAmount ? MinorUnits::fromFloat($amount) : MinorUnits::checkDecimal($exactAmount);
     }
 
     public function getBankCode(): string
@@ -108,24 +107,15 @@ final class Operation extends Element
         return $this->exemptCode;
     }
 
-    public function getAmount(): float
-    {
-        return $this->amount;
-    }
-
     /**
-     * The exact amount, as an integer number of minor units: -22.79 with 2 decimals is -2279. Add and compare these
-     * instead of the floats of {@see getAmount()}.
+     * The amount as a float by default, rounded like any float: pass false for the exact amount as a decimal string,
+     * "-22.79", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asFloat is true ? float : string)
      */
-    public function getAmountInMinorUnits(): int
+    public function getAmount(bool $asFloat = true): float|string
     {
-        return $this->amountInMinorUnits;
-    }
-
-    /** The number of decimals of the amount (position 20 of the line): 2 for cents. */
-    public function getNumberOfDecimals(): int
-    {
-        return $this->numberOfDecimals;
+        return $asFloat ? $this->amount : $this->exactAmount;
     }
 
     public function getBankOperationReference(): ?string

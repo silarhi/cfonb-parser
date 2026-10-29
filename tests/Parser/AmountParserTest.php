@@ -36,14 +36,14 @@ final class AmountParserTest extends TestCase
         }
     }
 
-    public function testFailInMinorUnits(): void
+    public function testFailExact(): void
     {
         $sUT = new AmountParser();
 
         $this->expectException(ParseException::class);
         $this->expectExceptionMessage('Unable to parse amount: its last character "t" is not a sign character');
 
-        $sUT->parseInMinorUnits('test');
+        $sUT->parseExact('test', 2);
     }
 
     /** @return Generator<int, array<int, string|int|float>> */
@@ -87,24 +87,26 @@ final class AmountParserTest extends TestCase
         self::assertSame($expected, $sUT->parse($content, $nbDecimal));
     }
 
-    /** @return iterable<string, array{string, int}> */
-    public static function provideMinorUnitsCase(): iterable
+    /** @return iterable<string, array{string, int, string}> */
+    public static function provideExactCase(): iterable
     {
-        yield 'credit' => ['0000000166956E', 1669565];
-        yield 'debit' => ['0000000000227R', -2279];
-        yield 'credit zero' => ['0000000000000{', 0];
-        yield 'debit zero' => ['0000000000000}', 0];
-        // (int) (0.29 * 100) is 28: the float of parse() loses a cent there, not the minor units
-        yield '0.29' => ['0000000000002I', 29];
-        yield 'debit 0.29' => ['0000000000002R', -29];
-        yield 'largest amount' => ['9999999999999I', 99999999999999];
+        yield 'credit' => ['0000000166956E', 2, '16695.65'];
+        yield 'debit' => ['0000000000227R', 2, '-22.79'];
+        yield 'credit zero' => ['0000000000000{', 2, '0.00'];
+        yield 'debit zero' => ['0000000000000}', 2, '0.00'];
+        // (int) (0.29 * 100) is 28: the float of parse() loses a cent there, not the exact amount
+        yield '0.29' => ['0000000000002I', 2, '0.29'];
+        yield 'debit 0.29' => ['0000000000002R', 2, '-0.29'];
+        yield 'no decimals' => ['0000000166956E', 0, '1669565'];
+        yield 'three decimals' => ['0000000166956N', 3, '-1669.565'];
+        yield 'largest amount' => ['9999999999999I', 2, '999999999999.99'];
     }
 
-    #[DataProvider('provideMinorUnitsCase')]
-    public function testInMinorUnits(string $content, int $expected): void
+    #[DataProvider('provideExactCase')]
+    public function testExact(string $content, int $nbDecimals, string $expected): void
     {
         $sUT = new AmountParser();
 
-        self::assertSame($expected, $sUT->parseInMinorUnits($content));
+        self::assertSame($expected, $sUT->parseExact($content, $nbDecimals));
     }
 }

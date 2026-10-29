@@ -74,7 +74,7 @@ final class Transfer extends Element
     /**
      * Checks that the transfer is consistent, which the reader does not: its "39" total belongs to the account of its
      * "31" header, its "34" transactions are in the currency of the header, and the total is the sum of the
-     * transactions, added as integers in cents.
+     * transactions, added as integers in minor units.
      *
      * @throws ValidationException        on the first check that fails, given by {@see ValidationException::getCheck()}
      * @throws HeaderUnavailableException on a transfer built by hand without its header
@@ -91,17 +91,23 @@ final class Transfer extends Element
         $this->assertSameField(ValidationCheck::AccountNumber, 'account number', $header->getRecipientAccountNumber1(), $total->getRecipientAccountNumber1(), $record);
         $this->assertSameField(ValidationCheck::Currency, 'currency index', $header->getCurrencyIndex(), $total->getCurrencyIndex(), $record);
 
-        $sum = 0;
+        $amounts = [];
         $number = 0;
         foreach ($this->transactions as $transaction) {
             $record = sprintf('the transaction %d (sequence number %d)', ++$number, $transaction->getSequenceNumber());
             $this->assertSameField(ValidationCheck::Currency, 'currency index', $header->getCurrencyIndex(), $transaction->getCurIndex(), $record);
 
-            $sum += $transaction->getTransactionAmountInMinorUnits();
+            $amounts[] = $transaction->getTransactionAmount(false);
         }
 
-        if ($sum !== $total->getTotalAmountInMinorUnits()) {
-            throw new ValidationException(ValidationCheck::Total, sprintf('%s: the sum of the transactions (%s) is not the "39" total (%s)', $this->describe(), MinorUnits::format($sum, 2), MinorUnits::format($total->getTotalAmountInMinorUnits(), 2)));
+        $decimals = MinorUnits::decimals($total->getTotalAmount(false), ...$amounts);
+        $expected = MinorUnits::toMinorUnits($total->getTotalAmount(false), $decimals);
+        $sum = 0;
+        foreach ($amounts as $amount) {
+            $sum += MinorUnits::toMinorUnits($amount, $decimals);
+        }
+        if ($sum !== $expected) {
+            throw new ValidationException(ValidationCheck::Total, sprintf('%s: the sum of the transactions (%s) is not the "39" total (%s)', $this->describe(), MinorUnits::format($sum, $decimals), MinorUnits::format($expected, $decimals)));
         }
     }
 

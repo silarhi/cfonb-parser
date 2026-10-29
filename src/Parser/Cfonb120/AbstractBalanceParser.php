@@ -65,8 +65,7 @@ abstract class AbstractBalanceParser extends AbstractCfonb120Parser
             $regexMatch->getString('account_nb'),
             $this->parseDate->parse($regexMatch->getString('date')),
             $this->parseAmount->parse($amount, $nbDecimals),
-            $this->parseAmount->parseInMinorUnits($amount),
-            $nbDecimals
+            $this->parseAmount->parseExact($amount, $nbDecimals)
         );
     }
 }

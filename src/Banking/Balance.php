@@ -18,11 +18,11 @@ use DateTimeImmutable;
 
 final class Balance extends Element
 {
-    private readonly int $amountInMinorUnits;
+    private readonly string $exactAmount;
 
     /**
-     * @param int|null $amountInMinorUnits the amount in minor units; when null, e.g. on a balance built by hand, the
-     *                                     float amount rounded to $numberOfDecimals
+     * @param string|null $exactAmount the exact amount, a decimal string such as "16695.65"; when null, e.g. on a
+     *                                 balance built by hand, the float amount with 2 decimals
      */
     public function __construct(
         private readonly string $bankCode,
@@ -31,10 +31,9 @@ final class Balance extends Element
         private readonly string $accountNumber,
         private readonly DateTimeImmutable $date,
         private readonly float $amount,
-        ?int $amountInMinorUnits = null,
-        private readonly int $numberOfDecimals = 2,
+        ?string $exactAmount = null,
     ) {
-        $this->amountInMinorUnits = $amountInMinorUnits ?? (int) round($amount * (float) (10 ** $numberOfDecimals));
+        $this->exactAmount = null === $exactAmount ? MinorUnits::fromFloat($amount) : MinorUnits::checkDecimal($exactAmount);
     }
 
     public function getBankCode(): string
@@ -62,23 +61,14 @@ final class Balance extends Element
         return $this->date;
     }
 
-    public function getAmount(): float
-    {
-        return $this->amount;
-    }
-
     /**
-     * The exact amount, as an integer number of minor units: 16695.65 with 2 decimals is 1669565. Add and compare
-     * these instead of the floats of {@see getAmount()}.
+     * The amount as a float by default, rounded like any float: pass false for the exact amount as a decimal string,
+     * "16695.65", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asFloat is true ? float : string)
      */
-    public function getAmountInMinorUnits(): int
+    public function getAmount(bool $asFloat = true): float|string
     {
-        return $this->amountInMinorUnits;
-    }
-
-    /** The number of decimals of the amount (position 20 of the line): 2 for cents. */
-    public function getNumberOfDecimals(): int
-    {
-        return $this->numberOfDecimals;
+        return $asFloat ? $this->amount : $this->exactAmount;
     }
 }
