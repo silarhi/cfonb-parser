@@ -15,14 +15,17 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeInterface;
+use InvalidArgumentException;
 
 final class Transaction extends Element
 {
-    private readonly string $exactTransactionAmount;
+    private readonly string $transactionAmount;
 
     /**
-     * @param string|null $exactTransactionAmount the exact amount, a decimal string such as "1712.00"; when null, e.g.
-     *                                            on a transaction built by hand, the float amount with 2 decimals
+     * @param float|string $transactionAmount the exact amount, a decimal string such as "1712.00", or a float, kept as
+     *                                        the decimal string that gives it back
+     *
+     * @throws InvalidArgumentException when $transactionAmount is a string that is not a decimal, or INF or NAN
      */
     public function __construct(
         private readonly int $sequenceNumber,
@@ -42,10 +45,9 @@ final class Transaction extends Element
         private readonly ?string $description,
         private readonly ?DateTimeInterface $initialTransactionSettlementDate,
         private readonly ?string $initialOperationPresenterReference,
-        private readonly float $transactionAmount,
-        ?string $exactTransactionAmount = null,
+        float|string $transactionAmount,
     ) {
-        $this->exactTransactionAmount = null === $exactTransactionAmount ? ExactAmount::fromFloat($transactionAmount) : ExactAmount::check($exactTransactionAmount);
+        $this->transactionAmount = ExactAmount::from($transactionAmount);
     }
 
     public function getSequenceNumber(): int
@@ -141,6 +143,6 @@ final class Transaction extends Element
      */
     public function getTransactionAmount(bool $asString = false): float|string
     {
-        return $asString ? $this->exactTransactionAmount : $this->transactionAmount;
+        return $asString ? $this->transactionAmount : (float) $this->transactionAmount;
     }
 }

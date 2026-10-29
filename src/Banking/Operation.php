@@ -15,17 +15,20 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 
 final class Operation extends Element
 {
     /** @var OperationDetail[] */
     private array $details = [];
 
-    private readonly string $exactAmount;
+    private readonly string $amount;
 
     /**
-     * @param string|null $exactAmount the exact amount, a decimal string such as "-22.79"; when null, e.g. on an
-     *                                 operation built by hand, the float amount with 2 decimals
+     * @param float|string $amount the exact amount, a decimal string such as "-22.79", or a float, kept as
+     *                             the decimal string that gives it back
+     *
+     * @throws InvalidArgumentException when $amount is a string that is not a decimal, or INF or NAN
      */
     public function __construct(
         private readonly string $bankCode,
@@ -36,15 +39,14 @@ final class Operation extends Element
         private readonly DateTimeImmutable $valueDate,
         private readonly string $label,
         private readonly string $reference,
-        private readonly float $amount,
+        float|string $amount,
         private readonly ?string $internalCode,
         private readonly ?string $currencyCode,
         private readonly ?string $rejectCode,
         private readonly ?string $exemptCode,
         private readonly ?string $bankOperationReference,
-        ?string $exactAmount = null,
     ) {
-        $this->exactAmount = null === $exactAmount ? ExactAmount::fromFloat($amount) : ExactAmount::check($exactAmount);
+        $this->amount = ExactAmount::from($amount);
     }
 
     public function getBankCode(): string
@@ -115,7 +117,7 @@ final class Operation extends Element
      */
     public function getAmount(bool $asString = false): float|string
     {
-        return $asString ? $this->exactAmount : $this->amount;
+        return $asString ? $this->amount : (float) $this->amount;
     }
 
     public function getBankOperationReference(): ?string

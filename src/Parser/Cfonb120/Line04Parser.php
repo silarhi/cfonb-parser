@@ -71,13 +71,12 @@ final class Line04Parser extends AbstractCfonb120Parser
             $this->parseDate->parse($regexMatch->getString('value_date')),
             $regexMatch->getString('label'),
             $regexMatch->getString('reference', $strict ? null : ''),
-            $this->parseAmount->parse($amount, $nbDecimals),
+            $this->parseAmount->parseExact($amount, $nbDecimals),
             $regexMatch->getStringOrNull('internal_code'),
             $regexMatch->getStringOrNull('currency_code'),
             $regexMatch->getStringOrNull('reject_code'),
             $regexMatch->getStringOrNull('exempt_code'),
-            $regexMatch->getStringOrNull('bank_operation_reference'),
-            $this->parseAmount->parseExact($amount, $nbDecimals)
+            $regexMatch->getStringOrNull('bank_operation_reference')
         );
     }
 

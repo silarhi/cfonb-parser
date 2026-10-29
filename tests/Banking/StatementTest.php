@@ -73,14 +73,14 @@ final class StatementTest extends TestCase
 
     private static function balance(int $amount, string $date = '2020-04-06', string $bankCode = '10278', string $deskCode = '02204', string $accountNumber = self::ACCOUNT, string $currencyCode = 'EUR', int $decimals = 2): Balance
     {
-        return new Balance($bankCode, $deskCode, $currencyCode, $accountNumber, new DateTimeImmutable($date), $amount / 10 ** $decimals, ExactAmount::fromMinorUnits($amount, $decimals));
+        return new Balance($bankCode, $deskCode, $currencyCode, $accountNumber, new DateTimeImmutable($date), ExactAmount::fromMinorUnits($amount, $decimals));
     }
 
     private static function operation(int $amount, string $bankCode = '10278', string $deskCode = '02204', string $accountNumber = self::ACCOUNT, ?string $currencyCode = 'EUR', int $decimals = 2): Operation
     {
         $date = new DateTimeImmutable('2020-04-07');
 
-        return new Operation($bankCode, $deskCode, $accountNumber, 'B1', $date, $date, 'PRLV SEPA ONLINE SAS', 'REF', $amount / 10 ** $decimals, null, $currencyCode, null, null, null, ExactAmount::fromMinorUnits($amount, $decimals));
+        return new Operation($bankCode, $deskCode, $accountNumber, 'B1', $date, $date, 'PRLV SEPA ONLINE SAS', 'REF', ExactAmount::fromMinorUnits($amount, $decimals), null, $currencyCode, null, null, null);
     }
 
     private static function detail(string $accountNumber = self::ACCOUNT, ?string $currencyCode = 'EUR'): OperationDetail

@@ -52,7 +52,21 @@ final class ExactAmountTest extends TestCase
         self::assertSame('0.29', ExactAmount::fromFloat(0.29));
         self::assertSame('-22.79', ExactAmount::fromFloat(-22.79));
         self::assertSame('0.00', ExactAmount::fromFloat(-0.0));
-        self::assertSame('0.00', ExactAmount::fromFloat(-0.001));
+        self::assertSame('-0.001', ExactAmount::fromFloat(-0.001));
+        self::assertSame('1669.565', ExactAmount::fromFloat(1669.565));
+        self::assertSame('1.005', ExactAmount::fromFloat(1.005));
+        self::assertSame('100000000000000000000.00', ExactAmount::fromFloat(1e20));
+        // 0.30000000000000004 needs 17 decimals: rounded to 9, the most a CFONB amount has
+        self::assertSame('0.300000000', ExactAmount::fromFloat(0.1 + 0.2));
+    }
+
+    public function testFrom(): void
+    {
+        self::assertSame('-22.79', ExactAmount::from('-22.79'));
+        self::assertSame('0.29', ExactAmount::from(0.29));
+
+        $this->expectException(InvalidArgumentException::class);
+        ExactAmount::from('12,50');
     }
 
     /** @return iterable<string, array{float}> */

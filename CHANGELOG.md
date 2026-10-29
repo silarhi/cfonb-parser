@@ -15,8 +15,9 @@
   `Transaction::getTransactionAmount()` and `Total::getTotalAmount()`. `getAmount(true)` is `"-22.79"`, with the
   number of decimals of the line (`"1669565"` with 0 decimals), ready for a `DECIMAL` column or bcmath; the float loses
   cents, `(int) (0.29 * 100)` being `28`. The return type follows the argument for PHPStan and Psalm (`float` by
-  default, `string` with `true`). The constructors take the exact amount as a new optional argument: on an object
-  built by hand without it, it is the float amount with 2 decimals
+  default, `string` with `true`). The objects keep the amount as this string and compute the float from it, the same
+  float as before. Their constructors take the amount as `float|string`: a float becomes the decimal string that gives
+  it back, `1669.565` staying `"1669.565"`, and a string that is not a decimal throws an `InvalidArgumentException`
 - `ParseException::getRawContent()`: the line (or, for an amount, the field) that failed to parse, now kept out of the
   message
 

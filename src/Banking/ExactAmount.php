@@ -16,6 +16,7 @@ namespace Silarhi\Cfonb\Banking;
 
 use InvalidArgumentException;
 
+use function is_string;
 use function sprintf;
 use function strlen;
 
@@ -30,6 +31,9 @@ final class ExactAmount
 {
     private const DECIMAL = '/^-?\d+(?:\.\d+)?$/';
 
+    /** The most decimals of a CFONB 120 amount, position 20 of the line */
+    private const MAX_DECIMALS = 9;
+
     /**
      * @throws InvalidArgumentException when the amount is not a decimal string such as "-22.79"
      */
@@ -43,7 +47,19 @@ final class ExactAmount
     }
 
     /**
-     * The decimal string of a float amount with 2 decimals, for objects built by hand: 0.29 is "0.29", never "0.28".
+     * The exact amount of an object: a decimal string is checked, a float converted with {@see fromFloat()}.
+     *
+     * @throws InvalidArgumentException when the amount is a string that is not a decimal, or INF or NAN
+     */
+    public static function from(float|string $amount): string
+    {
+        return is_string($amount) ? self::check($amount) : self::fromFloat($amount);
+    }
+
+    /**
+     * The decimal string of a float amount, for objects built by hand: the fewest decimals, at least 2, that give the
+     * float back, so that (float) of the string is the float. 0.29 is "0.29", never "0.28", and 1669.565 stays
+     * "1669.565". A float that needs more than 9 decimals, the most a CFONB amount has, is rounded to 9.
      * number_format() ignores the locale and never writes "-0.00".
      *
      * @throws InvalidArgumentException when the amount is INF or NAN, which number_format() writes "inf" and "nan"
@@ -54,7 +70,14 @@ final class ExactAmount
             throw new InvalidArgumentException(sprintf('The amount %F is not a finite number.', $amount));
         }
 
-        return number_format($amount, 2, '.', '');
+        for ($decimals = 2; $decimals < self::MAX_DECIMALS; ++$decimals) {
+            $exact = number_format($amount, $decimals, '.', '');
+            if ((float) $exact === $amount) {
+                return $exact;
+            }
+        }
+
+        return number_format($amount, self::MAX_DECIMALS, '.', '');
     }
 
     /** The largest number of decimals of exact amounts: 2 for "12.5" and "-0.25". */

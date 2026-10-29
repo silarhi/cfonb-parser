@@ -15,14 +15,17 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeInterface;
+use InvalidArgumentException;
 
 final class Total extends Element
 {
-    private readonly string $exactTotalAmount;
+    private readonly string $totalAmount;
 
     /**
-     * @param string|null $exactTotalAmount the exact amount, a decimal string such as "4652.70"; when null, e.g. on a
-     *                                      total built by hand, the float amount with 2 decimals
+     * @param float|string $totalAmount the exact amount, a decimal string such as "4652.70", or a float, kept as
+     *                                  the decimal string that gives it back
+     *
+     * @throws InvalidArgumentException when $totalAmount is a string that is not a decimal, or INF or NAN
      */
     public function __construct(
         private readonly int $sequenceNumber,
@@ -38,10 +41,9 @@ final class Total extends Element
         private readonly string $recipientAccountNumber2,
         private readonly ?string $recipientName2,
         private readonly ?string $processingCenterCode,
-        private readonly float $totalAmount,
-        ?string $exactTotalAmount = null,
+        float|string $totalAmount,
     ) {
-        $this->exactTotalAmount = null === $exactTotalAmount ? ExactAmount::fromFloat($totalAmount) : ExactAmount::check($exactTotalAmount);
+        $this->totalAmount = ExactAmount::from($totalAmount);
     }
 
     public function getSequenceNumber(): int
@@ -117,6 +119,6 @@ final class Total extends Element
      */
     public function getTotalAmount(bool $asString = false): float|string
     {
-        return $asString ? $this->exactTotalAmount : $this->totalAmount;
+        return $asString ? $this->totalAmount : (float) $this->totalAmount;
     }
 }

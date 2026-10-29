@@ -15,14 +15,17 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 
 final class Balance extends Element
 {
-    private readonly string $exactAmount;
+    private readonly string $amount;
 
     /**
-     * @param string|null $exactAmount the exact amount, a decimal string such as "16695.65"; when null, e.g. on a
-     *                                 balance built by hand, the float amount with 2 decimals
+     * @param float|string $amount the exact amount, a decimal string such as "16695.65", or a float, kept as
+     *                             the decimal string that gives it back
+     *
+     * @throws InvalidArgumentException when $amount is a string that is not a decimal, or INF or NAN
      */
     public function __construct(
         private readonly string $bankCode,
@@ -30,10 +33,9 @@ final class Balance extends Element
         private readonly string $currencyCode,
         private readonly string $accountNumber,
         private readonly DateTimeImmutable $date,
-        private readonly float $amount,
-        ?string $exactAmount = null,
+        float|string $amount,
     ) {
-        $this->exactAmount = null === $exactAmount ? ExactAmount::fromFloat($amount) : ExactAmount::check($exactAmount);
+        $this->amount = ExactAmount::from($amount);
     }
 
     public function getBankCode(): string
@@ -69,6 +71,6 @@ final class Balance extends Element
      */
     public function getAmount(bool $asString = false): float|string
     {
-        return $asString ? $this->exactAmount : $this->amount;
+        return $asString ? $this->amount : (float) $this->amount;
     }
 }
