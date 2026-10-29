@@ -50,22 +50,38 @@ final class AmountParser
 
     public function parse(string $content, int $nbDecimals): float
     {
-        $lastChar = substr($content, -1);
-        if (isset(self::CREDIT_MAPPING[$lastChar])) {
-            $sign = 1.0;
-            $lastDigit = self::CREDIT_MAPPING[$lastChar];
-        } elseif (isset(self::DEBIT_MAPPING[$lastChar])) {
-            $sign = -1.0;
-            $lastDigit = self::DEBIT_MAPPING[$lastChar];
-        } else {
-            throw new ParseException(sprintf('Unable to parse amount "%s"', $content));
-        }
-
-        $digits = substr($content, 0, -1) . $lastDigit;
+        [$sign, $digits] = $this->decode($content);
         if ($nbDecimals > 0) {
             $digits = substr($digits, 0, -$nbDecimals) . '.' . substr($digits, -$nbDecimals);
         }
 
-        return $sign * (float) $digits;
+        return (float) $sign * (float) $digits;
+    }
+
+    /**
+     * The amount as an integer number of minor units (e.g. cents with 2 decimals): exact, unlike the float of
+     * {@see parse()}.
+     */
+    public function parseInMinorUnits(string $content): int
+    {
+        [$sign, $digits] = $this->decode($content);
+
+        return $sign * (int) $digits;
+    }
+
+    /** @return array{int, string} the sign (1 or -1) and the digits, the sign character replaced by its digit */
+    private function decode(string $content): array
+    {
+        $lastChar = substr($content, -1);
+        if (isset(self::CREDIT_MAPPING[$lastChar])) {
+            return [1, substr($content, 0, -1) . self::CREDIT_MAPPING[$lastChar]];
+        }
+
+        if (isset(self::DEBIT_MAPPING[$lastChar])) {
+            return [-1, substr($content, 0, -1) . self::DEBIT_MAPPING[$lastChar]];
+        }
+
+        // The amount is part of a line: keep it out of the message.
+        throw new ParseException(sprintf('Unable to parse amount: its last character "%s" is not a sign character', $lastChar), rawContent: $content);
     }
 }

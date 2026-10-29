@@ -18,6 +18,8 @@ use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
+use Silarhi\Cfonb\Exceptions\ValidationCheck;
+use Silarhi\Cfonb\Exceptions\ValidationException;
 
 use function sprintf;
 
@@ -39,10 +41,29 @@ final class Cfonb120ReaderTest extends CfonbTestCase
     {
         $reader = new Cfonb120Reader();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to find a parser for the line :
-"abc "');
-        $reader->parse('abc ');
+        try {
+            $reader->parse('abc ');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertSame('Unable to find a parser for the line 1: record code "ab", 4 characters', $e->getMessage());
+            self::assertSame('abc ', $e->getRawContent());
+        }
+    }
+
+    public function testFailUnknowLineKeepsTheLineOutOfTheMessage(): void
+    {
+        $reader = new Cfonb120Reader();
+        // The empty lines at the start of the file count in the line number
+        $line = substr(self::OPERATION, 0, 119);
+
+        try {
+            $reader->parse(implode("\n", ['', self::OLD_BALANCE, $line, self::NEW_BALANCE]));
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertSame('Unable to find a parser for the line 3: record code "04", 119 characters', $e->getMessage());
+            self::assertStringNotContainsString('00012345603', $e->getMessage());
+            self::assertSame($line, $e->getRawContent());
+        }
     }
 
     public function testFailCauseNoOperation(): void
@@ -130,19 +151,26 @@ final class Cfonb120ReaderTest extends CfonbTestCase
     public static function provideMalformedLine(): array
     {
         return [
-            'dateMalformed' => ['0110278    02204EUR2 00012345603  YYYYYY                                                  0000000166956E060420070420    '],
-            'amountMalformed' => ['0110278    02204EUR2 00012345603  101020                                                  0000000166956Y060420070420    '],
+            'dateMalformed' => ['0110278    02204EUR2 00012345603  YYYYYY                                                  0000000166956E060420070420    ', 'Regex does not match the line: the field "date" at position 35 is invalid'],
+            'amountMalformed' => ['0110278    02204EUR2 00012345603  101020                                                  0000000166956Y060420070420    ', 'Regex does not match the line: the field "amount" at position 91 is invalid'],
+            'operationAmountMalformed' => [substr_replace(self::OPERATION, 'Y', 103, 1), 'Regex does not match the line: the field "amount" at position 91 is invalid'],
+            'accountMalformed' => ['0110278    02204EUR2 000123456-3  060420                                                  0000000166956E060420070420    ', 'Regex does not match the line: the field "account_nb" at position 22 is invalid'],
         ];
     }
 
     #[DataProvider('provideMalformedLine')]
-    public function testMalformedLine(string $line): void
+    public function testMalformedLine(string $line, string $message): void
     {
         $reader = new Cfonb120Reader();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage(sprintf('Regex does not match the line "%s"', $line));
-        $reader->parse($line);
+        try {
+            $reader->parse($line);
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            // The message names the field, the line stays out of it: it holds the account number and the label.
+            self::assertSame($message, $e->getMessage());
+            self::assertSame($line, $e->getRawContent());
+        }
     }
 
     #[DataProvider('provideOneLineOrNot')]
@@ -310,6 +338,84 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(584353.02, $statement->getOldBalance()->getAmount());
         self::assertCount(0, $statement->getOperations());
         self::assertSame(584353.02, $statement->getNewBalance()->getAmount());
+    }
+
+    public function testAmountsInMinorUnits(): void
+    {
+        $statement = (new Cfonb120Reader())->parse(implode("\n", [self::OLD_BALANCE, self::OPERATION, self::NEW_BALANCE]))[0];
+
+        self::assertSame(1669565, $statement->getOldBalance()->getAmountInMinorUnits());
+        self::assertSame(2, $statement->getOldBalance()->getNumberOfDecimals());
+        self::assertSame(-2279, $statement->getOperations()[0]->getAmountInMinorUnits());
+        self::assertSame(2, $statement->getOperations()[0]->getNumberOfDecimals());
+        self::assertSame(1667286, $statement->getNewBalance()->getAmountInMinorUnits());
+
+        // 0.29: (int) ($operation->getAmount() * 100) is 28
+        $operation = substr_replace(self::OPERATION, '0000000000002I', 90, 14);
+        $newBalance = substr_replace(self::NEW_BALANCE, '0000000166959D', 90, 14);
+        $statement = (new Cfonb120Reader())->parse(implode("\n", [self::OLD_BALANCE, $operation, $newBalance]))[0];
+
+        self::assertSame(0.29, $statement->getOperations()[0]->getAmount());
+        self::assertSame(29, $statement->getOperations()[0]->getAmountInMinorUnits());
+        $statement->validate();
+
+        // 0 decimals (position 20)
+        $statement = (new Cfonb120Reader())->parse(implode("\n", [substr_replace(self::OLD_BALANCE, '0', 19, 1), substr_replace(self::NEW_BALANCE, '0', 19, 1)]))[0];
+
+        self::assertSame(1669565, $statement->getOldBalance()->getAmountInMinorUnits());
+        self::assertSame(0, $statement->getOldBalance()->getNumberOfDecimals());
+    }
+
+    /** @return iterable<string, array{string, bool}> */
+    public static function provideConsistentFixture(): iterable
+    {
+        yield 'simple' => ['simple-test.txt', true];
+        yield 'unused parts' => ['test-unused-parts.txt', true];
+        yield 'non strict' => ['non-strict-test.txt', false];
+    }
+
+    #[DataProvider('provideConsistentFixture')]
+    public function testValidateFixture(string $file, bool $strict): void
+    {
+        $statements = (new Cfonb120Reader())->parse(self::loadFixture($file, false), $strict);
+
+        self::assertNotEmpty($statements);
+        foreach ($statements as $statement) {
+            $statement->validate();
+        }
+    }
+
+    public function testValidateInconsistentFixture(): void
+    {
+        $statements = (new Cfonb120Reader())->parse(self::loadFixture('complex-test.txt', false));
+
+        // The second statement has an operation the new balance does not account for ("VIR BOR TEST / FOOBAR")
+        foreach ($statements as $i => $statement) {
+            if (1 !== $i) {
+                $statement->validate();
+            }
+        }
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Invalid statement opened on 2020-04-07: the "01" old balance (16672.86) plus the sum of the operations (-5040.22) is 11632.64, not the "07" new balance (11652.75)');
+        $statements[1]->validate();
+    }
+
+    public function testValidateOperationOfAnotherAccount(): void
+    {
+        // An operation of another account parses, but does not validate
+        $operation = substr_replace(self::OPERATION, '99999999999', 21, 11);
+        $statement = (new Cfonb120Reader())->parse(implode("\n", [self::OLD_BALANCE, $operation, self::NEW_BALANCE]))[0];
+
+        self::assertSame('99999999999', $statement->getOperations()[0]->getAccountNumber());
+
+        try {
+            $statement->validate();
+            self::fail('A ValidationException should be thrown');
+        } catch (ValidationException $e) {
+            self::assertSame(ValidationCheck::AccountNumber, $e->getCheck());
+            self::assertSame('Invalid statement opened on 2020-04-06: the account number of the operation 1 (code B1, dated 2020-04-07) is not the one of the "01" old balance', $e->getMessage());
+        }
     }
 
     #[DataProvider('provideOneLineOrNot')]

@@ -11,7 +11,8 @@ The objects of the `Silarhi\Cfonb\Banking` namespace returned by
 Strings are trimmed. A nullable getter returns `null` when its field is blank; a field read by a non-nullable getter
 must not be blank, or parsing fails (see [strict mode](/guides/cfonb-120/#strict-mode-default-vs-non-strict-mode) for
 the reference). Dates are `DateTimeImmutable` at midnight and mandatory, a zero-filled date fails too:
-[dates](/guides/cfonb-120/#dates). Amounts are signed floats: [amounts](/guides/cfonb-120/#amounts).
+[dates](/guides/cfonb-120/#dates). Amounts are signed floats, and exact integers in minor units since 6.6:
+[amounts](/guides/cfonb-120/#amounts).
 
 ## Statement
 
@@ -23,6 +24,10 @@ The balances and operations between an opening and a closing balance line.
 | `getNewBalance(): Balance`                       | The closing balance (`07`)                                     |
 | `hasOldBalance(): bool`, `hasNewBalance(): bool` | Whether the balance is set: always `true` on parsed statements |
 | `getOperations(): Operation[]`                   | The operations (`04`), in the order of the file                |
+| `validate(): void`                               | Since 6.6: checks the consistency of the statement             |
+
+`validate()` throws a `ValidationException` when an operation belongs to another account or the new balance is not the
+old balance plus the operations: [checking the consistency of a file](/guides/troubleshooting/#checking-the-consistency-of-a-file).
 
 `getOldBalance()` and `getNewBalance()` throw a `BalanceUnavailableException` when the balance is not set, which only
 happens on a `Statement` built by hand. `setOldBalance()`, `setNewBalance()` and `addOperation()` build the statement;
@@ -40,6 +45,8 @@ An opening (`01`) or closing (`07`) balance line.
 | `getAccountNumber(): string`   | Account number | 22–32                                              |
 | `getDate(): DateTimeImmutable` | Balance date   | 35–40                                              |
 | `getAmount(): float`           | Balance        | 91–104, with the number of decimals of position 20 |
+| `getAmountInMinorUnits(): int` | Balance, exact | 91–104, in minor units (cents): since 6.6          |
+| `getNumberOfDecimals(): int`   | Decimals       | 20: since 6.6                                      |
 
 ## Operation
 
@@ -60,6 +67,8 @@ An operation line (`04`).
 | `getReference(): string`               | Reference, `''` when blank in non-strict mode | 82–88                                              |
 | `getExemptCode(): ?string`             | Exempt code                                   | 89                                                 |
 | `getAmount(): float`                   | Amount                                        | 91–104, with the number of decimals of position 20 |
+| `getAmountInMinorUnits(): int`         | Amount, exact                                 | 91–104, in minor units (cents): since 6.6          |
+| `getNumberOfDecimals(): int`           | Decimals of the amount                        | 20: since 6.6                                      |
 | `getBankOperationReference(): ?string` | Bank operation reference                      | 105–120                                            |
 | `getDetails(): OperationDetail[]`      | The detail lines (`05`) following it          |                                                    |
 

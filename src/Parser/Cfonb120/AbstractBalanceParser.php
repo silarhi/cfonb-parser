@@ -55,6 +55,8 @@ abstract class AbstractBalanceParser extends AbstractCfonb120Parser
     protected function parseBalance(string $content): Balance
     {
         $regexMatch = $this->lineParser->parse($content);
+        $amount = $regexMatch->getString('amount');
+        $nbDecimals = $regexMatch->getInt('nb_of_dec');
 
         return new Balance(
             $regexMatch->getString('bank_code'),
@@ -62,7 +64,9 @@ abstract class AbstractBalanceParser extends AbstractCfonb120Parser
             $regexMatch->getString('currency_code'),
             $regexMatch->getString('account_nb'),
             $this->parseDate->parse($regexMatch->getString('date')),
-            $this->parseAmount->parse($regexMatch->getString('amount'), $regexMatch->getInt('nb_of_dec'))
+            $this->parseAmount->parse($amount, $nbDecimals),
+            $this->parseAmount->parseInMinorUnits($amount),
+            $nbDecimals
         );
     }
 }

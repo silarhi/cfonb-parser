@@ -1,3 +1,33 @@
+# 6.6
+
+## Added
+
+- `Statement::validate()` and `Transfer::validate()` check the consistency of a statement or a transfer, which the
+  readers do not: they throw a `ValidationException` (a `ParseException`) whose `getCheck()` tells which
+  `ValidationCheck` failed. Opt-in: call them on the statements and transfers you need to trust
+    - CFONB 120: the `07` new balance, the `04` operations and their `05` details belong to the account of the `01` old
+      balance (desk code, account number, currency; bank code between the two balances only), and the new balance is
+      the old balance plus the operations
+    - CFONB 240: the `39` total belongs to the account of the `31` header (bank code, counter code, account number,
+      currency index), the `34` transactions have its currency index, and the total is the sum of the transactions
+    - The amounts are added as integers in minor units, never as floats
+- Exact amounts, as integers in minor units, next to the float getters: `Balance::getAmountInMinorUnits()` and
+  `Operation::getAmountInMinorUnits()` with `getNumberOfDecimals()` (position 20),
+  `Transaction::getTransactionAmountInMinorUnits()` and `Total::getTotalAmountInMinorUnits()` in cents. `16695.65` is
+  `1669565`; converting the float yourself loses cents, `(int) (0.29 * 100)` being `28`. The constructors take them as
+  new optional arguments: on an object built by hand without them, they are the float amount rounded
+- `ParseException::getRawContent()`: the line (or, for an amount, the field) that failed to parse, now kept out of the
+  message
+
+## Changed
+
+- The messages of a `ParseException` no longer hold the line that failed, which holds account numbers and labels and
+  ended up in logs and error pages. Code matching the full message must be updated; the beginning of the messages is
+  unchanged:
+    - `Unable to find a parser for the line :` + the line is now `Unable to find a parser for the line 3: record code "04", 119 characters`
+    - `Regex does not match the line "…"` is now `Regex does not match the line: the field "amount" at position 91 is invalid`
+    - `Unable to parse amount "…"` is now `Unable to parse amount: its last character "…" is not a sign character`
+
 # 6.5
 
 ## Upgrade note

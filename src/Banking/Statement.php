@@ -15,6 +15,10 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
+use Silarhi\Cfonb\Exceptions\ValidationCheck;
+use Silarhi\Cfonb\Exceptions\ValidationException;
+
+use function sprintf;
 
 final class Statement extends Element
 {
@@ -80,5 +84,76 @@ final class Statement extends Element
     public function getOperations(): array
     {
         return $this->operations;
+    }
+
+    /**
+     * Checks that the statement is consistent, which the reader does not: its "07" new balance, its "04" operations
+     * and their "05" details belong to the account of its "01" old balance, and the new balance is the old balance
+     * plus the operations, added as integers in minor units.
+     *
+     * The bank code is only compared between the two balances: banks write another bank code on some operations.
+     *
+     * @throws ValidationException         on the first check that fails, given by {@see ValidationException::getCheck()}
+     * @throws BalanceUnavailableException on a statement built by hand without its balances
+     */
+    public function validate(): void
+    {
+        $oldBalance = $this->getOldBalance();
+        $newBalance = $this->getNewBalance();
+
+        $record = 'the "07" new balance';
+        $this->assertSameField(ValidationCheck::BankCode, 'bank code', $oldBalance->getBankCode(), $newBalance->getBankCode(), $record);
+        $this->assertSameField(ValidationCheck::DeskCode, 'desk code', $oldBalance->getDeskCode(), $newBalance->getDeskCode(), $record);
+        $this->assertSameField(ValidationCheck::AccountNumber, 'account number', $oldBalance->getAccountNumber(), $newBalance->getAccountNumber(), $record);
+        $this->assertSameField(ValidationCheck::Currency, 'currency', $oldBalance->getCurrencyCode(), $newBalance->getCurrencyCode(), $record);
+
+        $decimals = max($oldBalance->getNumberOfDecimals(), $newBalance->getNumberOfDecimals());
+        $number = 0;
+        foreach ($this->operations as $operation) {
+            $record = sprintf('the operation %d (code %s, dated %s)', ++$number, $operation->getCode(), $operation->getDate()->format('Y-m-d'));
+            $this->assertSameRecordAccount($oldBalance, $record, $operation->getDeskCode(), $operation->getAccountNumber(), $operation->getCurrencyCode());
+
+            $detailNumber = 0;
+            foreach ($operation->getDetails() as $detail) {
+                $this->assertSameRecordAccount($oldBalance, sprintf('the detail %d of %s', ++$detailNumber, $record), $detail->getDeskCode(), $detail->getAccountNumber(), $detail->getCurrencyCode());
+            }
+
+            $decimals = max($decimals, $operation->getNumberOfDecimals());
+        }
+
+        // Every amount in the same minor units: the balances and the operations can have a different number of decimals.
+        $sum = 0;
+        foreach ($this->operations as $operation) {
+            $sum += MinorUnits::scale($operation->getAmountInMinorUnits(), $operation->getNumberOfDecimals(), $decimals);
+        }
+        $old = MinorUnits::scale($oldBalance->getAmountInMinorUnits(), $oldBalance->getNumberOfDecimals(), $decimals);
+        $new = MinorUnits::scale($newBalance->getAmountInMinorUnits(), $newBalance->getNumberOfDecimals(), $decimals);
+
+        if ($old + $sum !== $new) {
+            throw new ValidationException(ValidationCheck::Balance, sprintf('%s: the "01" old balance (%s) plus the sum of the operations (%s) is %s, not the "07" new balance (%s)', $this->describe(), MinorUnits::format($old, $decimals), MinorUnits::format($sum, $decimals), MinorUnits::format($old + $sum, $decimals), MinorUnits::format($new, $decimals)));
+        }
+    }
+
+    private function assertSameRecordAccount(Balance $oldBalance, string $record, string $deskCode, string $accountNumber, ?string $currencyCode): void
+    {
+        $this->assertSameField(ValidationCheck::DeskCode, 'desk code', $oldBalance->getDeskCode(), $deskCode, $record);
+        $this->assertSameField(ValidationCheck::AccountNumber, 'account number', $oldBalance->getAccountNumber(), $accountNumber, $record);
+        // The currency of an operation or a detail is optional
+        if (null !== $currencyCode) {
+            $this->assertSameField(ValidationCheck::Currency, 'currency', $oldBalance->getCurrencyCode(), $currencyCode, $record);
+        }
+    }
+
+    private function assertSameField(ValidationCheck $check, string $field, string $expected, string $actual, string $record): void
+    {
+        // The values are kept out of the message: they are account numbers.
+        if ($expected !== $actual) {
+            throw new ValidationException($check, sprintf('%s: the %s of %s is not the one of the "01" old balance', $this->describe(), $field, $record));
+        }
+    }
+
+    private function describe(): string
+    {
+        return sprintf('Invalid statement opened on %s', $this->getOldBalance()->getDate()->format('Y-m-d'));
     }
 }

@@ -18,6 +18,12 @@ use DateTimeInterface;
 
 final class Total extends Element
 {
+    private readonly int $totalAmountInMinorUnits;
+
+    /**
+     * @param int|null $totalAmountInMinorUnits the amount in cents; when null, e.g. on a total built by hand, the
+     *                                          float amount rounded to cents
+     */
     public function __construct(
         private readonly int $sequenceNumber,
         private readonly ?string $operationCode,
@@ -33,7 +39,9 @@ final class Total extends Element
         private readonly ?string $recipientName2,
         private readonly ?string $processingCenterCode,
         private readonly float $totalAmount,
+        ?int $totalAmountInMinorUnits = null,
     ) {
+        $this->totalAmountInMinorUnits = $totalAmountInMinorUnits ?? (int) round($totalAmount * 100.0);
     }
 
     public function getSequenceNumber(): int
@@ -104,5 +112,14 @@ final class Total extends Element
     public function getTotalAmount(): float
     {
         return $this->totalAmount;
+    }
+
+    /**
+     * The exact amount, in cents as in the file: 4652.70 is 465270. Compare it with the sum of
+     * {@see Transaction::getTransactionAmountInMinorUnits()} instead of the floats of {@see getTotalAmount()}.
+     */
+    public function getTotalAmountInMinorUnits(): int
+    {
+        return $this->totalAmountInMinorUnits;
     }
 }

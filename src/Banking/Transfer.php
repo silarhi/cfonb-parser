@@ -16,6 +16,10 @@ namespace Silarhi\Cfonb\Banking;
 
 use Silarhi\Cfonb\Exceptions\HeaderUnavailableException;
 use Silarhi\Cfonb\Exceptions\TotalUnavailableException;
+use Silarhi\Cfonb\Exceptions\ValidationCheck;
+use Silarhi\Cfonb\Exceptions\ValidationException;
+
+use function sprintf;
 
 final class Transfer extends Element
 {
@@ -65,5 +69,52 @@ final class Transfer extends Element
         }
 
         return $this->total;
+    }
+
+    /**
+     * Checks that the transfer is consistent, which the reader does not: its "39" total belongs to the account of its
+     * "31" header, its "34" transactions are in the currency of the header, and the total is the sum of the
+     * transactions, added as integers in cents.
+     *
+     * @throws ValidationException        on the first check that fails, given by {@see ValidationException::getCheck()}
+     * @throws HeaderUnavailableException on a transfer built by hand without its header
+     * @throws TotalUnavailableException  on a transfer built by hand without its total
+     */
+    public function validate(): void
+    {
+        $header = $this->getHeader();
+        $total = $this->getTotal();
+
+        $record = 'the "39" total';
+        $this->assertSameField(ValidationCheck::BankCode, 'bank code', $header->getRecipientBankCode1(), $total->getRecipientBankCode1(), $record);
+        $this->assertSameField(ValidationCheck::DeskCode, 'counter code', $header->getRecipientCounterCode1(), $total->getRecipientCounterCode1(), $record);
+        $this->assertSameField(ValidationCheck::AccountNumber, 'account number', $header->getRecipientAccountNumber1(), $total->getRecipientAccountNumber1(), $record);
+        $this->assertSameField(ValidationCheck::Currency, 'currency index', $header->getCurrencyIndex(), $total->getCurrencyIndex(), $record);
+
+        $sum = 0;
+        $number = 0;
+        foreach ($this->transactions as $transaction) {
+            $record = sprintf('the transaction %d (sequence number %d)', ++$number, $transaction->getSequenceNumber());
+            $this->assertSameField(ValidationCheck::Currency, 'currency index', $header->getCurrencyIndex(), $transaction->getCurIndex(), $record);
+
+            $sum += $transaction->getTransactionAmountInMinorUnits();
+        }
+
+        if ($sum !== $total->getTotalAmountInMinorUnits()) {
+            throw new ValidationException(ValidationCheck::Total, sprintf('%s: the sum of the transactions (%s) is not the "39" total (%s)', $this->describe(), MinorUnits::format($sum, 2), MinorUnits::format($total->getTotalAmountInMinorUnits(), 2)));
+        }
+    }
+
+    private function assertSameField(ValidationCheck $check, string $field, string $expected, string $actual, string $record): void
+    {
+        // The values are kept out of the message: they are account numbers.
+        if ($expected !== $actual) {
+            throw new ValidationException($check, sprintf('%s: the %s of %s is not the one of the "31" header', $this->describe(), $field, $record));
+        }
+    }
+
+    private function describe(): string
+    {
+        return sprintf('Invalid transfer of the "31" header record of sequence number %d', $this->getHeader()->getSequenceNumber());
     }
 }

@@ -21,6 +21,10 @@ The `…2` fields repeat the `…1` ones, positions 22 to 66, when the bank fill
 | `getHeader(): Header`              | The header (`31`)                                 |
 | `getTransactions(): Transaction[]` | The transactions (`34`), in the order of the file |
 | `getTotal(): Total`                | The total (`39`)                                  |
+| `validate(): void`                 | Since 6.6: checks the consistency of the transfer |
+
+`validate()` throws a `ValidationException` when the total is not the sum of the transactions or belongs to another
+account: [checking the consistency of a file](/guides/troubleshooting/#checking-the-consistency-of-a-file).
 
 `getHeader()` and `getTotal()` throw a `HeaderUnavailableException` or a `TotalUnavailableException` when it is not
 set, which only happens on a `Transfer` built by hand. `setHeader()`, `addTransaction()` and `setTotal()` build the
@@ -70,6 +74,7 @@ A transaction line (`34`).
 | `getInitialTransactionSettlementDate(): ?DateTimeInterface` | Settlement date of the initial transaction, `null` when blank or zero-filled | 217–222   |
 | `getInitialOperationPresenterReference(): ?string`          | Presenter reference of the initial operation                                 | 223–228   |
 | `getTransactionAmount(): float`                             | Amount, in cents in the file                                                 | 229–240   |
+| `getTransactionAmountInMinorUnits(): int`                   | Amount in cents, exact: since 6.6                                            | 229–240   |
 
 ## Total
 
@@ -91,3 +96,4 @@ A total line (`39`).
 | `getRecipientName2(): ?string`                        | Name                                  | 99–122    |
 | `getProcessingCenterCode(): ?string`                  | Processing center code                | 123–128   |
 | `getTotalAmount(): float`                             | Total amount, in cents in the file    | 229–240   |
+| `getTotalAmountInMinorUnits(): int`                   | Exact total in cents: since 6.6       | 229–240   |

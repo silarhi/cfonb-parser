@@ -55,5 +55,14 @@ final class TotalTest extends TestCase
         self::assertSame('test11', $sUT->getRecipientName2());
         self::assertSame('test12', $sUT->getProcessingCenterCode());
         self::assertSame(25.2, $sUT->getTotalAmount());
+        // Built by hand without minor units: derived from the float amount
+        self::assertSame(2520, $sUT->getTotalAmountInMinorUnits());
+    }
+
+    public function testMinorUnits(): void
+    {
+        $sUT = new Total(1, null, new DateTimeImmutable(), 'E', 'test', 'test2', 'test3', null, 'test4', 'test5', 'test6', null, null, 4652.7, 465270);
+
+        self::assertSame(465270, $sUT->getTotalAmountInMinorUnits());
     }
 }

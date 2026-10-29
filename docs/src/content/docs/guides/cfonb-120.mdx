@@ -76,6 +76,10 @@ So every statement returned has both balances: `hasOldBalance()` and `hasNewBala
 `getOldBalance()` and `getNewBalance()` never throw. A bank usually sends one statement per account and per day: a file
 can hold several days and several accounts, in the order the bank wrote them.
 
+The reader checks the order of the records, not that they add up: call `$statement->validate()` (since 6.6) to check
+that the operations belong to the account of the statement and that the new balance is the old balance plus the
+operations. See [checking the consistency of a file](/guides/troubleshooting/#checking-the-consistency-of-a-file).
+
 ## Operations
 
 <Example name="cfonb120-operation" />
@@ -130,7 +134,9 @@ line:
 `-22.79`.
 
 :::tip[Floats and money]
-Round the amounts before comparing or adding them, or convert them to cents: `(int) round($amount * 100)`.
+Add and compare `getAmountInMinorUnits()` (since 6.6) instead of the floats: the exact amount as an integer, `1669565`
+for `16695.65` with 2 decimals, `getNumberOfDecimals()` giving the decimals. Converting a float yourself loses cents:
+`(int) (0.29 * 100)` is `28`.
 :::
 
 ## Dates

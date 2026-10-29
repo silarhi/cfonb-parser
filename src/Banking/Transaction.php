@@ -18,6 +18,12 @@ use DateTimeInterface;
 
 final class Transaction extends Element
 {
+    private readonly int $transactionAmountInMinorUnits;
+
+    /**
+     * @param int|null $transactionAmountInMinorUnits the amount in cents; when null, e.g. on a transaction built by
+     *                                                hand, the float amount rounded to cents
+     */
     public function __construct(
         private readonly int $sequenceNumber,
         private readonly ?string $operationCode,
@@ -37,7 +43,9 @@ final class Transaction extends Element
         private readonly ?DateTimeInterface $initialTransactionSettlementDate,
         private readonly ?string $initialOperationPresenterReference,
         private readonly float $transactionAmount,
+        ?int $transactionAmountInMinorUnits = null,
     ) {
+        $this->transactionAmountInMinorUnits = $transactionAmountInMinorUnits ?? (int) round($transactionAmount * 100.0);
     }
 
     public function getSequenceNumber(): int
@@ -128,5 +136,14 @@ final class Transaction extends Element
     public function getTransactionAmount(): float
     {
         return $this->transactionAmount;
+    }
+
+    /**
+     * The exact amount, in cents as in the file: 1712.00 is 171200. Add and compare these instead of the floats of
+     * {@see getTransactionAmount()}.
+     */
+    public function getTransactionAmountInMinorUnits(): int
+    {
+        return $this->transactionAmountInMinorUnits;
     }
 }

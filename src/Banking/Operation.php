@@ -21,6 +21,12 @@ final class Operation extends Element
     /** @var OperationDetail[] */
     private array $details = [];
 
+    private readonly int $amountInMinorUnits;
+
+    /**
+     * @param int|null $amountInMinorUnits the amount in minor units; when null, e.g. on an operation built by hand,
+     *                                     the float amount rounded to $numberOfDecimals
+     */
     public function __construct(
         private readonly string $bankCode,
         private readonly string $deskCode,
@@ -36,7 +42,10 @@ final class Operation extends Element
         private readonly ?string $rejectCode,
         private readonly ?string $exemptCode,
         private readonly ?string $bankOperationReference,
+        ?int $amountInMinorUnits = null,
+        private readonly int $numberOfDecimals = 2,
     ) {
+        $this->amountInMinorUnits = $amountInMinorUnits ?? (int) round($amount * (float) (10 ** $numberOfDecimals));
     }
 
     public function getBankCode(): string
@@ -102,6 +111,21 @@ final class Operation extends Element
     public function getAmount(): float
     {
         return $this->amount;
+    }
+
+    /**
+     * The exact amount, as an integer number of minor units: -22.79 with 2 decimals is -2279. Add and compare these
+     * instead of the floats of {@see getAmount()}.
+     */
+    public function getAmountInMinorUnits(): int
+    {
+        return $this->amountInMinorUnits;
+    }
+
+    /** The number of decimals of the amount (position 20 of the line): 2 for cents. */
+    public function getNumberOfDecimals(): int
+    {
+        return $this->numberOfDecimals;
     }
 
     public function getBankOperationReference(): ?string

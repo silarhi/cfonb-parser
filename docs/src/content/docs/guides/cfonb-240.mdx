@@ -103,8 +103,13 @@ date checks below are new in 6.5 too.
 ## Amounts
 
 Transaction and total amounts are 12 digits in cents, read as floats with 2 decimals: `000000171200` is `1712.00`.
-Unlike CFONB 120 amounts, they have no sign: they are never negative. The reader does not check that the total is the
-sum of the transactions.
+Unlike CFONB 120 amounts, they have no sign: they are never negative. `getTransactionAmountInMinorUnits()` and
+`getTotalAmountInMinorUnits()` (since 6.6) give the exact amount in cents, `171200`: add and compare these instead of the
+floats.
+
+The reader does not check that the total is the sum of the transactions: `$transfer->validate()` (since 6.6) does, and
+that the total belongs to the account of the header. See
+[checking the consistency of a file](/guides/troubleshooting/#checking-the-consistency-of-a-file).
 
 ## Dates and strict mode
 

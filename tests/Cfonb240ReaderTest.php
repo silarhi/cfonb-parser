@@ -17,6 +17,8 @@ namespace Silarhi\Cfonb\Tests;
 use Silarhi\Cfonb\Banking\Transfer;
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
+use Silarhi\Cfonb\Exceptions\ValidationCheck;
+use Silarhi\Cfonb\Exceptions\ValidationException;
 
 final class Cfonb240ReaderTest extends CfonbTestCase
 {
@@ -28,8 +30,7 @@ final class Cfonb240ReaderTest extends CfonbTestCase
     public function testFailUnknownLine(): void
     {
         $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to find a parser for the line :
-"abc "');
+        $this->expectExceptionMessage('Unable to find a parser for the line 1: record code "ab", 4 characters');
         (new Cfonb240Reader())->parse('abc ');
     }
 
@@ -105,5 +106,29 @@ final class Cfonb240ReaderTest extends CfonbTestCase
         self::assertCount(2, $firstTransfers->getTransactions());
         self::assertSame('E', $firstTransfers->getHeader()->getCurrencyIndex());
         self::assertSame(4652.7, $firstTransfers->getTotal()->getTotalAmount());
+        self::assertSame(465270, $firstTransfers->getTotal()->getTotalAmountInMinorUnits());
+        self::assertSame(171200, $firstTransfers->getTransactions()[0]->getTransactionAmountInMinorUnits());
+        self::assertSame(287280, $firstTransfers->getTransactions()[1]->getTransactionAmountInMinorUnits());
+    }
+
+    public function testValidate(): void
+    {
+        $lines = explode("\n", trim(self::loadFixture('cfonb.240-complex-test.txt', false), "\n"));
+
+        // The totals of the fixture are not the sum of its transactions
+        try {
+            (new Cfonb240Reader())->parse(implode("\n", $lines))[0]->validate();
+            self::fail('A ValidationException should be thrown');
+        } catch (ValidationException $e) {
+            self::assertSame(ValidationCheck::Total, $e->getCheck());
+            self::assertSame('Invalid transfer of the "31" header record of sequence number 1: the sum of the transactions (4584.80) is not the "39" total (4652.70)', $e->getMessage());
+        }
+
+        // 1712.00 + 2872.80 and 117.60
+        $lines[3] = substr_replace($lines[3], '000000458480', 228, 12);
+        $lines[6] = substr_replace($lines[6], '000000011760', 228, 12);
+        foreach ((new Cfonb240Reader())->parse(implode("\n", $lines)) as $transfer) {
+            $transfer->validate();
+        }
     }
 }

@@ -1,0 +1,2 @@
+Every statement is consistent
+Balance: Invalid statement opened on 2020-04-06: the "01" old balance (16695.65) plus the sum of the operations (-22.79) is 16672.86, not the "07" new balance (16672.85)

@@ -26,10 +26,24 @@ final class AmountParserTest extends TestCase
     {
         $sUT = new AmountParser();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to parse amount "test"');
+        try {
+            $sUT->parse('test', 5);
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            // Only the sign character in the message: the amount is kept in the exception.
+            self::assertSame('Unable to parse amount: its last character "t" is not a sign character', $e->getMessage());
+            self::assertSame('test', $e->getRawContent());
+        }
+    }
 
-        $sUT->parse('test', 5);
+    public function testFailInMinorUnits(): void
+    {
+        $sUT = new AmountParser();
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to parse amount: its last character "t" is not a sign character');
+
+        $sUT->parseInMinorUnits('test');
     }
 
     /** @return Generator<int, array<int, string|int|float>> */
@@ -71,5 +85,26 @@ final class AmountParserTest extends TestCase
         $sUT = new AmountParser();
 
         self::assertSame($expected, $sUT->parse($content, $nbDecimal));
+    }
+
+    /** @return iterable<string, array{string, int}> */
+    public static function provideMinorUnitsCase(): iterable
+    {
+        yield 'credit' => ['0000000166956E', 1669565];
+        yield 'debit' => ['0000000000227R', -2279];
+        yield 'credit zero' => ['0000000000000{', 0];
+        yield 'debit zero' => ['0000000000000}', 0];
+        // (int) (0.29 * 100) is 28: the float of parse() loses a cent there, not the minor units
+        yield '0.29' => ['0000000000002I', 29];
+        yield 'debit 0.29' => ['0000000000002R', -29];
+        yield 'largest amount' => ['9999999999999I', 99999999999999];
+    }
+
+    #[DataProvider('provideMinorUnitsCase')]
+    public function testInMinorUnits(string $content, int $expected): void
+    {
+        $sUT = new AmountParser();
+
+        self::assertSame($expected, $sUT->parseInMinorUnits($content));
     }
 }

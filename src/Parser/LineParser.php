@@ -17,6 +17,7 @@ namespace Silarhi\Cfonb\Parser;
 use Silarhi\Cfonb\Exceptions\ParseException;
 
 use function sprintf;
+use function strlen;
 
 /** @internal */
 final class LineParser
@@ -61,9 +62,26 @@ final class LineParser
     public function parse(string $content): RegexMatch
     {
         if (1 !== preg_match($this->regexAsString, $content, $matches)) {
-            throw new ParseException(sprintf('Regex does not match the line "%s"', $content));
+            // The line holds account numbers and labels: the message only names the field that does not match.
+            throw new ParseException(sprintf('Regex does not match the line: %s', $this->describeMismatch($content)), rawContent: $content);
         }
 
         return RegexMatch::fromMatchingKeys($this->matchingKeys, $matches);
+    }
+
+    /** Finds the first field that does not match, by matching the parts one more at a time: only run on failure. */
+    private function describeMismatch(string $content): string
+    {
+        $regex = '';
+        $length = 0;
+        foreach ($this->regexParts as $key => $part) {
+            $regex .= $part->toString();
+            if (1 !== preg_match('/^' . $regex . '/', $content, $matches)) {
+                return sprintf('the field "%s" at position %d is invalid', $key, $length + 1);
+            }
+            $length = strlen($matches[0]);
+        }
+
+        return sprintf('unexpected characters after position %d', $length);
     }
 }

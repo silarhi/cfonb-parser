@@ -52,6 +52,9 @@ final class OperationTest extends TestCase
         self::assertSame('test5', $sUT->getLabel());
         self::assertSame('test6', $sUT->getReference());
         self::assertSame(10.0, $sUT->getAmount());
+        // Built by hand without minor units: derived from the float amount, with 2 decimals
+        self::assertSame(1000, $sUT->getAmountInMinorUnits());
+        self::assertSame(2, $sUT->getNumberOfDecimals());
         self::assertSame('test7', $sUT->getInternalCode());
         self::assertSame('test8', $sUT->getCurrencyCode());
         self::assertSame('test9', $sUT->getRejectCode());
@@ -65,5 +68,21 @@ final class OperationTest extends TestCase
 
         self::assertCount(1, $sUT->getDetails());
         self::assertSame([$detail], $sUT->getDetails());
+    }
+
+    public function testMinorUnits(): void
+    {
+        $date = new DateTimeImmutable();
+
+        $sUT = new Operation('test', 'test2', 'test3', 'test4', $date, $date, 'test5', 'test6', -1669.565, null, null, null, null, null, -1669565, 3);
+
+        self::assertSame(-1669.565, $sUT->getAmount());
+        self::assertSame(-1669565, $sUT->getAmountInMinorUnits());
+        self::assertSame(3, $sUT->getNumberOfDecimals());
+
+        // (int) (0.29 * 100) is 28: the derived minor units are rounded
+        $sUT = new Operation('test', 'test2', 'test3', 'test4', $date, $date, 'test5', 'test6', 0.29, null, null, null, null, null);
+
+        self::assertSame(29, $sUT->getAmountInMinorUnits());
     }
 }
