@@ -40,7 +40,10 @@ final readonly class FileParser
      */
     public function parse(string $content, int $lineLength, bool $strict): iterable
     {
-        $content = ltrim(rtrim(str_replace(["\r\n", "\r"], "\n", $content), "\n"), "\n");
+        $content = rtrim(str_replace(["\r\n", "\r"], "\n", $content), "\n");
+        // The empty lines at the start of the file are skipped, but counted by the line numbers of the errors.
+        $lineNumber = strspn($content, "\n");
+        $content = ltrim($content, "\n");
 
         if ('' === $content) {
             return [];
@@ -56,15 +59,15 @@ final readonly class FileParser
             $line = substr($content, $offset, $pos - $offset);
             $offset = $pos + 1;
 
-            yield $this->findSupportedParserForLine($line)->parse($line, $strict);
+            yield $this->findSupportedParserForLine($line, ++$lineNumber)->parse($line, $strict);
         }
 
         $line = substr($content, $offset);
 
-        yield $this->findSupportedParserForLine($line)->parse($line, $strict);
+        yield $this->findSupportedParserForLine($line, ++$lineNumber)->parse($line, $strict);
     }
 
-    private function findSupportedParserForLine(string $line): ParserInterface
+    private function findSupportedParserForLine(string $line, int $lineNumber): ParserInterface
     {
         foreach ($this->parsers as $parser) {
             if ($parser->supports($line)) {
@@ -72,6 +75,7 @@ final readonly class FileParser
             }
         }
 
-        throw new ParseException(sprintf("Unable to find a parser for the line :\n\"%s\"", $line));
+        // The line holds account numbers and labels: the message only gives its record code and length.
+        throw new ParseException(sprintf('Unable to find a parser for the line %d: record code "%s", %d characters', $lineNumber, substr($line, 0, 2), strlen($line)), rawContent: $line);
     }
 }

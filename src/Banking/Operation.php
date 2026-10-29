@@ -15,12 +15,21 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 
 final class Operation extends Element
 {
     /** @var OperationDetail[] */
     private array $details = [];
 
+    private readonly string $amount;
+
+    /**
+     * @param float|string $amount the exact amount, a decimal string such as "-22.79", or a float, kept as
+     *                             the decimal string that gives it back
+     *
+     * @throws InvalidArgumentException when $amount is a string that is not a decimal, or INF or NAN
+     */
     public function __construct(
         private readonly string $bankCode,
         private readonly string $deskCode,
@@ -30,13 +39,14 @@ final class Operation extends Element
         private readonly DateTimeImmutable $valueDate,
         private readonly string $label,
         private readonly string $reference,
-        private readonly float $amount,
+        float|string $amount,
         private readonly ?string $internalCode,
         private readonly ?string $currencyCode,
         private readonly ?string $rejectCode,
         private readonly ?string $exemptCode,
         private readonly ?string $bankOperationReference,
     ) {
+        $this->amount = ExactAmount::from($amount);
     }
 
     public function getBankCode(): string
@@ -99,9 +109,15 @@ final class Operation extends Element
         return $this->exemptCode;
     }
 
-    public function getAmount(): float
+    /**
+     * The amount as a float by default, rounded like any float: pass true for the exact amount as a decimal string,
+     * "-22.79", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asString is true ? string : float)
+     */
+    public function getAmount(bool $asString = false): float|string
     {
-        return $this->amount;
+        return $asString ? $this->amount : (float) $this->amount;
     }
 
     public function getBankOperationReference(): ?string

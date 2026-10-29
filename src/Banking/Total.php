@@ -15,9 +15,18 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeInterface;
+use InvalidArgumentException;
 
 final class Total extends Element
 {
+    private readonly string $totalAmount;
+
+    /**
+     * @param float|string $totalAmount the exact amount, a decimal string such as "4652.70", or a float, kept as
+     *                                  the decimal string that gives it back
+     *
+     * @throws InvalidArgumentException when $totalAmount is a string that is not a decimal, or INF or NAN
+     */
     public function __construct(
         private readonly int $sequenceNumber,
         private readonly ?string $operationCode,
@@ -32,8 +41,9 @@ final class Total extends Element
         private readonly string $recipientAccountNumber2,
         private readonly ?string $recipientName2,
         private readonly ?string $processingCenterCode,
-        private readonly float $totalAmount,
+        float|string $totalAmount,
     ) {
+        $this->totalAmount = ExactAmount::from($totalAmount);
     }
 
     public function getSequenceNumber(): int
@@ -101,8 +111,14 @@ final class Total extends Element
         return $this->processingCenterCode;
     }
 
-    public function getTotalAmount(): float
+    /**
+     * The amount as a float by default, rounded like any float: pass true for the exact amount as a decimal string,
+     * "4652.70", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asString is true ? string : float)
+     */
+    public function getTotalAmount(bool $asString = false): float|string
     {
-        return $this->totalAmount;
+        return $asString ? $this->totalAmount : (float) $this->totalAmount;
     }
 }

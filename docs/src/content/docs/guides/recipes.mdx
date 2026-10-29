@@ -19,7 +19,8 @@ Operations above 100 in absolute value, debits and credits alike:
 
 <Example name="recipe-summary" />
 
-Amounts are floats: round them, or add cents (`(int) round($amount * 100)`), when the result must be exact.
+Amounts are floats by default: add the exact decimal strings of `getAmount(true)` (since 6.6) with bcmath when the
+result must be exact.
 
 ## Converting to an array or JSON
 

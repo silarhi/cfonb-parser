@@ -15,9 +15,18 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeInterface;
+use InvalidArgumentException;
 
 final class Transaction extends Element
 {
+    private readonly string $transactionAmount;
+
+    /**
+     * @param float|string $transactionAmount the exact amount, a decimal string such as "1712.00", or a float, kept as
+     *                                        the decimal string that gives it back
+     *
+     * @throws InvalidArgumentException when $transactionAmount is a string that is not a decimal, or INF or NAN
+     */
     public function __construct(
         private readonly int $sequenceNumber,
         private readonly ?string $operationCode,
@@ -36,8 +45,9 @@ final class Transaction extends Element
         private readonly ?string $description,
         private readonly ?DateTimeInterface $initialTransactionSettlementDate,
         private readonly ?string $initialOperationPresenterReference,
-        private readonly float $transactionAmount,
+        float|string $transactionAmount,
     ) {
+        $this->transactionAmount = ExactAmount::from($transactionAmount);
     }
 
     public function getSequenceNumber(): int
@@ -125,8 +135,14 @@ final class Transaction extends Element
         return $this->initialOperationPresenterReference;
     }
 
-    public function getTransactionAmount(): float
+    /**
+     * The amount as a float by default, rounded like any float: pass true for the exact amount as a decimal string,
+     * "1712.00", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asString is true ? string : float)
+     */
+    public function getTransactionAmount(bool $asString = false): float|string
     {
-        return $this->transactionAmount;
+        return $asString ? $this->transactionAmount : (float) $this->transactionAmount;
     }
 }

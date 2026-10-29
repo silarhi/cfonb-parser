@@ -64,5 +64,20 @@ final class TransactionTest extends TestCase
         self::assertSame($date2, $sUT->getInitialTransactionSettlementDate());
         self::assertSame('test15', $sUT->getInitialOperationPresenterReference());
         self::assertSame(12.25, $sUT->getTransactionAmount());
+        // Built from a float: the decimal string that gives it back
+        self::assertSame('12.25', $sUT->getTransactionAmount(true));
+    }
+
+    public function testExactAmount(): void
+    {
+        $date = new DateTimeImmutable();
+
+        $sUT = new Transaction(1, null, $date, 'E', 'test', 'test2', null, null, null, 'test3', 'test4', 'test5', null, null, null, null, null, '1712.00');
+
+        self::assertSame('1712.00', $sUT->getTransactionAmount(true));
+
+        $sUT = new Transaction(1, null, $date, 'E', 'test', 'test2', null, null, null, 'test3', 'test4', 'test5', null, null, null, null, null, 0.29);
+
+        self::assertSame('0.29', $sUT->getTransactionAmount(true));
     }
 }

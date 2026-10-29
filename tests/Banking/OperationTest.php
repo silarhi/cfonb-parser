@@ -52,6 +52,8 @@ final class OperationTest extends TestCase
         self::assertSame('test5', $sUT->getLabel());
         self::assertSame('test6', $sUT->getReference());
         self::assertSame(10.0, $sUT->getAmount());
+        // Built from a float: the decimal string that gives it back
+        self::assertSame('10.00', $sUT->getAmount(true));
         self::assertSame('test7', $sUT->getInternalCode());
         self::assertSame('test8', $sUT->getCurrencyCode());
         self::assertSame('test9', $sUT->getRejectCode());
@@ -65,5 +67,27 @@ final class OperationTest extends TestCase
 
         self::assertCount(1, $sUT->getDetails());
         self::assertSame([$detail], $sUT->getDetails());
+    }
+
+    public function testExactAmount(): void
+    {
+        $date = new DateTimeImmutable();
+
+        $sUT = new Operation('test', 'test2', 'test3', 'test4', $date, $date, 'test5', 'test6', '-1669.565', null, null, null, null, null);
+
+        self::assertSame(-1669.565, $sUT->getAmount());
+        self::assertSame('-1669.565', $sUT->getAmount(true));
+
+        // Built from a float: (int) (0.29 * 100) is 28, the decimal string is "0.29"
+        $sUT = new Operation('test', 'test2', 'test3', 'test4', $date, $date, 'test5', 'test6', 0.29, null, null, null, null, null);
+
+        self::assertSame('0.29', $sUT->getAmount(true));
+        self::assertSame(0.29, $sUT->getAmount());
+
+        // A float with 3 decimals keeps them
+        $sUT = new Operation('test', 'test2', 'test3', 'test4', $date, $date, 'test5', 'test6', -1669.565, null, null, null, null, null);
+
+        self::assertSame('-1669.565', $sUT->getAmount(true));
+        self::assertSame(-1669.565, $sUT->getAmount());
     }
 }
