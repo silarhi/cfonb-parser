@@ -30,12 +30,12 @@
     - `Regex does not match the line "…"` is now `Regex does not match the line: the field "amount" at position 91 is invalid`
     - `Unable to parse amount "…"` is now `Unable to parse amount: its last character "…" is not a sign character`
 
-# 6.5
-
 ## Deprecated
 
 - The float returned by `getAmount()`, `getTransactionAmount()` and `getTotalAmount()` without an argument: 7.0 returns
   the exact decimal string only. Pass `true` to get it now
+
+# 6.5
 
 ## Upgrade note
 
