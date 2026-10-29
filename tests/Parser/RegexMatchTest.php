@@ -64,6 +64,24 @@ final class RegexMatchTest extends TestCase
         new RegexMatch(['test' => $regexParts], ['']);
     }
 
+    public function testNonMatchingPartsAreSkipped(): void
+    {
+        $sUT = new RegexMatch([
+            'bank' => new RegexParts('(\d{5})'),
+            'reserved' => new RegexParts('.{2}', null, false),
+            'account' => new RegexParts('(.{11})'),
+        ], [1 => '20041', 2 => ' 0123456789A ']);
+
+        // The non capturing part does not consume a match: the next part gets the 2nd one
+        self::assertSame('20041', $sUT->getString('bank'));
+        self::assertSame('0123456789A', $sUT->getString('account'));
+
+        $this->expectException(KeyDoesNotExistException::class);
+        $this->expectExceptionMessage('key "reserved" does not exist');
+
+        $sUT->getStringOrNull('reserved');
+    }
+
     public function testGetStringOrNullIsNull(): void
     {
         $regexParts = $this->createMock(RegexParts::class);
