@@ -30,7 +30,7 @@
     },
     "require-dev": {
         "dg/bypass-finals": "^1.11.1",
-        "ergebnis/composer-normalize": "^2.55.0",
+        "ergebnis/composer-normalize": "^2.56.0",
         "friendsofphp/php-cs-fixer": "^3.95.27",
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan": "^2.3.4",
