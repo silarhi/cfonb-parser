@@ -12,5 +12,5 @@
         "@silarhi/docs-kit": "^0.10.1",
         "astro": "^7.4.4"
     },
-    "packageManager": "pnpm@12.16.1"
+    "packageManager": "pnpm@12.17.0"
 }
