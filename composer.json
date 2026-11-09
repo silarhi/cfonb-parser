@@ -31,14 +31,14 @@
     "require-dev": {
         "dg/bypass-finals": "^1.11.1",
         "ergebnis/composer-normalize": "^2.56.0",
-        "friendsofphp/php-cs-fixer": "^3.95.28",
+        "friendsofphp/php-cs-fixer": "^3.95.29",
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan": "^2.3.5",
         "phpstan/phpstan-strict-rules": "^2.1.1",
         "phpunit/phpunit": "^11.5.57 || ^12.5.38 || ^13.4.1",
         "rector/rector": "^2.8.4",
         "rector/swiss-knife": "^2.7.0",
-        "vimeo/psalm": "^5.26.1 || ^6.20.5"
+        "vimeo/psalm": "^5.26.1 || ^6.20.10"
     },
     "autoload": {
         "psr-4": {
