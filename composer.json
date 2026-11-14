@@ -38,7 +38,7 @@
         "phpunit/phpunit": "^11.5.57 || ^12.5.38 || ^13.4.1",
         "rector/rector": "^2.8.4",
         "rector/swiss-knife": "^2.7.0",
-        "vimeo/psalm": "^5.26.1 || ^6.20.10"
+        "vimeo/psalm": "^5.26.1 || ^6.20.10 || ^7.0.0"
     },
     "autoload": {
         "psr-4": {
