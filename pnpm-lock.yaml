@@ -182,7 +182,7 @@ importers:
         specifier: '>=17.6.0'
         version: 17.6.0
       prettier:
-        specifier: ^3.9.10
+        specifier: ^3.10.1
         version: 3.10.1
 
 packages:
