@@ -14,14 +14,13 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Parser;
 
-use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Parser\RegexParts;
 
 final class RegexPartsTest extends TestCase
 {
-    /** @return Generator<int, array<int, string|int>> */
+    /** @return iterable<int, array{0: string, 1: string, 2?: int}> */
     public static function provideOkCase(): iterable
     {
         yield ['test', 'test'];

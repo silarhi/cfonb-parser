@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests\Parser;
 
-use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Exceptions\ParseException;
@@ -46,7 +45,7 @@ final class AmountParserTest extends TestCase
         $sUT->parseExact('test', 2);
     }
 
-    /** @return Generator<int, array<int, string|int|float>> */
+    /** @return iterable<int, array{string, int, float}> */
     public static function provideOkCase(): iterable
     {
         yield ['10A', 1, 10.1];

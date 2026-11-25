@@ -23,7 +23,7 @@ use Silarhi\Cfonb\Parser\FileParser;
 
 final class FileParserTest extends TestCase
 {
-    /** @return iterable<string, array<string>> */
+    /** @return iterable<string, array{string}> */
     public static function provideEmptyCase(): iterable
     {
         yield 'empty string' => [''];
@@ -43,7 +43,20 @@ final class FileParserTest extends TestCase
         self::assertSame([], iterator_to_array($sUT->parse($content, 10, true)));
     }
 
-    /** @return iterable<string, array<string, mixed>> */
+    /**
+     * @return iterable<string, array{
+     *     invokedCountSupport: int,
+     *     supportArgs: array<int, array<string>>,
+     *     supportReturnValue: array<int, bool>,
+     *     invokedCountParse: int,
+     *     parseArgs: array<int, string>,
+     *     parseReturnValue: array<int, Element>,
+     *     expected: array<Element>,
+     *     content: string,
+     *     lineLength: positive-int,
+     *     strict: bool,
+     * }>
+     */
     public static function provideComplexCase(): iterable
     {
         $object1 = new Noop();
