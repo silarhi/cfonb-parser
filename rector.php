@@ -24,9 +24,7 @@ return RectorConfig::configure()
     ])
     // uncomment to reach your current PHP version
     ->withPhpSets()
-    ->withComposerBased(
-        phpunit: true,
-    )
+    ->withComposerBased()
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true
@@ -34,4 +32,5 @@ return RectorConfig::configure()
     ->withSkip([
         ExplicitNullableObjectInstanceRector::class,
     ])
+    ->reportUnusedSkips()
 ;
