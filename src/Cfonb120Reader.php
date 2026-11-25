@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb;
 
+use function end;
+
 use Silarhi\Cfonb\Banking\Balance;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
@@ -52,7 +54,6 @@ final readonly class Cfonb120Reader
     public function parse(string $content, bool $strict = true): array
     {
         $statementList = [];
-        $lastOperation = null;
         // The statement opened by a "01" old balance, until its "07" new balance closes it.
         $statement = null;
 
@@ -62,7 +63,6 @@ final readonly class Cfonb120Reader
                     throw new ParseException(sprintf('Unable to open a statement with the "01" old balance of account %s dated %s: the statement of account %s opened on %s has no "07" new balance record', $result->getAccountNumber(), $result->getDate()->format('Y-m-d'), $statement->getOldBalance()->getAccountNumber(), $statement->getOldBalance()->getDate()->format('Y-m-d')));
                 }
 
-                $lastOperation = null;
                 $statement = new Statement();
                 $statement->setOldBalance($result);
             } elseif ($result instanceof NewBalance) {
@@ -70,7 +70,6 @@ final readonly class Cfonb120Reader
                     throw new ParseException(sprintf('Unable to close a statement with the "07" new balance of account %s dated %s: missing "01" old balance record before it', $result->balance->getAccountNumber(), $result->balance->getDate()->format('Y-m-d')));
                 }
 
-                $lastOperation = null;
                 $statement->setNewBalance($result->balance);
                 $statementList[] = $statement;
                 $statement = null;
@@ -79,10 +78,12 @@ final readonly class Cfonb120Reader
                     throw new ParseException(sprintf('Unable to attach the operation with code %s dated %s: missing "01" old balance record before it', $result->getCode(), $result->getDate()->format('Y-m-d')));
                 }
 
-                $lastOperation = $result;
                 $statement->addOperation($result);
             } elseif ($result instanceof OperationDetail) {
-                if (null === $lastOperation) {
+                // A detail belongs to the last operation of the open statement.
+                $operations = $statement?->getOperations() ?? [];
+                $lastOperation = end($operations);
+                if (false === $lastOperation) {
                     throw new ParseException(sprintf('Unable to attach a detail for operation with code %s', $result->getCode()));
                 }
 
