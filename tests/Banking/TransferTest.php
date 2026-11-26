@@ -45,6 +45,20 @@ final class TransferTest extends TestCase
         $sUT->getTotal();
     }
 
+    public function testConstructor(): void
+    {
+        $header = self::header();
+        $transaction = self::transaction(2, 171200);
+        $total = self::total(171200);
+
+        $sUT = new Transfer($header, [5 => $transaction], $total);
+
+        self::assertSame($header, $sUT->getHeader());
+        self::assertSame([$transaction], $sUT->getTransactions());
+        self::assertSame($total, $sUT->getTotal());
+    }
+
+    /** @psalm-suppress DeprecatedMethod the setters are deprecated since 6.7 */
     public function testOk(): void
     {
         $total = self::createStub(Total::class);
@@ -81,14 +95,7 @@ final class TransferTest extends TestCase
 
     private static function transfer(Total $total, Transaction ...$transactions): Transfer
     {
-        $transfer = new Transfer();
-        $transfer->setHeader(self::header());
-        foreach ($transactions as $transaction) {
-            $transfer->addTransaction($transaction);
-        }
-        $transfer->setTotal($total);
-
-        return $transfer;
+        return new Transfer(self::header(), $transactions, $total);
     }
 
     public function testValidate(): void
@@ -127,8 +134,7 @@ final class TransferTest extends TestCase
 
     public function testValidateFailsWithoutTotal(): void
     {
-        $sUT = new Transfer();
-        $sUT->setHeader(self::header());
+        $sUT = new Transfer(self::header());
 
         $this->expectException(TotalUnavailableException::class);
         $sUT->validate();

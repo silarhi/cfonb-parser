@@ -23,15 +23,23 @@ use function sprintf;
 
 final class Transfer extends Element
 {
-    private ?Header $header = null;
+    /** @var list<Transaction> */
+    private array $transactions;
 
     /**
-     * @var Transaction[]
+     * @param Transaction[] $transactions
      */
-    private array $transactions = [];
+    public function __construct(
+        private ?Header $header = null,
+        array $transactions = [],
+        private ?Total $total = null,
+    ) {
+        $this->transactions = array_values($transactions);
+    }
 
-    private ?Total $total = null;
-
+    /**
+     * @deprecated since 6.7, pass the header to the constructor. 7.0 makes the transfer immutable
+     */
     public function setHeader(Header $header): void
     {
         $this->header = $header;
@@ -46,17 +54,23 @@ final class Transfer extends Element
         return $this->header;
     }
 
+    /**
+     * @deprecated since 6.7, pass the transactions to the constructor. 7.0 makes the transfer immutable
+     */
     public function addTransaction(Transaction $operation): void
     {
         $this->transactions[] = $operation;
     }
 
-    /** @return Transaction[] */
+    /** @return list<Transaction> */
     public function getTransactions(): array
     {
         return $this->transactions;
     }
 
+    /**
+     * @deprecated since 6.7, pass the total to the constructor. 7.0 makes the transfer immutable
+     */
     public function setTotal(Total $total): void
     {
         $this->total = $total;

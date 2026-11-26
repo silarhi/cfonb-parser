@@ -20,14 +20,15 @@ use Silarhi\Cfonb\OperationCode;
 
 final class Operation extends Element
 {
-    /** @var OperationDetail[] */
+    /** @var list<OperationDetail> */
     private array $details = [];
 
     private readonly string $amount;
 
     /**
-     * @param float|string $amount the exact amount, a decimal string such as "-22.79", or a float, kept as
-     *                             the decimal string that gives it back
+     * @param float|string      $amount  the exact amount, a decimal string such as "-22.79", or a float, kept as
+     *                                   the decimal string that gives it back
+     * @param OperationDetail[] $details the "05" detail records of the operation, since 6.7
      *
      * @throws InvalidArgumentException when $amount is a string that is not a decimal, or INF or NAN
      */
@@ -46,8 +47,10 @@ final class Operation extends Element
         private readonly ?string $rejectCode,
         private readonly ?string $exemptCode,
         private readonly ?string $bankOperationReference,
+        array $details = [],
     ) {
         $this->amount = ExactAmount::from($amount);
+        $this->details = array_values($details);
     }
 
     public function getBankCode(): string
@@ -155,6 +158,10 @@ final class Operation extends Element
         return $this->bankOperationReference;
     }
 
+    /**
+     * @deprecated since 6.7, pass the details to the constructor or use {@see withDetails()}. 7.0 makes the operation
+     *             immutable
+     */
     public function addDetails(OperationDetail $details): self
     {
         $this->details[] = $details;
@@ -162,7 +169,16 @@ final class Operation extends Element
         return $this;
     }
 
-    /** @return OperationDetail[] */
+    /** A copy of the operation with these "05" detail records instead of its own. */
+    public function withDetails(OperationDetail ...$details): self
+    {
+        $operation = clone $this;
+        $operation->details = array_values($details);
+
+        return $operation;
+    }
+
+    /** @return list<OperationDetail> */
     public function getDetails(): array
     {
         return $this->details;

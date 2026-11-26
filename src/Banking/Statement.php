@@ -22,13 +22,23 @@ use function sprintf;
 
 final class Statement extends Element
 {
-    private ?Balance $oldBalance = null;
+    /** @var list<Operation> */
+    private array $operations;
 
-    private ?Balance $newBalance = null;
+    /**
+     * @param Operation[] $operations
+     */
+    public function __construct(
+        private ?Balance $oldBalance = null,
+        private ?Balance $newBalance = null,
+        array $operations = [],
+    ) {
+        $this->operations = array_values($operations);
+    }
 
-    /** @var Operation[] */
-    private array $operations = [];
-
+    /**
+     * @deprecated since 6.7, pass the operations to the constructor. 7.0 makes the statement immutable
+     */
     public function addOperation(Operation $operation): self
     {
         $this->operations[] = $operation;
@@ -50,6 +60,9 @@ final class Statement extends Element
         return $this->oldBalance;
     }
 
+    /**
+     * @deprecated since 6.7, pass the old balance to the constructor. 7.0 makes the statement immutable
+     */
     public function setOldBalance(Balance $oldBalance): self
     {
         $this->oldBalance = $oldBalance;
@@ -71,6 +84,9 @@ final class Statement extends Element
         return $this->newBalance;
     }
 
+    /**
+     * @deprecated since 6.7, pass the new balance to the constructor. 7.0 makes the statement immutable
+     */
     public function setNewBalance(Balance $newBalance): self
     {
         $this->newBalance = $newBalance;
@@ -79,7 +95,7 @@ final class Statement extends Element
     }
 
     /**
-     * @return Operation[]
+     * @return list<Operation>
      */
     public function getOperations(): array
     {

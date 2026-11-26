@@ -20,8 +20,16 @@
 - `Account`, built by `Statement::getAccount()`, `Balance::getAccount()` and `Operation::getAccount()`: the bank code,
   desk code and account number, with the RIB key (`getRibKey()`), the BBAN and the IBAN (`getIban()`,
   `getFormattedIban()`; `FR` by default, `MC` for Monaco)
+- Constructors that build a statement, a transfer or an operation at once: `new Statement($oldBalance, $newBalance,
+$operations)`, `new Transfer($header, $transactions, $total)`, and the details as the last argument of `Operation`.
+  `Operation::withDetails()` returns a copy with other details. The readers build them this way
 - `Transaction::getCurrencyIndex()`, `Transaction::getAmount()`, `Total::getAmount()` and
   `OperationDetail::getAdditionalInformation()`, the names of the getters they replace (see Deprecated)
+
+## Changed
+
+- `parse()` returns a list (`list<Statement>`, `list<Transfer>`) for static analysis, and `getOperations()`,
+  `getDetails()` and `getTransactions()` too: the values are the same
 
 ## Fixed
 
@@ -36,6 +44,9 @@
 - `Transaction::getCurIndex()`, `Transaction::getTransactionAmount()`, `Total::getTotalAmount()` and
   `OperationDetail::getAdditionalInformations()`: use `getCurrencyIndex()`, `getAmount()` and
   `getAdditionalInformation()`
+- The setters of the parsed objects, which 7.0 makes immutable: `Statement::setOldBalance()`, `setNewBalance()` and
+  `addOperation()`, `Transfer::setHeader()`, `addTransaction()` and `setTotal()`, `Operation::addDetails()`. Pass the
+  values to the constructors, or use `Operation::withDetails()`
 
 # 6.6
 

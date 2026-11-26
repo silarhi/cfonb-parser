@@ -23,6 +23,7 @@ use Silarhi\Cfonb\OperationCode;
 
 final class OperationTest extends TestCase
 {
+    /** @psalm-suppress DeprecatedMethod addDetails() is deprecated since 6.7 */
     public function testGetter(): void
     {
         $date = new DateTimeImmutable();
@@ -97,17 +98,35 @@ final class OperationTest extends TestCase
     {
         $date = new DateTimeImmutable('2020-04-07');
 
-        $operation = new Operation('10278', '02204', '00012345603', $code, $date, $date, 'PRLV SEPA ONLINE SAS', 'REF', '-22.79', null, 'EUR', null, null, null);
-        foreach ($details as $detail) {
-            $operation->addDetails($detail);
-        }
-
-        return $operation;
+        return new Operation('10278', '02204', '00012345603', $code, $date, $date, 'PRLV SEPA ONLINE SAS', 'REF', '-22.79', null, 'EUR', null, null, null, $details);
     }
 
     private function detail(string $qualifier, ?string $information): OperationDetail
     {
         return new OperationDetail('10278', '02204', '00012345603', 'B1', new DateTimeImmutable('2020-04-07'), $qualifier, $information, null, 'EUR');
+    }
+
+    public function testDetailsInConstructor(): void
+    {
+        $label = $this->detail('LIB', 'DEDIBOX 3706114');
+        $payer = $this->detail('NPY', 'ONLINE SAS');
+
+        $sUT = $this->operation('B1', $label, $payer);
+
+        self::assertSame([$label, $payer], $sUT->getDetails());
+    }
+
+    public function testWithDetails(): void
+    {
+        $label = $this->detail('LIB', 'DEDIBOX 3706114');
+        $sUT = $this->operation();
+
+        $operation = $sUT->withDetails($label);
+
+        self::assertNotSame($sUT, $operation);
+        self::assertSame([], $sUT->getDetails());
+        self::assertSame([$label], $operation->getDetails());
+        self::assertSame('-22.79', $operation->getAmount(true));
     }
 
     public function testOperationCode(): void

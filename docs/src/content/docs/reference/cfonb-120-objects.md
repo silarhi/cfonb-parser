@@ -31,8 +31,9 @@ The balances and operations between an opening and a closing balance line.
 old balance plus the operations: [checking the consistency of a file](/guides/troubleshooting/#checking-the-consistency-of-a-file).
 
 `getOldBalance()` and `getNewBalance()` throw a `BalanceUnavailableException` when the balance is not set, which only
-happens on a `Statement` built by hand. `setOldBalance()`, `setNewBalance()` and `addOperation()` build the statement;
-the reader calls them.
+happens on a `Statement` built by hand. Since 6.7, a statement is built with its constructor,
+`new Statement($oldBalance, $newBalance, $operations)`: `setOldBalance()`, `setNewBalance()` and `addOperation()` are
+deprecated, and 7.0 makes the statement immutable.
 
 ## Balance
 
@@ -70,8 +71,6 @@ An operation line (`04`).
 | `getBankOperationReference(): ?string`             | Bank operation reference                               | 105–120                                            |
 | `getDetails(): OperationDetail[]`                  | The detail lines (`05`) following it                   |                                                    |
 
-`addDetails(OperationDetail $details)` adds a detail; the reader calls it.
-
 Since 6.7:
 
 | Method                                                             | Returns                                                                                                   |
@@ -82,6 +81,9 @@ Since 6.7:
 | `getDetail(DetailQualifier\|string $qualifier): ?OperationDetail`  | The first detail line of this qualifier                                                                   |
 | `getSepaInformation(): SepaInformation`                            | The [SEPA information](#sepainformation) decoded from the detail lines                                    |
 | `getAccount(): Account`                                            | The [account](#account) of the operation                                                                  |
+| `withDetails(OperationDetail ...$details): Operation`              | A copy of the operation with these detail lines                                                           |
+
+The constructor takes the details as its last argument. `addDetails()` is deprecated: 7.0 makes the operation immutable.
 
 ## OperationDetail
 

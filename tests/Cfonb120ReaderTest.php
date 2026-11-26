@@ -536,4 +536,15 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertCount(0, $statement->getOperations());
         self::assertSame(584353.02, $statement->getNewBalance()->getAmount());
     }
+
+    public function testDetailsOfTheLastOperation(): void
+    {
+        $statements = (new Cfonb120Reader())->parse(implode("\n", [self::OLD_BALANCE, self::OPERATION, self::DETAIL, self::DETAIL, self::OPERATION, self::DETAIL, self::NEW_BALANCE]));
+
+        $operations = $statements[0]->getOperations();
+        self::assertCount(2, $operations);
+        self::assertCount(2, $operations[0]->getDetails());
+        self::assertCount(1, $operations[1]->getDetails());
+        self::assertSame('PRLV SEPA ONLINE SAS DEDIBOX 3706114 DEDIBOX 3706114', $operations[0]->getFullLabel());
+    }
 }

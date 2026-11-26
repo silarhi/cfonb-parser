@@ -28,6 +28,21 @@ use Silarhi\Cfonb\Exceptions\ValidationException;
 
 final class StatementTest extends TestCase
 {
+    public function testConstructor(): void
+    {
+        $oldBalance = self::balance(1669565);
+        $newBalance = self::balance(1667286, '2020-04-07');
+        $operation = self::operation(-2279);
+
+        $sUT = new Statement($oldBalance, $newBalance, [3 => $operation]);
+
+        self::assertSame($oldBalance, $sUT->getOldBalance());
+        self::assertSame($newBalance, $sUT->getNewBalance());
+        // A list, whatever the keys given
+        self::assertSame([$operation], $sUT->getOperations());
+    }
+
+    /** @psalm-suppress DeprecatedMethod the setters are deprecated since 6.7 */
     public function testGetter(): void
     {
         $sUT = new Statement();
@@ -90,12 +105,7 @@ final class StatementTest extends TestCase
 
     private static function statement(Balance $oldBalance, Balance $newBalance, Operation ...$operations): Statement
     {
-        $statement = (new Statement())->setOldBalance($oldBalance)->setNewBalance($newBalance);
-        foreach ($operations as $operation) {
-            $statement->addOperation($operation);
-        }
-
-        return $statement;
+        return new Statement($oldBalance, $newBalance, $operations);
     }
 
     /** @return iterable<string, array{Statement}> */
@@ -104,8 +114,8 @@ final class StatementTest extends TestCase
         yield 'no operation' => [self::statement(self::balance(1669565), self::balance(1669565, '2020-04-07'))];
         yield 'operations' => [self::statement(self::balance(1669565), self::balance(1667315, '2020-04-07'), self::operation(-2279), self::operation(29), self::operation(0))];
         // Banks write another bank code on some operations, as in the complex-test.txt fixture
-        yield 'another bank code on an operation' => [self::statement(self::balance(1669565), self::balance(1667286, '2020-04-07'), self::operation(-2279, bankCode: '10556')->addDetails(self::detail()))];
-        yield 'no currency on an operation and a detail' => [self::statement(self::balance(1669565), self::balance(1667286, '2020-04-07'), self::operation(-2279, currencyCode: null)->addDetails(self::detail(currencyCode: null)))];
+        yield 'another bank code on an operation' => [self::statement(self::balance(1669565), self::balance(1667286, '2020-04-07'), self::operation(-2279, bankCode: '10556')->withDetails(self::detail()))];
+        yield 'no currency on an operation and a detail' => [self::statement(self::balance(1669565), self::balance(1667286, '2020-04-07'), self::operation(-2279, currencyCode: null)->withDetails(self::detail(currencyCode: null)))];
         // 100.00 + 0.125 = 100.125
         yield 'different numbers of decimals' => [self::statement(self::balance(10000), self::balance(100125, '2020-04-07', decimals: 3), self::operation(125, decimals: 3))];
     }
@@ -131,8 +141,8 @@ final class StatementTest extends TestCase
         yield 'account of an operation' => [self::statement($old, $new, self::operation(0), self::operation(0, accountNumber: '99999999999')), ValidationCheck::AccountNumber, 'the account number of the operation 2 (code B1, dated 2020-04-07) is not the one of the "01" old balance'];
         yield 'desk code of an operation' => [self::statement($old, $new, self::operation(0, deskCode: '02205')), ValidationCheck::DeskCode, 'the desk code of the operation 1 (code B1, dated 2020-04-07) is not the one of the "01" old balance'];
         yield 'currency of an operation' => [self::statement($old, $new, self::operation(0, currencyCode: 'USD')), ValidationCheck::Currency, 'the currency of the operation 1 (code B1, dated 2020-04-07) is not the one of the "01" old balance'];
-        yield 'account of a detail' => [self::statement($old, $new, self::operation(0)->addDetails(self::detail())->addDetails(self::detail('99999999999'))), ValidationCheck::AccountNumber, 'the account number of the detail 2 of the operation 1 (code B1, dated 2020-04-07) is not the one of the "01" old balance'];
-        yield 'currency of a detail' => [self::statement($old, $new, self::operation(0)->addDetails(self::detail(currencyCode: 'USD'))), ValidationCheck::Currency, 'the currency of the detail 1 of the operation 1 (code B1, dated 2020-04-07) is not the one of the "01" old balance'];
+        yield 'account of a detail' => [self::statement($old, $new, self::operation(0)->withDetails(self::detail(), self::detail('99999999999'))), ValidationCheck::AccountNumber, 'the account number of the detail 2 of the operation 1 (code B1, dated 2020-04-07) is not the one of the "01" old balance'];
+        yield 'currency of a detail' => [self::statement($old, $new, self::operation(0)->withDetails(self::detail(currencyCode: 'USD'))), ValidationCheck::Currency, 'the currency of the detail 1 of the operation 1 (code B1, dated 2020-04-07) is not the one of the "01" old balance'];
         yield 'new balance not the old balance plus the operations' => [self::statement($old, self::balance(1669565, '2020-04-07'), self::operation(-2279)), ValidationCheck::Balance, 'the "01" old balance (16695.65) plus the sum of the operations (-22.79) is 16672.86, not the "07" new balance (16695.65)'];
         // A cent lost by a float conversion, e.g. (int) (0.29 * 100), is caught
         yield 'a cent off' => [self::statement(self::balance(0), self::balance(28, '2020-04-07'), self::operation(29)), ValidationCheck::Balance, 'the "01" old balance (0.00) plus the sum of the operations (0.29) is 0.29, not the "07" new balance (0.28)'];
@@ -157,7 +167,7 @@ final class StatementTest extends TestCase
     {
         $this->expectException(BalanceUnavailableException::class);
 
-        (new Statement())->setOldBalance(self::balance(0))->validate();
+        (new Statement(self::balance(0)))->validate();
     }
 
     public function testAccount(): void

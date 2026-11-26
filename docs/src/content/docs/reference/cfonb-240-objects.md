@@ -27,8 +27,9 @@ The `…2` fields repeat the `…1` ones, positions 22 to 66, when the bank fill
 account: [checking the consistency of a file](/guides/troubleshooting/#checking-the-consistency-of-a-file).
 
 `getHeader()` and `getTotal()` throw a `HeaderUnavailableException` or a `TotalUnavailableException` when it is not
-set, which only happens on a `Transfer` built by hand. `setHeader()`, `addTransaction()` and `setTotal()` build the
-transfer; the reader calls them.
+set, which only happens on a `Transfer` built by hand. Since 6.7, a transfer is built with its constructor,
+`new Transfer($header, $transactions, $total)`: `setHeader()`, `addTransaction()` and `setTotal()` are deprecated, and
+7.0 makes the transfer immutable.
 
 ## Header
 

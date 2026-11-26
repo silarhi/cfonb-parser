@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb;
 
+use Generator;
+use Silarhi\Cfonb\Banking\Element;
 use Silarhi\Cfonb\Banking\Header;
 use Silarhi\Cfonb\Banking\Total;
 use Silarhi\Cfonb\Banking\Transaction;
@@ -45,39 +47,54 @@ final readonly class Cfonb240Reader
         $this->fileParser = $fileParser;
     }
 
-    /** @return Transfer[] */
+    /**
+     * Reads the transfers of a CFONB 240 file.
+     *
+     * @return list<Transfer>
+     *
+     * @throws ParseException on the first line that fails to parse, or record out of order
+     */
     public function parse(string $content, bool $strict = true): array
     {
-        $instance = null;
-        $list = [];
+        return iterator_to_array($this->build($this->fileParser->parse($content, self::LINE_LENGTH, $strict)), false);
+    }
 
-        foreach ($this->fileParser->parse($content, self::LINE_LENGTH, $strict) as $result) {
+    /**
+     * @param iterable<Element> $elements
+     *
+     * @return Generator<int, Transfer>
+     */
+    private function build(iterable $elements): Generator
+    {
+        // The transfer opened by a "31" header, until its "39" total closes it.
+        $header = null;
+        /** @var list<Transaction> $transactions */
+        $transactions = [];
+
+        foreach ($elements as $result) {
             if ($result instanceof Header) {
-                if (null !== $instance) {
+                if (null !== $header) {
                     throw new ParseException(sprintf('Unable to start a transfer with the "31" header record of sequence number %s: the previous transfer has no "39" total record', $result->getSequenceNumber()));
                 }
-                $instance = new Transfer();
-                $instance->setHeader($result);
+                $header = $result;
             } elseif ($result instanceof Total) {
-                if (null === $instance) {
+                if (null === $header) {
                     throw new ParseException(sprintf('Unable to attach the total with sequence number %s: missing "31" header record before it', $result->getSequenceNumber()));
                 }
-                $instance->setTotal($result);
-                $list[] = $instance;
+                yield new Transfer($header, $transactions, $result);
                 // The "39" record closes the transfer: any further record needs a new "31" header.
-                $instance = null;
+                $header = null;
+                $transactions = [];
             } elseif ($result instanceof Transaction) {
-                if (null === $instance) {
+                if (null === $header) {
                     throw new ParseException(sprintf('Unable to attach the transaction with sequence number %s: missing "31" header record before it', $result->getSequenceNumber()));
                 }
-                $instance->addTransaction($result);
+                $transactions[] = $result;
             }
         }
 
-        if (null !== $instance) {
-            throw new ParseException(sprintf('Unable to close the transfer of the "31" header record of sequence number %s: missing "39" total record at the end of the file', $instance->getHeader()->getSequenceNumber()));
+        if (null !== $header) {
+            throw new ParseException(sprintf('Unable to close the transfer of the "31" header record of sequence number %s: missing "39" total record at the end of the file', $header->getSequenceNumber()));
         }
-
-        return $list;
     }
 }
