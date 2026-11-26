@@ -16,6 +16,7 @@ namespace Silarhi\Cfonb;
 
 use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Banking\Transfer;
+use Silarhi\Cfonb\Exceptions\ParseException;
 
 final readonly class CfonbReader
 {
@@ -25,13 +26,33 @@ final readonly class CfonbReader
     ) {
     }
 
-    /** @return Statement[] */
+    /**
+     * Reads a CFONB 120 or CFONB 240 file, detected by {@see CfonbFormat::fromContent()}: the statements of a CFONB
+     * 120 file, the transfers of a CFONB 240 file. An empty file has neither.
+     *
+     * @return list<Statement>|list<Transfer>
+     *
+     * @throws ParseException when the format is of neither, or on the first line that fails to parse
+     */
+    public function parse(string $content, bool $strict = true): array
+    {
+        if ('' === trim($content, "\r\n")) {
+            return [];
+        }
+
+        return match (CfonbFormat::fromContent($content)) {
+            CfonbFormat::Cfonb120 => $this->cfonb120Reader->parse($content, $strict),
+            CfonbFormat::Cfonb240 => $this->cfonb240Reader->parse($content, $strict),
+        };
+    }
+
+    /** @return list<Statement> */
     public function parseCfonb120(string $content, bool $strict = true): array
     {
         return $this->cfonb120Reader->parse($content, $strict);
     }
 
-    /** @return Transfer[] */
+    /** @return list<Transfer> */
     public function parseCfonb240(string $content, bool $strict = true): array
     {
         return $this->cfonb240Reader->parse($content, $strict);

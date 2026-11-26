@@ -24,6 +24,7 @@ composer require silarhi/cfonb-parser
 | `Silarhi\Cfonb\Cfonb120Reader`            | CFONB 120 bank statements (_relevés de compte_), into `Statement`  |
 | `Silarhi\Cfonb\Cfonb240Reader`            | CFONB 240 transfer files, into `Transfer`                          |
 | `Silarhi\Cfonb\CfonbReader`               | Both formats, through the two readers above                        |
+| `Silarhi\Cfonb\CfonbFormat`               | The format of a file, CFONB 120 or 240 (since 6.7)                 |
 | `Silarhi\Cfonb\OperationCode`             | The CFONB operation codes, their labels and directions (since 6.7) |
 | `Silarhi\Cfonb\CfonbCodes`                | The same labels as an array, deprecated since 6.7                  |
 | `Silarhi\Cfonb\Exceptions\ParseException` | Thrown on a line the readers cannot parse                          |

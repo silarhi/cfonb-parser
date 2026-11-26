@@ -1,6 +1,6 @@
 ---
 title: Readers
-description: Cfonb120Reader, Cfonb240Reader and CfonbReader, their methods and constants.
+description: Cfonb120Reader, Cfonb240Reader and CfonbReader, their methods and constants, and CfonbFormat.
 sidebar:
     order: 1
 ---
@@ -61,11 +61,27 @@ foreach ($reader->parseCfonb240('My Content') as $transfer) {
 }
 ```
 
-| Member                                                                                        | Description                |
-| --------------------------------------------------------------------------------------------- | -------------------------- |
-| `__construct(Cfonb120Reader $cfonb120Reader = new …, Cfonb240Reader $cfonb240Reader = new …)` | The readers to delegate to |
-| `parseCfonb120(string $content, bool $strict = true): array`                                  | `Cfonb120Reader::parse()`  |
-| `parseCfonb240(string $content, bool $strict = true): array`                                  | `Cfonb240Reader::parse()`  |
+| Member                                                                                        | Description                                         |
+| --------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `__construct(Cfonb120Reader $cfonb120Reader = new …, Cfonb240Reader $cfonb240Reader = new …)` | The readers to delegate to                          |
+| `parse(string $content, bool $strict = true): array`                                          | Since 6.7: either reader, by the format of the file |
+| `parseCfonb120(string $content, bool $strict = true): array`                                  | `Cfonb120Reader::parse()`                           |
+| `parseCfonb240(string $content, bool $strict = true): array`                                  | `Cfonb240Reader::parse()`                           |
+
+`parse()` detects the format with `CfonbFormat::fromContent()`: the statements of a CFONB 120 file, the transfers of a
+CFONB 240 file, an empty list for an empty file, and a `ParseException` for a first record code of neither format.
+
+## CfonbFormat
+
+Since 6.7, the `Silarhi\Cfonb\CfonbFormat` enum tells the two formats apart, by the record code of the first line that
+is not empty: `01`, `04`, `05` and `07` are CFONB 120 records, `31`, `34` and `39` CFONB 240 records.
+
+| Member                                          | Description                                                      |
+| ----------------------------------------------- | ---------------------------------------------------------------- |
+| `Cfonb120`, `Cfonb240`                          | The two formats                                                  |
+| `fromContent(string $content): CfonbFormat`     | The format of the content, or a `ParseException`                 |
+| `tryFromContent(string $content): ?CfonbFormat` | The format of the content, `null` when it is empty or of neither |
+| `lineLength(): int`                             | `120` or `240`                                                   |
 
 ## Input
 

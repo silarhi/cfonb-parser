@@ -1,1 +1,3 @@
 3 statements, 2 transfers
+statements.txt: 3 Silarhi\Cfonb\Banking\Statement
+transfers.txt: 2 Silarhi\Cfonb\Banking\Transfer

@@ -20,6 +20,8 @@
 - `Account`, built by `Statement::getAccount()`, `Balance::getAccount()` and `Operation::getAccount()`: the bank code,
   desk code and account number, with the RIB key (`getRibKey()`), the BBAN and the IBAN (`getIban()`,
   `getFormattedIban()`; `FR` by default, `MC` for Monaco)
+- `CfonbReader::parse()` reads a CFONB 120 or a CFONB 240 file, detected by the record code of its first line with the
+  new `CfonbFormat` enum (`CfonbFormat::fromContent()`, `tryFromContent()`)
 - `toArray()` and `JsonSerializable` on `Statement`, `Balance`, `Operation`, `OperationDetail`, `Transfer`, `Header`,
   `Transaction`, `Total`, `SepaInformation`, `OriginalAmount` and `Account`: snake_case keys, dates as `Y-m-d`, amounts
   as exact decimal strings
