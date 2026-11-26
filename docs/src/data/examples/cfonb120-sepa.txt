@@ -1,0 +1,22 @@
+array(9) {
+  ["code"]=>
+  bool(true)
+  ["fullLabel"]=>
+  string(36) "PRLV SEPA ONLINE SAS DEDIBOX 3706114"
+  ["payerName"]=>
+  string(8) "JOHN DOE"
+  ["beneficiaryName"]=>
+  string(10) "ONLINE SAS"
+  ["creditorIdentifier"]=>
+  string(13) "FR28ZZZ444555"
+  ["remittanceInformation"]=>
+  string(104) "FACTURE 2020-04-0042 ABONNEMENT DEDIBOX ET NOM DE DOMAINE EXEMPLE.FR PERIODE DU 01/04/2020 AU 30/04/2020"
+  ["endToEndReference"]=>
+  string(16) "E2E-2020-04-0001"
+  ["mandateReference"]=>
+  string(15) "RUM-2019-000123"
+  ["sequenceType"]=>
+  string(4) "RCUR"
+}
+JOHN DOE
+1250.00 USD at 1.0825

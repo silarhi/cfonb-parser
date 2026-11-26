@@ -2,6 +2,18 @@
 
 ## Added
 
+- SEPA information, decoded from the `05` detail records by their qualifier (CFONB, _Evolutions du relevé de compte 120
+  caractères_, version 2.0): `Operation::getSepaInformation()` returns a `SepaInformation` with the payer, the
+  beneficiary, the ultimate debtor and creditor (names, identifiers and their types), the remittance information (the
+  `LCC` and `LC2` lines joined, up to 140 characters), the structured remittance information, the end-to-end reference
+  and the purpose, the remittance and transaction references, the original amount and exchange rate of a transfer
+  (`OriginalAmount`), the accounts, and the mandate reference and sequence type of a direct debit. Each getter is `null`
+  when the bank sends no detail record of its qualifier
+- `Operation::getFullLabel()`: the label followed by the `LIB` detail lines. `Operation::getDetailsByQualifier()` and
+  `Operation::getDetail()` find the details of a qualifier, given as a string or a `DetailQualifier` enum, the 18
+  qualifiers of the CFONB with their French labels
+- `OperationDetail::getDetailQualifier()`, `OperationDetail::getAdditionalInformationField()` (a field of the
+  additional information at a fixed offset, for the qualifiers that hold two), and `OperationDetail::getOperationCode()`
 - The `OperationCode` enum, the CFONB operation codes of `CfonbCodes::$codes` with `label()`, `direction()` (a
   `Direction` enum: `Debit`, `Credit`, `DebitOrCredit`, `CreditOrDebit`), `swiftCode()` and `swiftLabel()`.
   `Operation::getOperationCode()` returns the case of an operation, `null` for a code the CFONB does not define

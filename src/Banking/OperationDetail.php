@@ -19,6 +19,16 @@ use Silarhi\Cfonb\OperationCode;
 
 final class OperationDetail extends Element
 {
+    /** The additional information takes 70 characters, positions 49 to 118 of the line */
+    private const ADDITIONAL_INFORMATION_LENGTH = 70;
+
+    private readonly string $rawAdditionalInformation;
+
+    /**
+     * @param string|null $rawAdditionalInformation the 70 characters of the additional information, not trimmed, which
+     *                                              holds two fields at fixed positions for some qualifiers. Defaults to
+     *                                              $additionalInformations
+     */
     public function __construct(
         private readonly string $bankCode,
         private readonly string $deskCode,
@@ -29,7 +39,9 @@ final class OperationDetail extends Element
         private readonly ?string $additionalInformations,
         private readonly ?string $internalCode,
         private readonly ?string $currencyCode,
+        ?string $rawAdditionalInformation = null,
     ) {
+        $this->rawAdditionalInformation = str_pad($rawAdditionalInformation ?? $additionalInformations ?? '', self::ADDITIONAL_INFORMATION_LENGTH);
     }
 
     public function getBankCode(): string
@@ -87,8 +99,37 @@ final class OperationDetail extends Element
         return $this->additionalInformations;
     }
 
+    /**
+     * A field of the additional information, trimmed, null when blank: a field of IPY, RCN, REF, RUM or MMO.
+     *
+     * @param int<0, 69> $offset the offset of the field in the additional information, 0 for position 49 of the line
+     * @param int<1, 70> $length
+     */
+    public function getAdditionalInformationField(int $offset, int $length): ?string
+    {
+        $field = trim(substr($this->rawAdditionalInformation, $offset, $length));
+
+        return '' !== $field ? $field : null;
+    }
+
+    /**
+     * The 70 characters of the additional information, not trimmed.
+     *
+     * @internal
+     */
+    public function getRawAdditionalInformation(): string
+    {
+        return $this->rawAdditionalInformation;
+    }
+
     public function getQualifier(): string
     {
         return $this->qualifier;
+    }
+
+    /** The qualifier, null for one the CFONB does not define */
+    public function getDetailQualifier(): ?DetailQualifier
+    {
+        return DetailQualifier::tryFrom($this->qualifier);
     }
 }

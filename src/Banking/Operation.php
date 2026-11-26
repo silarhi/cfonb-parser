@@ -112,6 +112,23 @@ final class Operation extends Element
         return $this->label;
     }
 
+    /**
+     * The label of the operation followed by the label lines of its "05" detail records of qualifier LIB, separated
+     * by a space: the "04" record holds 31 characters of label only.
+     */
+    public function getFullLabel(): string
+    {
+        $labels = [$this->label];
+        foreach ($this->getDetailsByQualifier(DetailQualifier::Label) as $detail) {
+            $label = $detail->getAdditionalInformation();
+            if (null !== $label) {
+                $labels[] = $label;
+            }
+        }
+
+        return implode(' ', $labels);
+    }
+
     public function getReference(): string
     {
         return $this->reference;
@@ -149,5 +166,29 @@ final class Operation extends Element
     public function getDetails(): array
     {
         return $this->details;
+    }
+
+    /**
+     * The "05" detail records of this qualifier, in order.
+     *
+     * @return list<OperationDetail>
+     */
+    public function getDetailsByQualifier(DetailQualifier|string $qualifier): array
+    {
+        $qualifier = $qualifier instanceof DetailQualifier ? $qualifier->value : $qualifier;
+
+        return array_values(array_filter($this->details, static fn (OperationDetail $detail): bool => $qualifier === $detail->getQualifier()));
+    }
+
+    /** The first "05" detail record of this qualifier, null when there is none. */
+    public function getDetail(DetailQualifier|string $qualifier): ?OperationDetail
+    {
+        return $this->getDetailsByQualifier($qualifier)[0] ?? null;
+    }
+
+    /** The SEPA information of the operation (payer, beneficiary, references...), decoded from its detail records. */
+    public function getSepaInformation(): SepaInformation
+    {
+        return new SepaInformation(...$this->details);
     }
 }

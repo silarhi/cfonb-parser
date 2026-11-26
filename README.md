@@ -48,6 +48,7 @@
 - **Signed amounts** — CFONB 120 decimals and sign characters are decoded: credits are positive, debits are negative.
 - **Exact amounts** — since 6.6, every amount is also an exact decimal string (`getAmount(true)`, `"-22.79"`), to store and add without float errors.
 - **Consistency checks** — since 6.6, `validate()` checks that a statement's operations belong to its account and add up to its closing balance, and that a transfer's transactions add up to its total.
+- **SEPA details** — since 6.7, the payer, beneficiary, remittance information, end-to-end reference and mandate of an operation, decoded from its `05` records by `getSepaInformation()`.
 - **IBAN** — since 6.7, `getAccount()` computes the RIB key and the IBAN of an account.
 - **Operation codes as an enum** — since 6.7, `getOperationCode()` returns an `OperationCode` with its label, direction and SWIFT code.
 - **Typed value objects** — getters return floats, dates (`DateTimeImmutable` for CFONB 120, typed `DateTimeInterface` for CFONB 240) and nullable strings, not raw arrays.

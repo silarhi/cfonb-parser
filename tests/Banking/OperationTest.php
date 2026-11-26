@@ -16,6 +16,7 @@ namespace Silarhi\Cfonb\Tests\Banking;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Silarhi\Cfonb\Banking\DetailQualifier;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\OperationCode;
@@ -104,6 +105,11 @@ final class OperationTest extends TestCase
         return $operation;
     }
 
+    private function detail(string $qualifier, ?string $information): OperationDetail
+    {
+        return new OperationDetail('10278', '02204', '00012345603', 'B1', new DateTimeImmutable('2020-04-07'), $qualifier, $information, null, 'EUR');
+    }
+
     public function testOperationCode(): void
     {
         self::assertSame(OperationCode::SepaDirectDebitsDomiciled, $this->operation('B1')->getOperationCode());
@@ -117,5 +123,38 @@ final class OperationTest extends TestCase
         self::assertSame('10278', $account->getBankCode());
         self::assertSame('02204', $account->getDeskCode());
         self::assertSame('00012345603', $account->getAccountNumber());
+    }
+
+    public function testDetailsByQualifier(): void
+    {
+        $label1 = $this->detail('LIB', 'DEDIBOX 3706114');
+        $payer = $this->detail('NPY', 'ONLINE SAS');
+        $label2 = $this->detail('LIB', 'FACTURE 2020-04');
+        $sUT = $this->operation('B1', $label1, $payer, $label2);
+
+        self::assertSame([$label1, $label2], $sUT->getDetailsByQualifier(DetailQualifier::Label));
+        self::assertSame([$label1, $label2], $sUT->getDetailsByQualifier('LIB'));
+        self::assertSame([], $sUT->getDetailsByQualifier(DetailQualifier::BeneficiaryName));
+        self::assertSame($label1, $sUT->getDetail(DetailQualifier::Label));
+        self::assertSame($payer, $sUT->getDetail('NPY'));
+        self::assertNull($sUT->getDetail(DetailQualifier::MandateReference));
+    }
+
+    public function testFullLabel(): void
+    {
+        self::assertSame('PRLV SEPA ONLINE SAS', $this->operation()->getFullLabel());
+        self::assertSame(
+            'PRLV SEPA ONLINE SAS DEDIBOX 3706114 FACTURE 2020-04',
+            $this->operation('B1', $this->detail('LIB', 'DEDIBOX 3706114'), $this->detail('NPY', 'ONLINE SAS'), $this->detail('LIB', null), $this->detail('LIB', 'FACTURE 2020-04'))->getFullLabel()
+        );
+    }
+
+    public function testSepaInformation(): void
+    {
+        $sUT = $this->operation('B1', $this->detail('NPY', 'ONLINE SAS'), $this->detail('NBE', 'ACME'));
+
+        self::assertSame('ONLINE SAS', $sUT->getSepaInformation()->getPayerName());
+        self::assertSame('ACME', $sUT->getSepaInformation()->getBeneficiaryName());
+        self::assertNull($sUT->getSepaInformation()->getMandateReference());
     }
 }

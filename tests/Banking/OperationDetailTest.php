@@ -16,7 +16,9 @@ namespace Silarhi\Cfonb\Tests\Banking;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Silarhi\Cfonb\Banking\DetailQualifier;
 use Silarhi\Cfonb\Banking\OperationDetail;
+use Silarhi\Cfonb\OperationCode;
 
 final class OperationDetailTest extends TestCase
 {
@@ -53,5 +55,39 @@ final class OperationDetailTest extends TestCase
         $sUT = new OperationDetail('10278', '02204', '00012345603', 'B1', new DateTimeImmutable(), 'LIB', 'DEDIBOX 3706114', null, 'EUR');
 
         self::assertSame('DEDIBOX 3706114', $sUT->getAdditionalInformations());
+    }
+
+    public function testCodes(): void
+    {
+        $sUT = new OperationDetail('10278', '02204', '00012345603', 'B1', new DateTimeImmutable(), 'NPY', 'ONLINE SAS', null, 'EUR');
+
+        self::assertSame(OperationCode::SepaDirectDebitsDomiciled, $sUT->getOperationCode());
+        self::assertSame(DetailQualifier::PayerName, $sUT->getDetailQualifier());
+
+        $sUT = new OperationDetail('10278', '02204', '00012345603', 'ZZ', new DateTimeImmutable(), 'XYZ', null, null, null);
+
+        self::assertNull($sUT->getOperationCode());
+        self::assertNull($sUT->getDetailQualifier());
+    }
+
+    public function testAdditionalInformationField(): void
+    {
+        // Two fields of 35 characters: the second one starts at position 84 of the line
+        $raw = str_pad('  E2E-REF-0001', 35) . str_pad('SALA', 35);
+        $sUT = new OperationDetail('10278', '02204', '00012345603', '05', new DateTimeImmutable(), 'RCN', trim($raw), null, null, $raw);
+
+        self::assertSame('E2E-REF-0001', $sUT->getAdditionalInformationField(0, 35));
+        self::assertSame('SALA', $sUT->getAdditionalInformationField(35, 35));
+        self::assertNull($sUT->getAdditionalInformationField(60, 10));
+        self::assertSame($raw, $sUT->getRawAdditionalInformation());
+
+        // Built by hand without the raw field: the trimmed one, padded to 70 characters
+        $sUT = new OperationDetail('10278', '02204', '00012345603', '05', new DateTimeImmutable(), 'LIB', 'DEDIBOX', null, null);
+
+        self::assertSame(str_pad('DEDIBOX', 70), $sUT->getRawAdditionalInformation());
+
+        $sUT = new OperationDetail('10278', '02204', '00012345603', '05', new DateTimeImmutable(), 'LIB', null, null, null);
+
+        self::assertNull($sUT->getAdditionalInformationField(0, 70));
     }
 }

@@ -1,6 +1,6 @@
 ---
 title: CFONB 120 objects
-description: Statement, Balance, Operation and OperationDetail, the objects of a parsed CFONB 120 file.
+description: Statement, Balance, Operation, OperationDetail, SepaInformation and Account, the objects of a parsed CFONB 120 file.
 sidebar:
     order: 2
 ---
@@ -74,10 +74,14 @@ An operation line (`04`).
 
 Since 6.7:
 
-| Method                               | Returns                                                                                                   |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| `getOperationCode(): ?OperationCode` | The [operation code](/reference/operation-codes/) as an enum, `null` for a code the CFONB does not define |
-| `getAccount(): Account`              | The [account](#account) of the operation                                                                  |
+| Method                                                             | Returns                                                                                                   |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `getOperationCode(): ?OperationCode`                               | The [operation code](/reference/operation-codes/) as an enum, `null` for a code the CFONB does not define |
+| `getFullLabel(): string`                                           | The label, then the `LIB` detail lines, separated by a space                                              |
+| `getDetailsByQualifier(DetailQualifier\|string $qualifier): array` | The detail lines of this qualifier, in order                                                              |
+| `getDetail(DetailQualifier\|string $qualifier): ?OperationDetail`  | The first detail line of this qualifier                                                                   |
+| `getSepaInformation(): SepaInformation`                            | The [SEPA information](#sepainformation) decoded from the detail lines                                    |
+| `getAccount(): Account`                                            | The [account](#account) of the operation                                                                  |
 
 ## OperationDetail
 
@@ -94,6 +98,40 @@ A detail line (`05`), complementing the operation line before it.
 | `getDate(): DateTimeImmutable`        | Operation date                           | 35–40     |
 | `getQualifier(): string`              | Qualifier of the information, e.g. `LIB` | 46–48     |
 | `getAdditionalInformation(): ?string` | Additional information (since 6.7)       | 49–118    |
+
+Since 6.7, `getDetailQualifier(): ?DetailQualifier` gives the qualifier as an enum, `getOperationCode(): ?OperationCode`
+the operation code, and `getAdditionalInformationField(int $offset, int $length): ?string` a field of the additional
+information, from offset 0 (position 49). `getAdditionalInformations()` is deprecated.
+
+## SepaInformation
+
+Since 6.7, `Operation::getSepaInformation()` decodes the detail lines of the SEPA qualifiers, defined by the CFONB in
+_Evolutions du relevé de compte 120 caractères_ (version 2.0, March 2010). Every getter is `null` when the bank sends no
+line of its qualifier, and reads the first line when it sends several.
+
+| Method                                                                                | Qualifier and field                                               |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `getPayerName()`                                                                      | `NPY`, positions 49–118                                           |
+| `getPayerId()`, `getPayerIdType()`                                                    | `IPY`, positions 49–83 and 84–118                                 |
+| `getBeneficiaryName()`                                                                | `NBE`                                                             |
+| `getBeneficiaryId()`, `getBeneficiaryIdType()`                                        | `IBE`: the SEPA creditor identifier (ICS) of a direct debit       |
+| `getUltimateDebtorName()`, `getUltimateDebtorId()`, `getUltimateDebtorIdType()`       | `NPO`, `IPO`                                                      |
+| `getUltimateCreditorName()`, `getUltimateCreditorId()`, `getUltimateCreditorIdType()` | `NBU`, `IBU`                                                      |
+| `getRemittanceInformation()`                                                          | `LCC` then `LC2`, joined as they are: up to 140 characters        |
+| `getStructuredRemittanceInformation()`                                                | `LCS`, the creditor reference                                     |
+| `getEndToEndReference()`, `getPurpose()`                                              | `RCN`, positions 49–83 and 84–118                                 |
+| `getRemittanceReference()`, `getTransactionReference()`                               | `REF`, positions 49–83 and 84–118                                 |
+| `getOriginalAmount(): ?OriginalAmount`                                                | `MMO`: currency, unsigned exact amount, exchange rate             |
+| `getBeneficiaryAccount()`                                                             | `CBE`, transfers                                                  |
+| `getMandateReference()`, `getSequenceType()`                                          | `RUM`: the mandate reference, then `OOFF`, `FRST`, `RCUR`, `FNAL` |
+| `getDebtorAccount()`                                                                  | `CPY`, direct debits                                              |
+
+`getOriginalAmount()` is `null` too when the currency or the amount of the `MMO` line is not filled in as the CFONB
+defines them. `OriginalAmount` has `getCurrencyCode()`, `getAmount()` (a decimal string) and `getExchangeRate()` (a
+decimal string, `null` when the bank gives none).
+
+The `DetailQualifier` enum names the 18 qualifiers: `DetailQualifier::PayerName` is `NPY`, and `label()` gives its French
+label.
 
 ## Account
 
