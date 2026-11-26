@@ -34,7 +34,7 @@
         "friendsofphp/php-cs-fixer": "^3.95.32",
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan": "^2.3.7",
-        "phpstan/phpstan-strict-rules": "^2.1.1",
+        "phpstan/phpstan-strict-rules": "^2.1.2",
         "phpunit/phpunit": "^11.5.58 || ^12.5.38 || ^13.4.1",
         "rector/rector": "^2.9.2",
         "rector/swiss-knife": "^2.7.0",
