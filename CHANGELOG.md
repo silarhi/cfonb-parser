@@ -22,6 +22,9 @@
   `getFormattedIban()`; `FR` by default, `MC` for Monaco)
 - `CfonbReader::parse()` reads a CFONB 120 or a CFONB 240 file, detected by the record code of its first line with the
   new `CfonbFormat` enum (`CfonbFormat::fromContent()`, `tryFromContent()`)
+- `Cfonb120Reader::iterate()` and `Cfonb240Reader::iterate()` yield the statements and transfers one by one, each as soon
+  as its closing record is read. `iterateFile()` reads a file line by line, so that the memory used does not grow with
+  the size of the file, and throws a `RuntimeException` when the file cannot be opened
 - `toArray()` and `JsonSerializable` on `Statement`, `Balance`, `Operation`, `OperationDetail`, `Transfer`, `Header`,
   `Transaction`, `Total`, `SepaInformation`, `OriginalAmount` and `Account`: snake_case keys, dates as `Y-m-d`, amounts
   as exact decimal strings

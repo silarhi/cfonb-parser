@@ -1,6 +1,6 @@
 ---
 title: Recipes
-description: Filter operations, compute totals, convert statements to arrays or JSON, group them by account.
+description: Filter operations, compute totals, convert statements to arrays or JSON, group them by account, read large files.
 sidebar:
     order: 3
 ---
@@ -43,3 +43,11 @@ A file can hold the statements of several accounts. Group them with the account 
 <Example name="operation-codes" />
 
 The whole list: [operation codes](/reference/operation-codes/).
+
+## Reading a large file
+
+`iterateFile()` (since 6.7) reads the file line by line and yields one statement at a time:
+
+<Example name="cfonb120-iterate" />
+
+More in [large files](/reference/readers/#large-files).

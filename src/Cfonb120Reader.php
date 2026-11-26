@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb;
 
 use Generator;
+use RuntimeException;
 use Silarhi\Cfonb\Banking\Balance;
 use Silarhi\Cfonb\Banking\Element;
 use Silarhi\Cfonb\Banking\Operation;
@@ -28,6 +29,7 @@ use Silarhi\Cfonb\Parser\Cfonb120\Line07Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\NewBalance;
 use Silarhi\Cfonb\Parser\EmptyParser;
 use Silarhi\Cfonb\Parser\FileParser;
+use Silarhi\Cfonb\Parser\FileStream;
 
 use function sprintf;
 
@@ -59,7 +61,36 @@ final readonly class Cfonb120Reader
      */
     public function parse(string $content, bool $strict = true): array
     {
-        return iterator_to_array($this->build($this->fileParser->parse($content, self::LINE_LENGTH, $strict)), false);
+        return iterator_to_array($this->iterate($content, $strict), false);
+    }
+
+    /**
+     * Reads the statements of a CFONB 120 file one by one, each as soon as its "07" new balance is read: a statement
+     * yielded before a ParseException is complete.
+     *
+     * @return Generator<int, Statement>
+     *
+     * @throws ParseException on the first line that fails to parse, or record out of order
+     */
+    public function iterate(string $content, bool $strict = true): Generator
+    {
+        return $this->build($this->fileParser->parse($content, self::LINE_LENGTH, $strict));
+    }
+
+    /**
+     * Reads the statements of a CFONB 120 file one by one, line by line from the file: the memory used does not grow
+     * with the size of the file. The file is open until the last statement is read.
+     *
+     * @return Generator<int, Statement>
+     *
+     * @throws RuntimeException when the file cannot be opened, on the call
+     * @throws ParseException   while iterating, on the first line that fails to parse, or record out of order
+     */
+    public function iterateFile(string $path, bool $strict = true): Generator
+    {
+        $stream = FileStream::open($path);
+
+        return FileStream::closeAfter($stream, $this->build($this->fileParser->parseStream($stream, self::LINE_LENGTH, $strict)));
     }
 
     /**

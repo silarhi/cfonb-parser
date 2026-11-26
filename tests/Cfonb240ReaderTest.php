@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 use Silarhi\Cfonb\Banking\Transfer;
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
@@ -130,5 +132,32 @@ final class Cfonb240ReaderTest extends CfonbTestCase
         foreach ((new Cfonb240Reader())->parse(implode("\n", $lines)) as $transfer) {
             $transfer->validate();
         }
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function provideFileCase(): iterable
+    {
+        $content = self::loadFixture('cfonb.240-complex-test.txt', false);
+        yield 'lf' => [$content];
+        yield 'crlf' => [str_replace("\n", "\r\n", $content)];
+        yield 'cr' => [str_replace("\n", "\r", $content)];
+        yield 'without line breaks' => [self::loadFixture('cfonb.240-complex-test.txt', true)];
+    }
+
+    #[DataProvider('provideFileCase')]
+    public function testIterateSameAsParse(string $content): void
+    {
+        $reader = new Cfonb240Reader();
+        $expected = json_encode($reader->parse($content), \JSON_THROW_ON_ERROR);
+
+        self::assertSame($expected, json_encode(iterator_to_array($reader->iterate($content), false), \JSON_THROW_ON_ERROR));
+        self::assertSame($expected, json_encode(iterator_to_array($reader->iterateFile($this->temporaryFile($content)), false), \JSON_THROW_ON_ERROR));
+    }
+
+    public function testIterateFileThatDoesNotExist(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        (new Cfonb240Reader())->iterateFile('/does/not/exist.txt');
     }
 }
