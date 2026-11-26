@@ -63,6 +63,12 @@ final class Balance extends Element
         return $this->date;
     }
 
+    /** The account of the balance, with its RIB key and IBAN */
+    public function getAccount(): Account
+    {
+        return new Account($this->bankCode, $this->deskCode, $this->accountNumber);
+    }
+
     /**
      * The amount as a float by default, rounded like any float: pass true for the exact amount as a decimal string,
      * "16695.65", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.

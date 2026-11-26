@@ -159,4 +159,13 @@ final class StatementTest extends TestCase
 
         (new Statement())->setOldBalance(self::balance(0))->validate();
     }
+
+    public function testAccount(): void
+    {
+        $account = self::statement(self::balance(0), self::balance(0, '2020-04-07'))->getAccount();
+
+        self::assertSame('10278', $account->getBankCode());
+        self::assertSame('02204', $account->getDeskCode());
+        self::assertSame(self::ACCOUNT, $account->getAccountNumber());
+    }
 }

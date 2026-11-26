@@ -87,6 +87,16 @@ final class Statement extends Element
     }
 
     /**
+     * The account of the statement, the one of its "01" old balance, with its RIB key and IBAN.
+     *
+     * @throws BalanceUnavailableException on a statement built by hand without its old balance
+     */
+    public function getAccount(): Account
+    {
+        return $this->getOldBalance()->getAccount();
+    }
+
+    /**
      * Checks that the statement is consistent, which the reader does not: its "07" new balance, its "04" operations
      * and their "05" details belong to the account of its "01" old balance, and the new balance is the old balance
      * plus the operations, added as integers in minor units.

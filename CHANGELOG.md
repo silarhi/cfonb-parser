@@ -5,6 +5,9 @@
 - The `OperationCode` enum, the CFONB operation codes of `CfonbCodes::$codes` with `label()`, `direction()` (a
   `Direction` enum: `Debit`, `Credit`, `DebitOrCredit`, `CreditOrDebit`), `swiftCode()` and `swiftLabel()`.
   `Operation::getOperationCode()` returns the case of an operation, `null` for a code the CFONB does not define
+- `Account`, built by `Statement::getAccount()`, `Balance::getAccount()` and `Operation::getAccount()`: the bank code,
+  desk code and account number, with the RIB key (`getRibKey()`), the BBAN and the IBAN (`getIban()`,
+  `getFormattedIban()`; `FR` by default, `MC` for Monaco)
 
 ## Fixed
 

@@ -86,6 +86,12 @@ final class Operation extends Element
         return OperationCode::tryFrom($this->code);
     }
 
+    /** The account of the operation, with its RIB key and IBAN */
+    public function getAccount(): Account
+    {
+        return new Account($this->bankCode, $this->deskCode, $this->accountNumber);
+    }
+
     public function getDate(): DateTimeImmutable
     {
         return $this->date;

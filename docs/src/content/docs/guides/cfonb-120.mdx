@@ -119,6 +119,13 @@ foreach ($reader->parse($content) as $statement) {
 }
 ```
 
+## Accounts and IBAN
+
+A CFONB 120 file gives the bank code, the desk code and the account number of each account, not its IBAN. Since 6.7,
+`getAccount()` on a statement, a balance or an operation computes its RIB key and its IBAN:
+
+<Example name="cfonb120-account" />
+
 ## Amounts
 
 Balance and operation amounts are floats, signed: credits are positive, debits are negative. In the file, an amount is

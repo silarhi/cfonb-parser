@@ -109,4 +109,13 @@ final class OperationTest extends TestCase
         self::assertSame(OperationCode::SepaDirectDebitsDomiciled, $this->operation('B1')->getOperationCode());
         self::assertNull($this->operation('ZZ')->getOperationCode());
     }
+
+    public function testAccount(): void
+    {
+        $account = $this->operation()->getAccount();
+
+        self::assertSame('10278', $account->getBankCode());
+        self::assertSame('02204', $account->getDeskCode());
+        self::assertSame('00012345603', $account->getAccountNumber());
+    }
 }

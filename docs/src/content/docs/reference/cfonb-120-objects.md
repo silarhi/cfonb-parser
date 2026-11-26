@@ -24,6 +24,7 @@ The balances and operations between an opening and a closing balance line.
 | `getNewBalance(): Balance`                       | The closing balance (`07`)                                     |
 | `hasOldBalance(): bool`, `hasNewBalance(): bool` | Whether the balance is set: always `true` on parsed statements |
 | `getOperations(): Operation[]`                   | The operations (`04`), in the order of the file                |
+| `getAccount(): Account`                          | Since 6.7: the [account](#account) of the old balance          |
 | `validate(): void`                               | Since 6.6: checks the consistency of the statement             |
 
 `validate()` throws a `ValidationException` when an operation belongs to another account or the new balance is not the
@@ -45,6 +46,7 @@ An opening (`01`) or closing (`07`) balance line.
 | `getAccountNumber(): string`                       | Account number                                          | 22–32                                              |
 | `getDate(): DateTimeImmutable`                     | Balance date                                            | 35–40                                              |
 | `getAmount(bool $asString = false): float\|string` | Balance: float, or exact string with `true` (since 6.6) | 91–104, with the number of decimals of position 20 |
+| `getAccount(): Account`                            | Since 6.7: the [account](#account), with its IBAN       |                                                    |
 
 ## Operation
 
@@ -75,6 +77,7 @@ Since 6.7:
 | Method                               | Returns                                                                                                   |
 | ------------------------------------ | --------------------------------------------------------------------------------------------------------- |
 | `getOperationCode(): ?OperationCode` | The [operation code](/reference/operation-codes/) as an enum, `null` for a code the CFONB does not define |
+| `getAccount(): Account`              | The [account](#account) of the operation                                                                  |
 
 ## OperationDetail
 
@@ -91,3 +94,19 @@ A detail line (`05`), complementing the operation line before it.
 | `getDate(): DateTimeImmutable`         | Operation date                           | 35–40     |
 | `getQualifier(): string`               | Qualifier of the information, e.g. `LIB` | 46–48     |
 | `getAdditionalInformations(): ?string` | Additional information                   | 49–118    |
+
+## Account
+
+Since 6.7, `Statement::getAccount()`, `Balance::getAccount()` and `Operation::getAccount()` return the account as an
+`Account`, which computes the RIB key and the IBAN from the bank code, the desk code and the account number.
+
+| Method                                                 | Returns                                                |
+| ------------------------------------------------------ | ------------------------------------------------------ |
+| `getBankCode()`, `getDeskCode()`, `getAccountNumber()` | The fields of the account                              |
+| `getRibKey(): string`                                  | The 2 digits of the RIB key                            |
+| `getBban(): string`                                    | The 23 characters of the French BBAN, with the RIB key |
+| `getIban(string $countryCode = 'FR'): string`          | The IBAN without spaces; `MC` for an account in Monaco |
+| `getFormattedIban(string $countryCode = 'FR'): string` | The IBAN in groups of 4 characters                     |
+
+`(string) $account` is the IBAN. The constructor throws an `InvalidArgumentException` when the bank code or the desk
+code is not 5 digits, or the account number not 11 digits or capital letters.
