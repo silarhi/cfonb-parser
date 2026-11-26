@@ -15,9 +15,14 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
+use JsonSerializable;
+use Override;
 use Silarhi\Cfonb\OperationCode;
 
-final class OperationDetail extends Element
+/**
+ * @phpstan-type OperationDetailArray array{bank_code: string, desk_code: string, account_number: string, code: string, date: string, qualifier: string, additional_information: ?string, internal_code: ?string, currency_code: ?string}
+ */
+final class OperationDetail extends Element implements JsonSerializable
 {
     /** The additional information takes 70 characters, positions 49 to 118 of the line */
     private const ADDITIONAL_INFORMATION_LENGTH = 70;
@@ -131,5 +136,28 @@ final class OperationDetail extends Element
     public function getDetailQualifier(): ?DetailQualifier
     {
         return DetailQualifier::tryFrom($this->qualifier);
+    }
+
+    /** @return OperationDetailArray */
+    public function toArray(): array
+    {
+        return [
+            'bank_code' => $this->bankCode,
+            'desk_code' => $this->deskCode,
+            'account_number' => $this->accountNumber,
+            'code' => $this->code,
+            'date' => $this->date->format('Y-m-d'),
+            'qualifier' => $this->qualifier,
+            'additional_information' => $this->additionalInformations,
+            'internal_code' => $this->internalCode,
+            'currency_code' => $this->currencyCode,
+        ];
+    }
+
+    /** @return OperationDetailArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

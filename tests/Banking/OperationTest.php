@@ -176,4 +176,24 @@ final class OperationTest extends TestCase
         self::assertSame('ACME', $sUT->getSepaInformation()->getBeneficiaryName());
         self::assertNull($sUT->getSepaInformation()->getMandateReference());
     }
+
+    public function testToArray(): void
+    {
+        $sUT = $this->operation('B1', $this->detail('LIB', 'DEDIBOX 3706114'), $this->detail('NPY', 'ONLINE SAS'));
+
+        $array = $sUT->toArray();
+
+        self::assertSame('10278', $array['bank_code']);
+        self::assertSame('B1', $array['code']);
+        self::assertSame('2020-04-07', $array['date']);
+        self::assertSame('2020-04-07', $array['value_date']);
+        self::assertSame('PRLV SEPA ONLINE SAS', $array['label']);
+        self::assertSame('PRLV SEPA ONLINE SAS DEDIBOX 3706114', $array['full_label']);
+        self::assertSame('-22.79', $array['amount']);
+        self::assertCount(2, $array['details']);
+        self::assertSame('NPY', $array['details'][1]['qualifier']);
+        self::assertSame('ONLINE SAS', $array['sepa_information']['payer_name']);
+        self::assertNull($array['sepa_information']['original_amount']);
+        self::assertSame($array, $sUT->jsonSerialize());
+    }
 }

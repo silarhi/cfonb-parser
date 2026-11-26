@@ -45,6 +45,8 @@ final class AccountTest extends TestCase
         self::assertSame($iban, $sUT->getIban());
         self::assertSame($iban, (string) $sUT);
         self::assertSame(implode(' ', str_split($iban, 4)), $sUT->getFormattedIban());
+        self::assertSame(['bank_code' => $bankCode, 'desk_code' => $deskCode, 'account_number' => $accountNumber, 'rib_key' => $ribKey, 'iban' => $iban], $sUT->toArray());
+        self::assertSame($sUT->toArray(), $sUT->jsonSerialize());
     }
 
     public function testIbanOfAnotherCountry(): void

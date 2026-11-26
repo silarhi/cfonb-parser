@@ -74,4 +74,16 @@ final class TotalTest extends TestCase
         self::assertSame('4652.70', $sUT->getTotalAmount(true));
         self::assertSame(4652.7, $sUT->getTotalAmount());
     }
+
+    public function testToArray(): void
+    {
+        $sUT = new Total(4, null, new DateTimeImmutable('2020-12-21'), 'E', '30066', '10771', '00020030401', null, '30066', '10771', '00020030401', null, null, '4652.70');
+
+        $array = $sUT->toArray();
+
+        self::assertSame(4, $array['sequence_number']);
+        self::assertSame('2020-12-21', $array['creation_transaction_file_date']);
+        self::assertSame('4652.70', $array['amount']);
+        self::assertSame($array, $sUT->jsonSerialize());
+    }
 }

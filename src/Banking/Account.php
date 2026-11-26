@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use InvalidArgumentException;
+use JsonSerializable;
 
 use function ord;
 
@@ -29,8 +30,10 @@ use function strlen;
 /**
  * A French bank account, as a CFONB file gives it: the bank code, the desk code and the account number. Its RIB key
  * and its IBAN are computed from them.
+ *
+ * @phpstan-type AccountArray array{bank_code: string, desk_code: string, account_number: string, rib_key: string, iban: string}
  */
-final readonly class Account implements Stringable
+final readonly class Account implements JsonSerializable, Stringable
 {
     /** The letters of an account number become digits to compute the RIB key: A and J are 1, B, K and S are 2... */
     private const RIB_LETTERS = [
@@ -118,6 +121,25 @@ final readonly class Account implements Stringable
     public function getFormattedIban(string $countryCode = 'FR'): string
     {
         return implode(' ', str_split($this->getIban($countryCode), 4));
+    }
+
+    /** @return AccountArray */
+    public function toArray(): array
+    {
+        return [
+            'bank_code' => $this->bankCode,
+            'desk_code' => $this->deskCode,
+            'account_number' => $this->accountNumber,
+            'rib_key' => $this->getRibKey(),
+            'iban' => $this->getIban(),
+        ];
+    }
+
+    /** @return AccountArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     /** The IBAN */

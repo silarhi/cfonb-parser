@@ -90,4 +90,18 @@ final class TransactionTest extends TestCase
         self::assertSame('1712.00', $sUT->getTransactionAmount(true));
         self::assertSame(1712.0, $sUT->getTransactionAmount());
     }
+
+    public function testToArray(): void
+    {
+        $sUT = new Transaction(1, '02', new DateTimeImmutable('2020-12-21'), 'E', '00661', '49890', null, 'OFFICE NATL', null, '30066', '10771', '00020030401', null, null, null, new DateTimeImmutable('2020-12-01'), null, '1712.00');
+
+        $array = $sUT->toArray();
+
+        self::assertSame(1, $array['sequence_number']);
+        self::assertSame('2020-12-21', $array['settlement_date']);
+        self::assertSame('2020-12-01', $array['initial_transaction_settlement_date']);
+        self::assertNull($array['recipient_account_number_1']);
+        self::assertSame('1712.00', $array['amount']);
+        self::assertSame($array, $sUT->jsonSerialize());
+    }
 }

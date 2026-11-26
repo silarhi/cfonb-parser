@@ -24,9 +24,11 @@ result must be exact.
 
 ## Converting to an array or JSON
 
-For an API response, or to store the statements:
+For an API response, or to store the statements: since 6.7, every object has a `toArray()` and is `JsonSerializable`.
 
 <Example name="recipe-array" />
+
+The keys are snake_case and stable: a field the bank leaves blank is `null`, not missing.
 
 ## Handling multiple account statements
 

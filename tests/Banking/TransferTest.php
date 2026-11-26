@@ -58,6 +58,23 @@ final class TransferTest extends TestCase
         self::assertSame($total, $sUT->getTotal());
     }
 
+    public function testToArray(): void
+    {
+        $sUT = self::transfer(self::total(171200), self::transaction(2, 171200));
+
+        $array = $sUT->toArray();
+
+        self::assertSame('2020-12-18', $array['header']['prev_transaction_file_date']);
+        self::assertSame(self::ACCOUNT, $array['header']['recipient_account_number_1']);
+        self::assertCount(1, $array['transactions']);
+        self::assertSame('1712.00', $array['transactions'][0]['amount']);
+        self::assertSame('E', $array['transactions'][0]['currency_index']);
+        self::assertSame('2020-12-21', $array['transactions'][0]['settlement_date']);
+        self::assertNull($array['transactions'][0]['initial_transaction_settlement_date']);
+        self::assertSame('1712.00', $array['total']['amount']);
+        self::assertSame(json_encode($array, \JSON_THROW_ON_ERROR), json_encode($sUT, \JSON_THROW_ON_ERROR));
+    }
+
     /** @psalm-suppress DeprecatedMethod the setters are deprecated since 6.7 */
     public function testOk(): void
     {

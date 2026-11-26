@@ -14,13 +14,20 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+use JsonSerializable;
+use Override;
+
 /**
  * The SEPA information of an operation, decoded from its "05" detail records by their qualifier (CFONB, "Evolutions du
  * relevé de compte 120 caractères", version 2.0 of March 2010): the payer, the beneficiary, the remittance information
  * and the references. Each getter is null when the bank gives no detail record of its qualifier; when it gives
  * several, the first one is used.
+ *
+ * @phpstan-import-type OriginalAmountArray from OriginalAmount
+ *
+ * @phpstan-type SepaInformationArray array{payer_name: ?string, payer_id: ?string, payer_id_type: ?string, beneficiary_name: ?string, beneficiary_id: ?string, beneficiary_id_type: ?string, ultimate_debtor_name: ?string, ultimate_debtor_id: ?string, ultimate_debtor_id_type: ?string, ultimate_creditor_name: ?string, ultimate_creditor_id: ?string, ultimate_creditor_id_type: ?string, remittance_information: ?string, structured_remittance_information: ?string, end_to_end_reference: ?string, purpose: ?string, remittance_reference: ?string, transaction_reference: ?string, original_amount: ?OriginalAmountArray, beneficiary_account: ?string, mandate_reference: ?string, sequence_type: ?string, debtor_account: ?string}
  */
-final readonly class SepaInformation
+final readonly class SepaInformation implements JsonSerializable
 {
     /** The fields of two-part qualifiers: the first at offset 0, the second at offset 35, of 35 characters each */
     private const HALF = 35;
@@ -199,6 +206,43 @@ final readonly class SepaInformation
     public function getDebtorAccount(): ?string
     {
         return $this->field(DetailQualifier::DebtorAccount, 0, self::HALF);
+    }
+
+    /** @return SepaInformationArray */
+    public function toArray(): array
+    {
+        return [
+            'payer_name' => $this->getPayerName(),
+            'payer_id' => $this->getPayerId(),
+            'payer_id_type' => $this->getPayerIdType(),
+            'beneficiary_name' => $this->getBeneficiaryName(),
+            'beneficiary_id' => $this->getBeneficiaryId(),
+            'beneficiary_id_type' => $this->getBeneficiaryIdType(),
+            'ultimate_debtor_name' => $this->getUltimateDebtorName(),
+            'ultimate_debtor_id' => $this->getUltimateDebtorId(),
+            'ultimate_debtor_id_type' => $this->getUltimateDebtorIdType(),
+            'ultimate_creditor_name' => $this->getUltimateCreditorName(),
+            'ultimate_creditor_id' => $this->getUltimateCreditorId(),
+            'ultimate_creditor_id_type' => $this->getUltimateCreditorIdType(),
+            'remittance_information' => $this->getRemittanceInformation(),
+            'structured_remittance_information' => $this->getStructuredRemittanceInformation(),
+            'end_to_end_reference' => $this->getEndToEndReference(),
+            'purpose' => $this->getPurpose(),
+            'remittance_reference' => $this->getRemittanceReference(),
+            'transaction_reference' => $this->getTransactionReference(),
+            'original_amount' => $this->getOriginalAmount()?->toArray(),
+            'beneficiary_account' => $this->getBeneficiaryAccount(),
+            'mandate_reference' => $this->getMandateReference(),
+            'sequence_type' => $this->getSequenceType(),
+            'debtor_account' => $this->getDebtorAccount(),
+        ];
+    }
+
+    /** @return SepaInformationArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     /**

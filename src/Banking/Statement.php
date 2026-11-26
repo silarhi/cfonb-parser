@@ -14,13 +14,21 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+use JsonSerializable;
+use Override;
 use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 use Silarhi\Cfonb\Exceptions\ValidationCheck;
 use Silarhi\Cfonb\Exceptions\ValidationException;
 
 use function sprintf;
 
-final class Statement extends Element
+/**
+ * @phpstan-import-type BalanceArray from Balance
+ * @phpstan-import-type OperationArray from Operation
+ *
+ * @phpstan-type StatementArray array{old_balance: BalanceArray, new_balance: BalanceArray, operations: list<OperationArray>}
+ */
+final class Statement extends Element implements JsonSerializable
 {
     /** @var list<Operation> */
     private array $operations;
@@ -110,6 +118,29 @@ final class Statement extends Element
     public function getAccount(): Account
     {
         return $this->getOldBalance()->getAccount();
+    }
+
+    /**
+     * The statement as an array of scalars, for JSON: the amounts are the exact decimal strings, the dates are Y-m-d.
+     *
+     * @return StatementArray
+     *
+     * @throws BalanceUnavailableException on a statement built by hand without its balances
+     */
+    public function toArray(): array
+    {
+        return [
+            'old_balance' => $this->getOldBalance()->toArray(),
+            'new_balance' => $this->getNewBalance()->toArray(),
+            'operations' => array_map(static fn (Operation $operation): array => $operation->toArray(), $this->operations),
+        ];
+    }
+
+    /** @return StatementArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     /**

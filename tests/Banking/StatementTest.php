@@ -178,4 +178,28 @@ final class StatementTest extends TestCase
         self::assertSame('02204', $account->getDeskCode());
         self::assertSame(self::ACCOUNT, $account->getAccountNumber());
     }
+
+    public function testToArray(): void
+    {
+        $operation = self::operation(-2279)->withDetails(self::detail());
+        $statement = self::statement(self::balance(1669565), self::balance(1667286, '2020-04-07'), $operation);
+
+        $array = $statement->toArray();
+
+        self::assertSame(['bank_code' => '10278', 'desk_code' => '02204', 'account_number' => self::ACCOUNT, 'currency_code' => 'EUR', 'date' => '2020-04-06', 'amount' => '16695.65'], $array['old_balance']);
+        self::assertSame('2020-04-07', $array['new_balance']['date']);
+        self::assertSame('16672.86', $array['new_balance']['amount']);
+        self::assertCount(1, $array['operations']);
+        self::assertSame('-22.79', $array['operations'][0]['amount']);
+        self::assertSame('PRLV SEPA ONLINE SAS DEDIBOX 3706114', $array['operations'][0]['full_label']);
+        self::assertSame('DEDIBOX 3706114', $array['operations'][0]['details'][0]['additional_information']);
+        self::assertSame(json_encode($array, \JSON_THROW_ON_ERROR), json_encode($statement, \JSON_THROW_ON_ERROR));
+    }
+
+    public function testToArrayFailsWithoutBalances(): void
+    {
+        $this->expectException(BalanceUnavailableException::class);
+
+        (new Statement(self::balance(0)))->toArray();
+    }
 }

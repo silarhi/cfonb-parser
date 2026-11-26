@@ -20,6 +20,9 @@
 - `Account`, built by `Statement::getAccount()`, `Balance::getAccount()` and `Operation::getAccount()`: the bank code,
   desk code and account number, with the RIB key (`getRibKey()`), the BBAN and the IBAN (`getIban()`,
   `getFormattedIban()`; `FR` by default, `MC` for Monaco)
+- `toArray()` and `JsonSerializable` on `Statement`, `Balance`, `Operation`, `OperationDetail`, `Transfer`, `Header`,
+  `Transaction`, `Total`, `SepaInformation`, `OriginalAmount` and `Account`: snake_case keys, dates as `Y-m-d`, amounts
+  as exact decimal strings
 - Constructors that build a statement, a transfer or an operation at once: `new Statement($oldBalance, $newBalance,
 $operations)`, `new Transfer($header, $transactions, $total)`, and the details as the last argument of `Operation`.
   `Operation::withDetails()` returns a copy with other details. The readers build them this way

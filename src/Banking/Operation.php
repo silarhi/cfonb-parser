@@ -16,9 +16,17 @@ namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
+use JsonSerializable;
+use Override;
 use Silarhi\Cfonb\OperationCode;
 
-final class Operation extends Element
+/**
+ * @phpstan-import-type OperationDetailArray from OperationDetail
+ * @phpstan-import-type SepaInformationArray from SepaInformation
+ *
+ * @phpstan-type OperationArray array{bank_code: string, desk_code: string, account_number: string, currency_code: ?string, code: string, date: string, value_date: string, label: string, full_label: string, reference: string, amount: string, internal_code: ?string, reject_code: ?string, exempt_code: ?string, bank_operation_reference: ?string, details: list<OperationDetailArray>, sepa_information: SepaInformationArray}
+ */
+final class Operation extends Element implements JsonSerializable
 {
     /** @var list<OperationDetail> */
     private array $details = [];
@@ -206,5 +214,40 @@ final class Operation extends Element
     public function getSepaInformation(): SepaInformation
     {
         return new SepaInformation(...$this->details);
+    }
+
+    /**
+     * The operation as an array of scalars, for JSON: the amount is the exact decimal string, the dates are Y-m-d.
+     *
+     * @return OperationArray
+     */
+    public function toArray(): array
+    {
+        return [
+            'bank_code' => $this->bankCode,
+            'desk_code' => $this->deskCode,
+            'account_number' => $this->accountNumber,
+            'currency_code' => $this->currencyCode,
+            'code' => $this->code,
+            'date' => $this->date->format('Y-m-d'),
+            'value_date' => $this->valueDate->format('Y-m-d'),
+            'label' => $this->label,
+            'full_label' => $this->getFullLabel(),
+            'reference' => $this->reference,
+            'amount' => $this->amount,
+            'internal_code' => $this->internalCode,
+            'reject_code' => $this->rejectCode,
+            'exempt_code' => $this->exemptCode,
+            'bank_operation_reference' => $this->bankOperationReference,
+            'details' => array_map(static fn (OperationDetail $detail): array => $detail->toArray(), $this->details),
+            'sepa_information' => $this->getSepaInformation()->toArray(),
+        ];
+    }
+
+    /** @return OperationArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

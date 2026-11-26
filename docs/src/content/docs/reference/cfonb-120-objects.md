@@ -26,6 +26,7 @@ The balances and operations between an opening and a closing balance line.
 | `getOperations(): Operation[]`                   | The operations (`04`), in the order of the file                |
 | `getAccount(): Account`                          | Since 6.7: the [account](#account) of the old balance          |
 | `validate(): void`                               | Since 6.6: checks the consistency of the statement             |
+| `toArray(): array`                               | Since 6.7: the statement as an array, for JSON                 |
 
 `validate()` throws a `ValidationException` when an operation belongs to another account or the new balance is not the
 old balance plus the operations: [checking the consistency of a file](/guides/troubleshooting/#checking-the-consistency-of-a-file).
@@ -34,6 +35,9 @@ old balance plus the operations: [checking the consistency of a file](/guides/tr
 happens on a `Statement` built by hand. Since 6.7, a statement is built with its constructor,
 `new Statement($oldBalance, $newBalance, $operations)`: `setOldBalance()`, `setNewBalance()` and `addOperation()` are
 deprecated, and 7.0 makes the statement immutable.
+
+Every object of this page implements `JsonSerializable` since 6.7: `toArray()`, which `json_encode()` uses, gives its
+fields in snake_case, the dates as `Y-m-d` and the amounts as exact decimal strings.
 
 ## Balance
 

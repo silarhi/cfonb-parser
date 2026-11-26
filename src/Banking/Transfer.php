@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+use JsonSerializable;
+use Override;
 use Silarhi\Cfonb\Exceptions\HeaderUnavailableException;
 use Silarhi\Cfonb\Exceptions\TotalUnavailableException;
 use Silarhi\Cfonb\Exceptions\ValidationCheck;
@@ -21,7 +23,14 @@ use Silarhi\Cfonb\Exceptions\ValidationException;
 
 use function sprintf;
 
-final class Transfer extends Element
+/**
+ * @phpstan-import-type HeaderArray from Header
+ * @phpstan-import-type TransactionArray from Transaction
+ * @phpstan-import-type TotalArray from Total
+ *
+ * @phpstan-type TransferArray array{header: HeaderArray, transactions: list<TransactionArray>, total: TotalArray}
+ */
+final class Transfer extends Element implements JsonSerializable
 {
     /** @var list<Transaction> */
     private array $transactions;
@@ -123,6 +132,30 @@ final class Transfer extends Element
         if ($sum !== $expected) {
             throw new ValidationException(ValidationCheck::Total, sprintf('%s: the sum of the transactions (%s) is not the "39" total (%s)', $this->describe(), ExactAmount::fromMinorUnits($sum, $decimals), ExactAmount::fromMinorUnits($expected, $decimals)));
         }
+    }
+
+    /**
+     * The transfer as an array of scalars, for JSON: the amounts are the exact decimal strings, the dates are Y-m-d.
+     *
+     * @return TransferArray
+     *
+     * @throws HeaderUnavailableException on a transfer built by hand without its header
+     * @throws TotalUnavailableException  on a transfer built by hand without its total
+     */
+    public function toArray(): array
+    {
+        return [
+            'header' => $this->getHeader()->toArray(),
+            'transactions' => array_map(static fn (Transaction $transaction): array => $transaction->toArray(), $this->transactions),
+            'total' => $this->getTotal()->toArray(),
+        ];
+    }
+
+    /** @return TransferArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     private function assertSameField(ValidationCheck $check, string $field, string $expected, string $actual, string $record): void

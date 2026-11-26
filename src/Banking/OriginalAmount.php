@@ -14,10 +14,15 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+use JsonSerializable;
+use Override;
+
 /**
  * The original amount of a transfer in another currency, from its "05" detail record of qualifier MMO.
+ *
+ * @phpstan-type OriginalAmountArray array{currency_code: string, amount: string, exchange_rate: ?string}
  */
-final readonly class OriginalAmount
+final readonly class OriginalAmount implements JsonSerializable
 {
     /**
      * @param string      $amount       the unsigned exact amount, a decimal string such as "1250.00"
@@ -50,5 +55,22 @@ final readonly class OriginalAmount
     public function getExchangeRate(): ?string
     {
         return $this->exchangeRate;
+    }
+
+    /** @return OriginalAmountArray */
+    public function toArray(): array
+    {
+        return [
+            'currency_code' => $this->currencyCode,
+            'amount' => $this->amount,
+            'exchange_rate' => $this->exchangeRate,
+        ];
+    }
+
+    /** @return OriginalAmountArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

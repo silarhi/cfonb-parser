@@ -70,6 +70,11 @@ final class SepaInformationTest extends CfonbTestCase
         self::assertSame('USD', $originalAmount->getCurrencyCode());
         self::assertSame('1250.00', $originalAmount->getAmount());
         self::assertSame('1.0825', $originalAmount->getExchangeRate());
+
+        $array = $sUT->toArray();
+        self::assertSame(['currency_code' => 'USD', 'amount' => '1250.00', 'exchange_rate' => '1.0825'], $array['original_amount']);
+        self::assertSame('ACME HOLDING', $array['ultimate_debtor_name']);
+        self::assertSame($array, $sUT->jsonSerialize());
     }
 
     private function detail(string $qualifier, string $raw): OperationDetail
@@ -86,6 +91,7 @@ final class SepaInformationTest extends CfonbTestCase
         self::assertNull($sUT->getPayerName());
         self::assertNull($sUT->getRemittanceInformation());
         self::assertNull($sUT->getOriginalAmount());
+        self::assertSame([], array_filter($sUT->toArray(), static fn (mixed $value): bool => null !== $value));
     }
 
     public function testFirstDetailOfAQualifier(): void

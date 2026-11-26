@@ -90,4 +90,22 @@ final class OperationDetailTest extends TestCase
 
         self::assertNull($sUT->getAdditionalInformationField(0, 70));
     }
+
+    public function testToArray(): void
+    {
+        $sUT = new OperationDetail('10278', '02204', '00012345603', 'B1', new DateTimeImmutable('2020-04-07'), 'LIB', 'DEDIBOX 3706114', null, 'EUR');
+
+        self::assertSame([
+            'bank_code' => '10278',
+            'desk_code' => '02204',
+            'account_number' => '00012345603',
+            'code' => 'B1',
+            'date' => '2020-04-07',
+            'qualifier' => 'LIB',
+            'additional_information' => 'DEDIBOX 3706114',
+            'internal_code' => null,
+            'currency_code' => 'EUR',
+        ], $sUT->toArray());
+        self::assertSame($sUT->toArray(), $sUT->jsonSerialize());
+    }
 }

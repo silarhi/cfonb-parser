@@ -51,6 +51,7 @@
 - **SEPA details** — since 6.7, the payer, beneficiary, remittance information, end-to-end reference and mandate of an operation, decoded from its `05` records by `getSepaInformation()`.
 - **IBAN** — since 6.7, `getAccount()` computes the RIB key and the IBAN of an account.
 - **Operation codes as an enum** — since 6.7, `getOperationCode()` returns an `OperationCode` with its label, direction and SWIFT code.
+- **JSON** — since 6.7, every object has a `toArray()` and is `JsonSerializable`.
 - **Typed value objects** — getters return floats, dates (`DateTimeImmutable` for CFONB 120, typed `DateTimeInterface` for CFONB 240) and nullable strings, not raw arrays.
 - **Tolerant input** — handles `\n`, `\r\n` and `\r` (since 6.5) line endings, and files with no line breaks at all.
 - **Strict parsing** — malformed lines and, since 6.5, records out of order and zero-filled dates throw a `ParseException` instead of producing silent garbage, whatever the mode: non-strict mode only accepts blank CFONB 120 operation references. Since 6.6, its message keeps the line (account numbers, labels) out: `getRawContent()` returns it.

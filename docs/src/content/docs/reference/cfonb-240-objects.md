@@ -22,6 +22,7 @@ The `…2` fields repeat the `…1` ones, positions 22 to 66, when the bank fill
 | `getTransactions(): Transaction[]` | The transactions (`34`), in the order of the file |
 | `getTotal(): Total`                | The total (`39`)                                  |
 | `validate(): void`                 | Since 6.6: checks the consistency of the transfer |
+| `toArray(): array`                 | Since 6.7: the transfer as an array, for JSON     |
 
 `validate()` throws a `ValidationException` when the total is not the sum of the transactions or belongs to another
 account: [checking the consistency of a file](/guides/troubleshooting/#checking-the-consistency-of-a-file).
@@ -30,6 +31,9 @@ account: [checking the consistency of a file](/guides/troubleshooting/#checking-
 set, which only happens on a `Transfer` built by hand. Since 6.7, a transfer is built with its constructor,
 `new Transfer($header, $transactions, $total)`: `setHeader()`, `addTransaction()` and `setTotal()` are deprecated, and
 7.0 makes the transfer immutable.
+
+`Header`, `Transaction` and `Total` implement `JsonSerializable` too since 6.7: `toArray()` gives their fields in
+snake_case, the dates as `Y-m-d`, the amounts as exact decimal strings.
 
 ## Header
 
