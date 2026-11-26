@@ -1,3 +1,10 @@
+# 6.7
+
+## Fixed
+
+- The label of the operation code `A5` is "Prélèvements SEPA – reversements émis (par le créancier ou sa banque)": it
+  was the label of `A6`, the business-to-business (_interentreprises_) one
+
 # 6.6
 
 ## Added

@@ -737,7 +737,7 @@
     },
     {
         "code": "A5",
-        "label": "Prélèvements SEPA interentreprises – reversements émis (par le créancier ou sa banque)",
+        "label": "Prélèvements SEPA – reversements émis (par le créancier ou sa banque)",
         "way": "D",
         "swift_code": "MSC",
         "swift_label": "Miscellaneous",

@@ -110,7 +110,7 @@ final class CfonbCodes
         'A2' => ['label' => 'Prélèvements SEPA interentreprises émis', 'way' => 'C', 'swift_code' => 'DDT', 'swift_label' => 'Direct Debit Item', 'swift_way' => 'C'],
         'A3' => ['label' => 'Prélèvements SEPA rejetés/impayés (émis par le débiteur ou sa banque)', 'way' => 'C', 'swift_code' => 'RTI', 'swift_label' => 'Returned item', 'swift_way' => 'C'],
         'A4' => ['label' => 'Prélèvements SEPA interentreprises rejetés/impayés (émis par le débiteur ou sa banque)', 'way' => 'C', 'swift_code' => 'RTI', 'swift_label' => 'Returned item', 'swift_way' => 'C'],
-        'A5' => ['label' => 'Prélèvements SEPA interentreprises – reversements émis (par le créancier ou sa banque)', 'way' => 'D', 'swift_code' => 'MSC', 'swift_label' => 'Miscellaneous', 'swift_way' => 'D'],
+        'A5' => ['label' => 'Prélèvements SEPA – reversements émis (par le créancier ou sa banque)', 'way' => 'D', 'swift_code' => 'MSC', 'swift_label' => 'Miscellaneous', 'swift_way' => 'D'],
         'A6' => ['label' => 'Prélèvements SEPA interentreprises – reversements émis (par le créancier ou sa banque)', 'way' => 'D', 'swift_code' => 'MSC', 'swift_label' => 'Miscellaneous', 'swift_way' => 'D'],
         'B1' => ['label' => 'Prélèvements SEPA domiciliés', 'way' => 'D', 'swift_code' => 'DDT', 'swift_label' => 'Direct Debit Item', 'swift_way' => 'D'],
         'B2' => ['label' => 'Prélèvements SEPA interentreprises domiciliés', 'way' => 'D', 'swift_code' => 'DDT', 'swift_label' => 'Direct Debit Item', 'swift_way' => 'D'],
