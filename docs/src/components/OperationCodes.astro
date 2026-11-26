@@ -1,6 +1,6 @@
 ---
 /**
- * The table of the operation codes of CfonbCodes::$codes, dumped to docs/src/data/operation-codes.json by
+ * The table of the operation codes of the OperationCode enum, dumped to docs/src/data/operation-codes.json by
  * `php docs/scripts/render-examples.php`.
  */
 import codes from '../data/operation-codes.json'
@@ -10,10 +10,11 @@ import codes from '../data/operation-codes.json'
     <thead>
         <tr>
             <th>Code</th>
-            <th><code>label</code></th>
-            <th><code>way</code></th>
-            <th><code>swift_code</code></th>
-            <th><code>swift_label</code></th>
+            <th>Case</th>
+            <th><code>label()</code></th>
+            <th><code>direction()</code></th>
+            <th><code>swiftCode()</code></th>
+            <th><code>swiftLabel()</code></th>
         </tr>
     </thead>
     <tbody>
@@ -23,8 +24,11 @@ import codes from '../data/operation-codes.json'
                     <td>
                         <code>{code.code}</code>
                     </td>
+                    <td>
+                        <code>{code.case}</code>
+                    </td>
                     <td>{code.label}</td>
-                    <td>{code.way}</td>
+                    <td>{code.direction}</td>
                     <td>{code.swift_code}</td>
                     <td>{code.swift_label}</td>
                 </tr>

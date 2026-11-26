@@ -1,6 +1,6 @@
 ---
 title: Operation codes
-description: The CFONB operation codes of CfonbCodes, with their labels and SWIFT equivalents.
+description: The CFONB operation codes of the OperationCode enum, with their labels, directions and SWIFT equivalents.
 sidebar:
     order: 4
 ---
@@ -8,20 +8,23 @@ sidebar:
 import Example from '../../../components/Example.astro'
 import OperationCodes from '../../../components/OperationCodes.astro'
 
-`Operation::getCode()` returns the CFONB operation code of a CFONB 120 operation (positions 33–34). The static array
-`Silarhi\Cfonb\CfonbCodes::$codes` describes each code:
+`Operation::getCode()` returns the CFONB operation code of a CFONB 120 operation (positions 33–34) as a string. Since
+6.7, `Operation::getOperationCode()` returns it as a case of the `Silarhi\Cfonb\OperationCode` enum, which describes it:
 
-| Key           | Value                                              |
-| ------------- | -------------------------------------------------- |
-| `label`       | The French label of the CFONB                      |
-| `way`         | `D` debit, `C` credit, `D/C` or `C/D` either       |
-| `swift_code`  | The SWIFT MT940 transaction type                   |
-| `swift_label` | Its English label                                  |
-| `swift_way`   | The direction on the SWIFT side, the same as `way` |
+| Method                   | Returns                                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `label(): string`        | The French label of the CFONB                                                                         |
+| `direction(): Direction` | `Debit`, `Credit`, `DebitOrCredit` or `CreditOrDebit`; `canDebit()` and `canCredit()` tell them apart |
+| `swiftCode(): string`    | The SWIFT MT940 transaction type                                                                      |
+| `swiftLabel(): string`   | Its English label                                                                                     |
 
 <Example name="operation-codes" />
 
-A bank can send a code missing from the list: read it with `?? null`, as above.
+A bank can send a code missing from the list: `getOperationCode()` is then `null`, as `OperationCode::tryFrom()` is.
+Compare an operation with a case, `$operation->getOperationCode() === OperationCode::SepaDirectDebitsDomiciled`, rather
+than with its code.
+
+The static array `CfonbCodes::$codes` holds the same data: it is deprecated since 6.7, and removed in 7.0.
 
 ## All codes
 

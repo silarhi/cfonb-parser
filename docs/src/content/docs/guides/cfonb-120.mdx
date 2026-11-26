@@ -84,8 +84,8 @@ operations. See [checking the consistency of a file](/guides/troubleshooting/#ch
 
 <Example name="cfonb120-operation" />
 
-- `getCode()` is the operation code of the CFONB, `B1` here: [operation codes](/reference/operation-codes/) gives its
-  label.
+- `getCode()` is the operation code of the CFONB, `B1` here; `getOperationCode()` (since 6.7) gives it as an
+  `OperationCode` enum, with its label and direction: [operation codes](/reference/operation-codes/).
 - `getDate()` is the operation date, `getValueDate()` the value date.
 - Fields left blank in the file are `null` for the nullable getters (`getRejectCode()`, `getBankOperationReference()`
   above); the others throw a `ParseException` when blank, except the reference in

@@ -14,9 +14,17 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb;
 
+/**
+ * @deprecated since 6.7, use the {@see OperationCode} enum: OperationCode::tryFrom($code)?->label(). 7.0 removes this
+ *             class
+ */
 final class CfonbCodes
 {
-    /** @var string[][] */
+    /**
+     * @var string[][]
+     *
+     * @deprecated since 6.7, use the {@see OperationCode} enum
+     */
     public static array $codes = [
         '01' => ['label' => 'Chèques payés', 'way' => 'D', 'swift_code' => 'CHK', 'swift_label' => 'Cheques', 'swift_way' => 'D'],
         '02' => ['label' => 'Remises de chèques', 'way' => 'C', 'swift_code' => 'CLR', 'swift_label' => 'Cash letters/Cheques remittance', 'swift_way' => 'C'],

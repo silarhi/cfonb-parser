@@ -18,6 +18,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
+use Silarhi\Cfonb\OperationCode;
 
 final class OperationTest extends TestCase
 {
@@ -89,5 +90,23 @@ final class OperationTest extends TestCase
 
         self::assertSame('-1669.565', $sUT->getAmount(true));
         self::assertSame(-1669.565, $sUT->getAmount());
+    }
+
+    private function operation(string $code = 'B1', OperationDetail ...$details): Operation
+    {
+        $date = new DateTimeImmutable('2020-04-07');
+
+        $operation = new Operation('10278', '02204', '00012345603', $code, $date, $date, 'PRLV SEPA ONLINE SAS', 'REF', '-22.79', null, 'EUR', null, null, null);
+        foreach ($details as $detail) {
+            $operation->addDetails($detail);
+        }
+
+        return $operation;
+    }
+
+    public function testOperationCode(): void
+    {
+        self::assertSame(OperationCode::SepaDirectDebitsDomiciled, $this->operation('B1')->getOperationCode());
+        self::assertNull($this->operation('ZZ')->getOperationCode());
     }
 }

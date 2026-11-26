@@ -70,6 +70,12 @@ An operation line (`04`).
 
 `addDetails(OperationDetail $details)` adds a detail; the reader calls it.
 
+Since 6.7:
+
+| Method                               | Returns                                                                                                   |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `getOperationCode(): ?OperationCode` | The [operation code](/reference/operation-codes/) as an enum, `null` for a code the CFONB does not define |
+
 ## OperationDetail
 
 A detail line (`05`), complementing the operation line before it.

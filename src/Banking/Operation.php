@@ -16,6 +16,7 @@ namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
+use Silarhi\Cfonb\OperationCode;
 
 final class Operation extends Element
 {
@@ -77,6 +78,12 @@ final class Operation extends Element
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    /** The interbank operation code, with its label and direction: null for a code the CFONB does not define */
+    public function getOperationCode(): ?OperationCode
+    {
+        return OperationCode::tryFrom($this->code);
     }
 
     public function getDate(): DateTimeImmutable

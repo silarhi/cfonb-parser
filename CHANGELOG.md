@@ -1,9 +1,21 @@
 # 6.7
 
+## Added
+
+- The `OperationCode` enum, the CFONB operation codes of `CfonbCodes::$codes` with `label()`, `direction()` (a
+  `Direction` enum: `Debit`, `Credit`, `DebitOrCredit`, `CreditOrDebit`), `swiftCode()` and `swiftLabel()`.
+  `Operation::getOperationCode()` returns the case of an operation, `null` for a code the CFONB does not define
+
 ## Fixed
 
 - The label of the operation code `A5` is "Prélèvements SEPA – reversements émis (par le créancier ou sa banque)": it
   was the label of `A6`, the business-to-business (_interentreprises_) one
+
+## Deprecated
+
+7.0 removes them:
+
+- `CfonbCodes`: use the `OperationCode` enum, `OperationCode::tryFrom($code)?->label()`
 
 # 6.6
 

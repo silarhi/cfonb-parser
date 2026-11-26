@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
+use Silarhi\Cfonb\OperationCode;
 
 final class OperationDetail extends Element
 {
@@ -64,6 +65,12 @@ final class OperationDetail extends Element
     public function getDate(): DateTimeImmutable
     {
         return $this->date;
+    }
+
+    /** The interbank operation code of the operation, null for a code the CFONB does not define */
+    public function getOperationCode(): ?OperationCode
+    {
+        return OperationCode::tryFrom($this->code);
     }
 
     public function getAdditionalInformations(): ?string
