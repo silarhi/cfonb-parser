@@ -14,9 +14,10 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb;
 
-use function end;
-
+use Generator;
+use RuntimeException;
 use Silarhi\Cfonb\Banking\Balance;
+use Silarhi\Cfonb\Banking\Element;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
 use Silarhi\Cfonb\Banking\Statement;
@@ -28,6 +29,7 @@ use Silarhi\Cfonb\Parser\Cfonb120\Line07Parser;
 use Silarhi\Cfonb\Parser\Cfonb120\NewBalance;
 use Silarhi\Cfonb\Parser\EmptyParser;
 use Silarhi\Cfonb\Parser\FileParser;
+use Silarhi\Cfonb\Parser\FileStream;
 
 use function sprintf;
 
@@ -50,51 +52,115 @@ final readonly class Cfonb120Reader
         $this->fileParser = $fileParser;
     }
 
-    /** @return Statement[] */
+    /**
+     * Reads the statements of a CFONB 120 file.
+     *
+     * @return list<Statement>
+     *
+     * @throws ParseException on the first line that fails to parse, or record out of order
+     */
     public function parse(string $content, bool $strict = true): array
     {
-        $statementList = [];
-        // The statement opened by a "01" old balance, until its "07" new balance closes it.
-        $statement = null;
+        return iterator_to_array($this->iterate($content, $strict), false);
+    }
 
-        foreach ($this->fileParser->parse($content, self::LINE_LENGTH, $strict) as $result) {
+    /**
+     * Reads the statements of a CFONB 120 file one by one, each as soon as its "07" new balance is read: a statement
+     * yielded before a ParseException is complete.
+     *
+     * @return Generator<int, Statement>
+     *
+     * @throws ParseException on the first line that fails to parse, or record out of order
+     */
+    public function iterate(string $content, bool $strict = true): Generator
+    {
+        return $this->build($this->fileParser->parse($content, self::LINE_LENGTH, $strict));
+    }
+
+    /**
+     * Reads the statements of a CFONB 120 file one by one, line by line from the file: the memory used does not grow
+     * with the size of the file. The file is open until the last statement is read.
+     *
+     * @return Generator<int, Statement>
+     *
+     * @throws RuntimeException when the file cannot be opened, on the call
+     * @throws ParseException   while iterating, on the first line that fails to parse, or record out of order
+     */
+    public function iterateFile(string $path, bool $strict = true): Generator
+    {
+        $stream = FileStream::open($path);
+
+        return FileStream::closeAfter($stream, $this->build($this->fileParser->parseStream($stream, self::LINE_LENGTH, $strict)));
+    }
+
+    /**
+     * @param iterable<Element> $elements
+     *
+     * @return Generator<int, Statement>
+     */
+    private function build(iterable $elements): Generator
+    {
+        // The statement opened by a "01" old balance, until its "07" new balance closes it.
+        $oldBalance = null;
+        /** @var list<Operation> $operations */
+        $operations = [];
+        /** @var list<OperationDetail> $details the details of the last operation */
+        $details = [];
+
+        foreach ($elements as $result) {
             if ($result instanceof Balance) {
-                if (null !== $statement) {
-                    throw new ParseException(sprintf('Unable to open a statement with the "01" old balance of account %s dated %s: the statement of account %s opened on %s has no "07" new balance record', $result->getAccountNumber(), $result->getDate()->format('Y-m-d'), $statement->getOldBalance()->getAccountNumber(), $statement->getOldBalance()->getDate()->format('Y-m-d')));
+                if (null !== $oldBalance) {
+                    throw new ParseException(sprintf('Unable to open a statement with the "01" old balance of account %s dated %s: the statement of account %s opened on %s has no "07" new balance record', $result->getAccountNumber(), $result->getDate()->format('Y-m-d'), $oldBalance->getAccountNumber(), $oldBalance->getDate()->format('Y-m-d')));
                 }
 
-                $statement = new Statement();
-                $statement->setOldBalance($result);
+                $oldBalance = $result;
             } elseif ($result instanceof NewBalance) {
-                if (null === $statement) {
+                if (null === $oldBalance) {
                     throw new ParseException(sprintf('Unable to close a statement with the "07" new balance of account %s dated %s: missing "01" old balance record before it', $result->balance->getAccountNumber(), $result->balance->getDate()->format('Y-m-d')));
                 }
 
-                $statement->setNewBalance($result->balance);
-                $statementList[] = $statement;
-                $statement = null;
+                yield new Statement($oldBalance, $result->balance, $this->withDetails($operations, $details));
+                $oldBalance = null;
+                $operations = [];
+                $details = [];
             } elseif ($result instanceof Operation) {
-                if (null === $statement) {
+                if (null === $oldBalance) {
                     throw new ParseException(sprintf('Unable to attach the operation with code %s dated %s: missing "01" old balance record before it', $result->getCode(), $result->getDate()->format('Y-m-d')));
                 }
 
-                $statement->addOperation($result);
+                $operations = $this->withDetails($operations, $details);
+                $operations[] = $result;
+                $details = [];
             } elseif ($result instanceof OperationDetail) {
                 // A detail belongs to the last operation of the open statement.
-                $operations = $statement?->getOperations() ?? [];
-                $lastOperation = end($operations);
-                if (false === $lastOperation) {
+                if ([] === $operations) {
                     throw new ParseException(sprintf('Unable to attach a detail for operation with code %s', $result->getCode()));
                 }
 
-                $lastOperation->addDetails($result);
+                $details[] = $result;
             }
         }
 
-        if (null !== $statement) {
-            throw new ParseException(sprintf('Unable to close the statement of account %s opened on %s: missing "07" new balance record at the end of the file', $statement->getOldBalance()->getAccountNumber(), $statement->getOldBalance()->getDate()->format('Y-m-d')));
+        if (null !== $oldBalance) {
+            throw new ParseException(sprintf('Unable to close the statement of account %s opened on %s: missing "07" new balance record at the end of the file', $oldBalance->getAccountNumber(), $oldBalance->getDate()->format('Y-m-d')));
+        }
+    }
+
+    /**
+     * The operations, with the details given to the last one.
+     *
+     * @param list<Operation>       $operations
+     * @param list<OperationDetail> $details
+     *
+     * @return list<Operation>
+     */
+    private function withDetails(array $operations, array $details): array
+    {
+        $last = array_key_last($operations);
+        if (null !== $last && [] !== $details) {
+            $operations[$last] = $operations[$last]->withDetails(...$operations[$last]->getDetails(), ...$details);
         }
 
-        return $statementList;
+        return $operations;
     }
 }

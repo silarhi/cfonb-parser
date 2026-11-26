@@ -61,7 +61,9 @@ final class Line05Parser extends AbstractCfonb120Parser
             $regexMatch->getString('qualifier'),
             $regexMatch->getStringOrNull('additional_info'),
             $regexMatch->getStringOrNull('internal_code'),
-            $regexMatch->getStringOrNull('currency_code')
+            $regexMatch->getStringOrNull('currency_code'),
+            // Positions 49 to 118, not trimmed: some qualifiers hold two fields at fixed positions
+            substr($content, 48, 70),
         );
     }
 

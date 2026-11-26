@@ -14,21 +14,39 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+use JsonSerializable;
+use Override;
 use Silarhi\Cfonb\Exceptions\BalanceUnavailableException;
 use Silarhi\Cfonb\Exceptions\ValidationCheck;
 use Silarhi\Cfonb\Exceptions\ValidationException;
 
 use function sprintf;
 
-final class Statement extends Element
+/**
+ * @phpstan-import-type BalanceArray from Balance
+ * @phpstan-import-type OperationArray from Operation
+ *
+ * @phpstan-type StatementArray array{old_balance: BalanceArray, new_balance: BalanceArray, operations: list<OperationArray>}
+ */
+final class Statement extends Element implements JsonSerializable
 {
-    private ?Balance $oldBalance = null;
+    /** @var list<Operation> */
+    private array $operations;
 
-    private ?Balance $newBalance = null;
+    /**
+     * @param Operation[] $operations
+     */
+    public function __construct(
+        private ?Balance $oldBalance = null,
+        private ?Balance $newBalance = null,
+        array $operations = [],
+    ) {
+        $this->operations = array_values($operations);
+    }
 
-    /** @var Operation[] */
-    private array $operations = [];
-
+    /**
+     * @deprecated since 6.7, pass the operations to the constructor. 7.0 makes the statement immutable
+     */
     public function addOperation(Operation $operation): self
     {
         $this->operations[] = $operation;
@@ -50,6 +68,9 @@ final class Statement extends Element
         return $this->oldBalance;
     }
 
+    /**
+     * @deprecated since 6.7, pass the old balance to the constructor. 7.0 makes the statement immutable
+     */
     public function setOldBalance(Balance $oldBalance): self
     {
         $this->oldBalance = $oldBalance;
@@ -71,6 +92,9 @@ final class Statement extends Element
         return $this->newBalance;
     }
 
+    /**
+     * @deprecated since 6.7, pass the new balance to the constructor. 7.0 makes the statement immutable
+     */
     public function setNewBalance(Balance $newBalance): self
     {
         $this->newBalance = $newBalance;
@@ -79,11 +103,44 @@ final class Statement extends Element
     }
 
     /**
-     * @return Operation[]
+     * @return list<Operation>
      */
     public function getOperations(): array
     {
         return $this->operations;
+    }
+
+    /**
+     * The account of the statement, the one of its "01" old balance, with its RIB key and IBAN.
+     *
+     * @throws BalanceUnavailableException on a statement built by hand without its old balance
+     */
+    public function getAccount(): Account
+    {
+        return $this->getOldBalance()->getAccount();
+    }
+
+    /**
+     * The statement as an array of scalars, for JSON: the amounts are the exact decimal strings, the dates are Y-m-d.
+     *
+     * @return StatementArray
+     *
+     * @throws BalanceUnavailableException on a statement built by hand without its balances
+     */
+    public function toArray(): array
+    {
+        return [
+            'old_balance' => $this->getOldBalance()->toArray(),
+            'new_balance' => $this->getNewBalance()->toArray(),
+            'operations' => array_map(static fn (Operation $operation): array => $operation->toArray(), $this->operations),
+        ];
+    }
+
+    /** @return StatementArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     /**

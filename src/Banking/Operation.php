@@ -16,17 +16,27 @@ namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
+use JsonSerializable;
+use Override;
+use Silarhi\Cfonb\OperationCode;
 
-final class Operation extends Element
+/**
+ * @phpstan-import-type OperationDetailArray from OperationDetail
+ * @phpstan-import-type SepaInformationArray from SepaInformation
+ *
+ * @phpstan-type OperationArray array{bank_code: string, desk_code: string, account_number: string, currency_code: ?string, code: string, date: string, value_date: string, label: string, full_label: string, reference: string, amount: string, internal_code: ?string, reject_code: ?string, exempt_code: ?string, bank_operation_reference: ?string, details: list<OperationDetailArray>, sepa_information: SepaInformationArray}
+ */
+final class Operation extends Element implements JsonSerializable
 {
-    /** @var OperationDetail[] */
+    /** @var list<OperationDetail> */
     private array $details = [];
 
     private readonly string $amount;
 
     /**
-     * @param float|string $amount the exact amount, a decimal string such as "-22.79", or a float, kept as
-     *                             the decimal string that gives it back
+     * @param float|string      $amount  the exact amount, a decimal string such as "-22.79", or a float, kept as
+     *                                   the decimal string that gives it back
+     * @param OperationDetail[] $details the "05" detail records of the operation, since 6.7
      *
      * @throws InvalidArgumentException when $amount is a string that is not a decimal, or INF or NAN
      */
@@ -45,8 +55,10 @@ final class Operation extends Element
         private readonly ?string $rejectCode,
         private readonly ?string $exemptCode,
         private readonly ?string $bankOperationReference,
+        array $details = [],
     ) {
         $this->amount = ExactAmount::from($amount);
+        $this->details = array_values($details);
     }
 
     public function getBankCode(): string
@@ -79,6 +91,18 @@ final class Operation extends Element
         return $this->code;
     }
 
+    /** The interbank operation code, with its label and direction: null for a code the CFONB does not define */
+    public function getOperationCode(): ?OperationCode
+    {
+        return OperationCode::tryFrom($this->code);
+    }
+
+    /** The account of the operation, with its RIB key and IBAN */
+    public function getAccount(): Account
+    {
+        return new Account($this->bankCode, $this->deskCode, $this->accountNumber);
+    }
+
     public function getDate(): DateTimeImmutable
     {
         return $this->date;
@@ -97,6 +121,23 @@ final class Operation extends Element
     public function getLabel(): string
     {
         return $this->label;
+    }
+
+    /**
+     * The label of the operation followed by the label lines of its "05" detail records of qualifier LIB, separated
+     * by a space: the "04" record holds 31 characters of label only.
+     */
+    public function getFullLabel(): string
+    {
+        $labels = [$this->label];
+        foreach ($this->getDetailsByQualifier(DetailQualifier::Label) as $detail) {
+            $label = $detail->getAdditionalInformation();
+            if (null !== $label) {
+                $labels[] = $label;
+            }
+        }
+
+        return implode(' ', $labels);
     }
 
     public function getReference(): string
@@ -125,6 +166,10 @@ final class Operation extends Element
         return $this->bankOperationReference;
     }
 
+    /**
+     * @deprecated since 6.7, pass the details to the constructor or use {@see withDetails()}. 7.0 makes the operation
+     *             immutable
+     */
     public function addDetails(OperationDetail $details): self
     {
         $this->details[] = $details;
@@ -132,9 +177,77 @@ final class Operation extends Element
         return $this;
     }
 
-    /** @return OperationDetail[] */
+    /** A copy of the operation with these "05" detail records instead of its own. */
+    public function withDetails(OperationDetail ...$details): self
+    {
+        $operation = clone $this;
+        $operation->details = array_values($details);
+
+        return $operation;
+    }
+
+    /** @return list<OperationDetail> */
     public function getDetails(): array
     {
         return $this->details;
+    }
+
+    /**
+     * The "05" detail records of this qualifier, in order.
+     *
+     * @return list<OperationDetail>
+     */
+    public function getDetailsByQualifier(DetailQualifier|string $qualifier): array
+    {
+        $qualifier = $qualifier instanceof DetailQualifier ? $qualifier->value : $qualifier;
+
+        return array_values(array_filter($this->details, static fn (OperationDetail $detail): bool => $qualifier === $detail->getQualifier()));
+    }
+
+    /** The first "05" detail record of this qualifier, null when there is none. */
+    public function getDetail(DetailQualifier|string $qualifier): ?OperationDetail
+    {
+        return $this->getDetailsByQualifier($qualifier)[0] ?? null;
+    }
+
+    /** The SEPA information of the operation (payer, beneficiary, references...), decoded from its detail records. */
+    public function getSepaInformation(): SepaInformation
+    {
+        return new SepaInformation(...$this->details);
+    }
+
+    /**
+     * The operation as an array of scalars, for JSON: the amount is the exact decimal string, the dates are Y-m-d.
+     *
+     * @return OperationArray
+     */
+    public function toArray(): array
+    {
+        return [
+            'bank_code' => $this->bankCode,
+            'desk_code' => $this->deskCode,
+            'account_number' => $this->accountNumber,
+            'currency_code' => $this->currencyCode,
+            'code' => $this->code,
+            'date' => $this->date->format('Y-m-d'),
+            'value_date' => $this->valueDate->format('Y-m-d'),
+            'label' => $this->label,
+            'full_label' => $this->getFullLabel(),
+            'reference' => $this->reference,
+            'amount' => $this->amount,
+            'internal_code' => $this->internalCode,
+            'reject_code' => $this->rejectCode,
+            'exempt_code' => $this->exemptCode,
+            'bank_operation_reference' => $this->bankOperationReference,
+            'details' => array_map(static fn (OperationDetail $detail): array => $detail->toArray(), $this->details),
+            'sepa_information' => $this->getSepaInformation()->toArray(),
+        ];
+    }
+
+    /** @return OperationArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

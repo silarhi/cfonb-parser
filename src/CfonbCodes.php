@@ -14,9 +14,17 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb;
 
+/**
+ * @deprecated since 6.7, use the {@see OperationCode} enum: OperationCode::tryFrom($code)?->label(). 7.0 removes this
+ *             class
+ */
 final class CfonbCodes
 {
-    /** @var string[][] */
+    /**
+     * @var string[][]
+     *
+     * @deprecated since 6.7, use the {@see OperationCode} enum
+     */
     public static array $codes = [
         '01' => ['label' => 'Chèques payés', 'way' => 'D', 'swift_code' => 'CHK', 'swift_label' => 'Cheques', 'swift_way' => 'D'],
         '02' => ['label' => 'Remises de chèques', 'way' => 'C', 'swift_code' => 'CLR', 'swift_label' => 'Cash letters/Cheques remittance', 'swift_way' => 'C'],
@@ -110,7 +118,7 @@ final class CfonbCodes
         'A2' => ['label' => 'Prélèvements SEPA interentreprises émis', 'way' => 'C', 'swift_code' => 'DDT', 'swift_label' => 'Direct Debit Item', 'swift_way' => 'C'],
         'A3' => ['label' => 'Prélèvements SEPA rejetés/impayés (émis par le débiteur ou sa banque)', 'way' => 'C', 'swift_code' => 'RTI', 'swift_label' => 'Returned item', 'swift_way' => 'C'],
         'A4' => ['label' => 'Prélèvements SEPA interentreprises rejetés/impayés (émis par le débiteur ou sa banque)', 'way' => 'C', 'swift_code' => 'RTI', 'swift_label' => 'Returned item', 'swift_way' => 'C'],
-        'A5' => ['label' => 'Prélèvements SEPA interentreprises – reversements émis (par le créancier ou sa banque)', 'way' => 'D', 'swift_code' => 'MSC', 'swift_label' => 'Miscellaneous', 'swift_way' => 'D'],
+        'A5' => ['label' => 'Prélèvements SEPA – reversements émis (par le créancier ou sa banque)', 'way' => 'D', 'swift_code' => 'MSC', 'swift_label' => 'Miscellaneous', 'swift_way' => 'D'],
         'A6' => ['label' => 'Prélèvements SEPA interentreprises – reversements émis (par le créancier ou sa banque)', 'way' => 'D', 'swift_code' => 'MSC', 'swift_label' => 'Miscellaneous', 'swift_way' => 'D'],
         'B1' => ['label' => 'Prélèvements SEPA domiciliés', 'way' => 'D', 'swift_code' => 'DDT', 'swift_label' => 'Direct Debit Item', 'swift_way' => 'D'],
         'B2' => ['label' => 'Prélèvements SEPA interentreprises domiciliés', 'way' => 'D', 'swift_code' => 'DDT', 'swift_label' => 'Direct Debit Item', 'swift_way' => 'D'],

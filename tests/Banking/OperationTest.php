@@ -16,11 +16,14 @@ namespace Silarhi\Cfonb\Tests\Banking;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Silarhi\Cfonb\Banking\DetailQualifier;
 use Silarhi\Cfonb\Banking\Operation;
 use Silarhi\Cfonb\Banking\OperationDetail;
+use Silarhi\Cfonb\OperationCode;
 
 final class OperationTest extends TestCase
 {
+    /** @psalm-suppress DeprecatedMethod addDetails() is deprecated since 6.7 */
     public function testGetter(): void
     {
         $date = new DateTimeImmutable();
@@ -89,5 +92,108 @@ final class OperationTest extends TestCase
 
         self::assertSame('-1669.565', $sUT->getAmount(true));
         self::assertSame(-1669.565, $sUT->getAmount());
+    }
+
+    private function operation(string $code = 'B1', OperationDetail ...$details): Operation
+    {
+        $date = new DateTimeImmutable('2020-04-07');
+
+        return new Operation('10278', '02204', '00012345603', $code, $date, $date, 'PRLV SEPA ONLINE SAS', 'REF', '-22.79', null, 'EUR', null, null, null, $details);
+    }
+
+    private function detail(string $qualifier, ?string $information): OperationDetail
+    {
+        return new OperationDetail('10278', '02204', '00012345603', 'B1', new DateTimeImmutable('2020-04-07'), $qualifier, $information, null, 'EUR');
+    }
+
+    public function testDetailsInConstructor(): void
+    {
+        $label = $this->detail('LIB', 'DEDIBOX 3706114');
+        $payer = $this->detail('NPY', 'ONLINE SAS');
+
+        $sUT = $this->operation('B1', $label, $payer);
+
+        self::assertSame([$label, $payer], $sUT->getDetails());
+    }
+
+    public function testWithDetails(): void
+    {
+        $label = $this->detail('LIB', 'DEDIBOX 3706114');
+        $sUT = $this->operation();
+
+        $operation = $sUT->withDetails($label);
+
+        self::assertNotSame($sUT, $operation);
+        self::assertSame([], $sUT->getDetails());
+        self::assertSame([$label], $operation->getDetails());
+        self::assertSame('-22.79', $operation->getAmount(true));
+    }
+
+    public function testOperationCode(): void
+    {
+        self::assertSame(OperationCode::SepaDirectDebitsDomiciled, $this->operation('B1')->getOperationCode());
+        self::assertNull($this->operation('ZZ')->getOperationCode());
+    }
+
+    public function testAccount(): void
+    {
+        $account = $this->operation()->getAccount();
+
+        self::assertSame('10278', $account->getBankCode());
+        self::assertSame('02204', $account->getDeskCode());
+        self::assertSame('00012345603', $account->getAccountNumber());
+    }
+
+    public function testDetailsByQualifier(): void
+    {
+        $label1 = $this->detail('LIB', 'DEDIBOX 3706114');
+        $payer = $this->detail('NPY', 'ONLINE SAS');
+        $label2 = $this->detail('LIB', 'FACTURE 2020-04');
+        $sUT = $this->operation('B1', $label1, $payer, $label2);
+
+        self::assertSame([$label1, $label2], $sUT->getDetailsByQualifier(DetailQualifier::Label));
+        self::assertSame([$label1, $label2], $sUT->getDetailsByQualifier('LIB'));
+        self::assertSame([], $sUT->getDetailsByQualifier(DetailQualifier::BeneficiaryName));
+        self::assertSame($label1, $sUT->getDetail(DetailQualifier::Label));
+        self::assertSame($payer, $sUT->getDetail('NPY'));
+        self::assertNull($sUT->getDetail(DetailQualifier::MandateReference));
+    }
+
+    public function testFullLabel(): void
+    {
+        self::assertSame('PRLV SEPA ONLINE SAS', $this->operation()->getFullLabel());
+        self::assertSame(
+            'PRLV SEPA ONLINE SAS DEDIBOX 3706114 FACTURE 2020-04',
+            $this->operation('B1', $this->detail('LIB', 'DEDIBOX 3706114'), $this->detail('NPY', 'ONLINE SAS'), $this->detail('LIB', null), $this->detail('LIB', 'FACTURE 2020-04'))->getFullLabel()
+        );
+    }
+
+    public function testSepaInformation(): void
+    {
+        $sUT = $this->operation('B1', $this->detail('NPY', 'ONLINE SAS'), $this->detail('NBE', 'ACME'));
+
+        self::assertSame('ONLINE SAS', $sUT->getSepaInformation()->getPayerName());
+        self::assertSame('ACME', $sUT->getSepaInformation()->getBeneficiaryName());
+        self::assertNull($sUT->getSepaInformation()->getMandateReference());
+    }
+
+    public function testToArray(): void
+    {
+        $sUT = $this->operation('B1', $this->detail('LIB', 'DEDIBOX 3706114'), $this->detail('NPY', 'ONLINE SAS'));
+
+        $array = $sUT->toArray();
+
+        self::assertSame('10278', $array['bank_code']);
+        self::assertSame('B1', $array['code']);
+        self::assertSame('2020-04-07', $array['date']);
+        self::assertSame('2020-04-07', $array['value_date']);
+        self::assertSame('PRLV SEPA ONLINE SAS', $array['label']);
+        self::assertSame('PRLV SEPA ONLINE SAS DEDIBOX 3706114', $array['full_label']);
+        self::assertSame('-22.79', $array['amount']);
+        self::assertCount(2, $array['details']);
+        self::assertSame('NPY', $array['details'][1]['qualifier']);
+        self::assertSame('ONLINE SAS', $array['sepa_information']['payer_name']);
+        self::assertNull($array['sepa_information']['original_amount']);
+        self::assertSame($array, $sUT->jsonSerialize());
     }
 }

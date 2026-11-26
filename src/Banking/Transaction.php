@@ -16,8 +16,13 @@ namespace Silarhi\Cfonb\Banking;
 
 use DateTimeInterface;
 use InvalidArgumentException;
+use JsonSerializable;
+use Override;
 
-final class Transaction extends Element
+/**
+ * @phpstan-type TransactionArray array{sequence_number: int, operation_code: ?string, settlement_date: string, currency_index: string, recipient_bank_code_1: string, recipient_counter_code_1: string, recipient_account_number_1: ?string, recipient_name_1: ?string, national_issuer_number: ?string, recipient_bank_code_2: string, recipient_counter_code_2: string, recipient_account_number_2: string, recipient_name_2: ?string, presenter_reference: ?string, description: ?string, initial_transaction_settlement_date: ?string, initial_operation_presenter_reference: ?string, amount: string}
+ */
+final class Transaction extends Element implements JsonSerializable
 {
     private readonly string $transactionAmount;
 
@@ -65,7 +70,15 @@ final class Transaction extends Element
         return $this->settlementDate;
     }
 
+    /**
+     * @deprecated since 6.7, use {@see getCurrencyIndex()}. 7.0 removes it
+     */
     public function getCurIndex(): string
+    {
+        return $this->curIndex;
+    }
+
+    public function getCurrencyIndex(): string
     {
         return $this->curIndex;
     }
@@ -140,9 +153,58 @@ final class Transaction extends Element
      * "1712.00", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
      *
      * @return ($asString is true ? string : float)
+     *
+     * @deprecated since 6.7, use {@see getAmount()}. 7.0 removes it
      */
     public function getTransactionAmount(bool $asString = false): float|string
     {
         return $asString ? $this->transactionAmount : (float) $this->transactionAmount;
+    }
+
+    /**
+     * The amount as a float by default, rounded like any float: pass true for the exact amount as a decimal string,
+     * "1712.00", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asString is true ? string : float)
+     */
+    public function getAmount(bool $asString = false): float|string
+    {
+        return $asString ? $this->transactionAmount : (float) $this->transactionAmount;
+    }
+
+    /**
+     * The transaction as an array of scalars, for JSON: the amounts are the exact decimal strings, the dates are Y-m-d.
+     *
+     * @return TransactionArray
+     */
+    public function toArray(): array
+    {
+        return [
+            'sequence_number' => $this->sequenceNumber,
+            'operation_code' => $this->operationCode,
+            'settlement_date' => $this->settlementDate->format('Y-m-d'),
+            'currency_index' => $this->curIndex,
+            'recipient_bank_code_1' => $this->recipientBankCode1,
+            'recipient_counter_code_1' => $this->recipientCounterCode1,
+            'recipient_account_number_1' => $this->recipientAccountNumber1,
+            'recipient_name_1' => $this->recipientName1,
+            'national_issuer_number' => $this->nationalIssuerNumber,
+            'recipient_bank_code_2' => $this->recipientBankCode2,
+            'recipient_counter_code_2' => $this->recipientCounterCode2,
+            'recipient_account_number_2' => $this->recipientAccountNumber2,
+            'recipient_name_2' => $this->recipientName2,
+            'presenter_reference' => $this->presenterReference,
+            'description' => $this->description,
+            'initial_transaction_settlement_date' => $this->initialTransactionSettlementDate?->format('Y-m-d'),
+            'initial_operation_presenter_reference' => $this->initialOperationPresenterReference,
+            'amount' => $this->transactionAmount,
+        ];
+    }
+
+    /** @return TransactionArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

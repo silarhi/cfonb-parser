@@ -22,13 +22,18 @@ The `…2` fields repeat the `…1` ones, positions 22 to 66, when the bank fill
 | `getTransactions(): Transaction[]` | The transactions (`34`), in the order of the file |
 | `getTotal(): Total`                | The total (`39`)                                  |
 | `validate(): void`                 | Since 6.6: checks the consistency of the transfer |
+| `toArray(): array`                 | Since 6.7: the transfer as an array, for JSON     |
 
 `validate()` throws a `ValidationException` when the total is not the sum of the transactions or belongs to another
 account: [checking the consistency of a file](/guides/troubleshooting/#checking-the-consistency-of-a-file).
 
 `getHeader()` and `getTotal()` throw a `HeaderUnavailableException` or a `TotalUnavailableException` when it is not
-set, which only happens on a `Transfer` built by hand. `setHeader()`, `addTransaction()` and `setTotal()` build the
-transfer; the reader calls them.
+set, which only happens on a `Transfer` built by hand. Since 6.7, a transfer is built with its constructor,
+`new Transfer($header, $transactions, $total)`: `setHeader()`, `addTransaction()` and `setTotal()` are deprecated, and
+7.0 makes the transfer immutable.
+
+`Header`, `Transaction` and `Total` implement `JsonSerializable` too since 6.7: `toArray()` gives their fields in
+snake_case, the dates as `Y-m-d`, the amounts as exact decimal strings.
 
 ## Header
 
@@ -54,44 +59,48 @@ A header line (`31`).
 
 A transaction line (`34`).
 
-| Method                                                        | Field                                                                        | Positions |
-| ------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------- |
-| `getSequenceNumber(): int`                                    | Sequence number                                                              | 3–8       |
-| `getOperationCode(): ?string`                                 | Operation code                                                               | 9–10      |
-| `getSettlementDate(): DateTimeInterface`                      | Settlement date                                                              | 11–16     |
-| `getCurIndex(): string`                                       | Currency index                                                               | 17        |
-| `getRecipientBankCode1(): string`                             | Bank code                                                                    | 22–26     |
-| `getRecipientCounterCode1(): string`                          | Counter code                                                                 | 27–31     |
-| `getRecipientAccountNumber1(): ?string`                       | Account number                                                               | 32–42     |
-| `getRecipientName1(): ?string`                                | Name                                                                         | 43–66     |
-| `getNationalIssuerNumber(): ?string`                          | National issuer number                                                       | 67–72     |
-| `getRecipientBankCode2(): string`                             | Bank code                                                                    | 78–82     |
-| `getRecipientCounterCode2(): string`                          | Counter code                                                                 | 83–87     |
-| `getRecipientAccountNumber2(): string`                        | Account number                                                               | 88–98     |
-| `getRecipientName2(): ?string`                                | Name                                                                         | 99–122    |
-| `getPresenterReference(): ?string`                            | Presenter reference                                                          | 123–128   |
-| `getDescription(): ?string`                                   | Description                                                                  | 129–216   |
-| `getInitialTransactionSettlementDate(): ?DateTimeInterface`   | Settlement date of the initial transaction, `null` when blank or zero-filled | 217–222   |
-| `getInitialOperationPresenterReference(): ?string`            | Presenter reference of the initial operation                                 | 223–228   |
-| `getTransactionAmount(bool $asString = false): float\|string` | Amount, in cents in the file: float, or exact string with `true` (since 6.6) | 229–240   |
+| Method                                                      | Field                                                                        | Positions |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------- | --------- |
+| `getSequenceNumber(): int`                                  | Sequence number                                                              | 3–8       |
+| `getOperationCode(): ?string`                               | Operation code                                                               | 9–10      |
+| `getSettlementDate(): DateTimeInterface`                    | Settlement date                                                              | 11–16     |
+| `getCurrencyIndex(): string`                                | Currency index (since 6.7; `getCurIndex()` is deprecated)                    | 17        |
+| `getRecipientBankCode1(): string`                           | Bank code                                                                    | 22–26     |
+| `getRecipientCounterCode1(): string`                        | Counter code                                                                 | 27–31     |
+| `getRecipientAccountNumber1(): ?string`                     | Account number                                                               | 32–42     |
+| `getRecipientName1(): ?string`                              | Name                                                                         | 43–66     |
+| `getNationalIssuerNumber(): ?string`                        | National issuer number                                                       | 67–72     |
+| `getRecipientBankCode2(): string`                           | Bank code                                                                    | 78–82     |
+| `getRecipientCounterCode2(): string`                        | Counter code                                                                 | 83–87     |
+| `getRecipientAccountNumber2(): string`                      | Account number                                                               | 88–98     |
+| `getRecipientName2(): ?string`                              | Name                                                                         | 99–122    |
+| `getPresenterReference(): ?string`                          | Presenter reference                                                          | 123–128   |
+| `getDescription(): ?string`                                 | Description                                                                  | 129–216   |
+| `getInitialTransactionSettlementDate(): ?DateTimeInterface` | Settlement date of the initial transaction, `null` when blank or zero-filled | 217–222   |
+| `getInitialOperationPresenterReference(): ?string`          | Presenter reference of the initial operation                                 | 223–228   |
+| `getAmount(bool $asString = false): float\|string`          | Amount, in cents in the file: float, or exact string with `true` (since 6.6) | 229–240   |
+
+`getAmount()` is the new name of `getTransactionAmount()` since 6.7, which is deprecated.
 
 ## Total
 
 A total line (`39`).
 
-| Method                                                  | Field                                                                              | Positions |
-| ------------------------------------------------------- | ---------------------------------------------------------------------------------- | --------- |
-| `getSequenceNumber(): int`                              | Sequence number                                                                    | 3–8       |
-| `getOperationCode(): ?string`                           | Operation code                                                                     | 9–10      |
-| `getCreationTransactionFileDate(): DateTimeInterface`   | Creation date of the transaction file                                              | 11–16     |
-| `getCurrencyIndex(): string`                            | Currency index                                                                     | 17        |
-| `getRecipientBankCode1(): string`                       | Bank code                                                                          | 22–26     |
-| `getRecipientCounterCode1(): string`                    | Counter code                                                                       | 27–31     |
-| `getRecipientAccountNumber1(): string`                  | Account number                                                                     | 32–42     |
-| `getRecipientName1(): ?string`                          | Name                                                                               | 43–66     |
-| `getRecipientBankCode2(): string`                       | Bank code                                                                          | 78–82     |
-| `getRecipientCounterCode2(): string`                    | Counter code                                                                       | 83–87     |
-| `getRecipientAccountNumber2(): string`                  | Account number                                                                     | 88–98     |
-| `getRecipientName2(): ?string`                          | Name                                                                               | 99–122    |
-| `getProcessingCenterCode(): ?string`                    | Processing center code                                                             | 123–128   |
-| `getTotalAmount(bool $asString = false): float\|string` | Total amount, in cents in the file: float, or exact string with `true` (since 6.6) | 229–240   |
+| Method                                                | Field                                                                              | Positions |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------- | --------- |
+| `getSequenceNumber(): int`                            | Sequence number                                                                    | 3–8       |
+| `getOperationCode(): ?string`                         | Operation code                                                                     | 9–10      |
+| `getCreationTransactionFileDate(): DateTimeInterface` | Creation date of the transaction file                                              | 11–16     |
+| `getCurrencyIndex(): string`                          | Currency index                                                                     | 17        |
+| `getRecipientBankCode1(): string`                     | Bank code                                                                          | 22–26     |
+| `getRecipientCounterCode1(): string`                  | Counter code                                                                       | 27–31     |
+| `getRecipientAccountNumber1(): string`                | Account number                                                                     | 32–42     |
+| `getRecipientName1(): ?string`                        | Name                                                                               | 43–66     |
+| `getRecipientBankCode2(): string`                     | Bank code                                                                          | 78–82     |
+| `getRecipientCounterCode2(): string`                  | Counter code                                                                       | 83–87     |
+| `getRecipientAccountNumber2(): string`                | Account number                                                                     | 88–98     |
+| `getRecipientName2(): ?string`                        | Name                                                                               | 99–122    |
+| `getProcessingCenterCode(): ?string`                  | Processing center code                                                             | 123–128   |
+| `getAmount(bool $asString = false): float\|string`    | Total amount, in cents in the file: float, or exact string with `true` (since 6.6) | 229–240   |
+
+`getAmount()` is the new name of `getTotalAmount()` since 6.7, which is deprecated.

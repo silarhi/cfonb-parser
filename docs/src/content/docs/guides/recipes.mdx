@@ -1,6 +1,6 @@
 ---
 title: Recipes
-description: Filter operations, compute totals, convert statements to arrays or JSON, group them by account.
+description: Filter operations, compute totals, convert statements to arrays or JSON, group them by account, read large files.
 sidebar:
     order: 3
 ---
@@ -24,9 +24,11 @@ result must be exact.
 
 ## Converting to an array or JSON
 
-For an API response, or to store the statements:
+For an API response, or to store the statements: since 6.7, every object has a `toArray()` and is `JsonSerializable`.
 
 <Example name="recipe-array" />
+
+The keys are snake_case and stable: a field the bank leaves blank is `null`, not missing.
 
 ## Handling multiple account statements
 
@@ -36,8 +38,16 @@ A file can hold the statements of several accounts. Group them with the account 
 
 ## Labeling operation codes
 
-`CfonbCodes::$codes` gives the label of an operation code, its direction and its SWIFT equivalent:
+`getOperationCode()` (since 6.7) gives the label of an operation code, its direction and its SWIFT equivalent:
 
 <Example name="operation-codes" />
 
 The whole list: [operation codes](/reference/operation-codes/).
+
+## Reading a large file
+
+`iterateFile()` (since 6.7) reads the file line by line and yields one statement at a time:
+
+<Example name="cfonb120-iterate" />
+
+More in [large files](/reference/readers/#large-files).

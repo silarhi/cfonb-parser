@@ -15,13 +15,15 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Tests;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use Silarhi\Cfonb\Banking\Statement;
+use Silarhi\Cfonb\Banking\Transfer;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Cfonb240Reader;
 use Silarhi\Cfonb\CfonbReader;
+use Silarhi\Cfonb\Exceptions\ParseException;
 
 #[CoversClass(CfonbReader::class)]
-final class CfonbReaderTest extends TestCase
+final class CfonbReaderTest extends CfonbTestCase
 {
     public function testOk(): void
     {
@@ -35,5 +37,37 @@ final class CfonbReaderTest extends TestCase
 
         $sUT->parseCfonb120('120!');
         $sUT->parseCfonb240('240!');
+    }
+
+    public function testParseDetectsTheFormat(): void
+    {
+        $sUT = new CfonbReader();
+
+        $statements = $sUT->parse(self::loadFixture('complex-test.txt', false));
+        self::assertNotEmpty($statements);
+        self::assertContainsOnlyInstancesOf(Statement::class, $statements);
+
+        $transfers = $sUT->parse(self::loadFixture('cfonb.240-complex-test.txt', true));
+        self::assertNotEmpty($transfers);
+        self::assertContainsOnlyInstancesOf(Transfer::class, $transfers);
+
+        self::assertSame([], $sUT->parse(''));
+        self::assertSame([], $sUT->parse("\r\n"));
+    }
+
+    public function testParsePassesStrict(): void
+    {
+        $cfon120 = $this->createMock(Cfonb120Reader::class);
+        $cfon120->expects(self::once())->method('parse')->with('01...', false)->willReturn([]);
+
+        (new CfonbReader($cfon120))->parse('01...', false);
+    }
+
+    public function testParseUnknownFormat(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to detect the CFONB format: the record code "99" of the first line');
+
+        (new CfonbReader())->parse('99');
     }
 }

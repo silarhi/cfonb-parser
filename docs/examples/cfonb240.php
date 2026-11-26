@@ -20,11 +20,11 @@ foreach ($reader->parse(file_get_contents('transfers.txt')) as $transfer) {
             $transaction->getSequenceNumber(),
             $transaction->getSettlementDate()->format('Y-m-d'),
             $transaction->getRecipientName1(),
-            $transaction->getTransactionAmount(),
+            $transaction->getAmount(),
             $transaction->getRecipientName2()
         );
     }
 
     $total = $transfer->getTotal();
-    echo sprintf("  Total #%d: %.2f\n", $total->getSequenceNumber(), $total->getTotalAmount());
+    echo sprintf("  Total #%d: %.2f\n", $total->getSequenceNumber(), $total->getAmount());
 }

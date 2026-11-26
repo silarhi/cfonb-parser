@@ -1,6 +1,6 @@
 ---
 title: CFONB 120 statements
-description: Read CFONB 120 bank statements, their balances, operations and operation details.
+description: Read CFONB 120 bank statements, their balances, operations, operation details and SEPA information.
 sidebar:
     order: 1
 ---
@@ -84,14 +84,14 @@ operations. See [checking the consistency of a file](/guides/troubleshooting/#ch
 
 <Example name="cfonb120-operation" />
 
-- `getCode()` is the operation code of the CFONB, `B1` here: [operation codes](/reference/operation-codes/) gives its
-  label.
+- `getCode()` is the operation code of the CFONB, `B1` here; `getOperationCode()` (since 6.7) gives it as an
+  `OperationCode` enum, with its label and direction: [operation codes](/reference/operation-codes/).
 - `getDate()` is the operation date, `getValueDate()` the value date.
 - Fields left blank in the file are `null` for the nullable getters (`getRejectCode()`, `getBankOperationReference()`
   above); the others throw a `ParseException` when blank, except the reference in
   [non-strict mode](#strict-mode-default-vs-non-strict-mode).
 - `getDetails()` lists the `05` lines of the operation, in order: their `getQualifier()` (`LIB` for an extra label line)
-  tells what `getAdditionalInformations()` holds.
+  tells what `getAdditionalInformation()` holds. `getFullLabel()` (since 6.7) is the label followed by the `LIB` lines.
 
 All the fields, with their positions in the line: [CFONB 120 objects](/reference/cfonb-120-objects/).
 
@@ -113,11 +113,30 @@ foreach ($reader->parse($content) as $statement) {
 
         // Operation details (additional information)
         foreach ($operation->getDetails() as $detail) {
-            echo "Additional Info: " . $detail->getAdditionalInformations() . "\n";
+            echo "Additional Info: " . $detail->getAdditionalInformation() . "\n";
         }
     }
 }
 ```
+
+## SEPA information
+
+The `05` lines of a SEPA transfer or direct debit hold the payer, the beneficiary, the remittance information and the
+references of the payment, each under its own qualifier (`NPY` for the name of the payer, `RCN` for the end-to-end
+reference...). Since 6.7, `getSepaInformation()` decodes them, including the qualifiers that hold two fields:
+
+<Example name="cfonb120-sepa" />
+
+The remittance information is cut in two lines of 70 characters, `LCC` and `LC2`, often in the middle of a word:
+`getRemittanceInformation()` joins them as they are. Every qualifier, with its positions:
+[SepaInformation](/reference/cfonb-120-objects/#sepainformation).
+
+## Accounts and IBAN
+
+A CFONB 120 file gives the bank code, the desk code and the account number of each account, not its IBAN. Since 6.7,
+`getAccount()` on a statement, a balance or an operation computes its RIB key and its IBAN:
+
+<Example name="cfonb120-account" />
 
 ## Amounts
 

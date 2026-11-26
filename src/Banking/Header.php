@@ -15,8 +15,13 @@ declare(strict_types=1);
 namespace Silarhi\Cfonb\Banking;
 
 use DateTimeInterface;
+use JsonSerializable;
+use Override;
 
-final class Header extends Element
+/**
+ * @phpstan-type HeaderArray array{sequence_number: int, operation_code: ?string, prev_transaction_file_date: string, currency_index: string, recipient_bank_code_1: string, recipient_counter_code_1: string, recipient_account_number_1: string, recipient_name_1: ?string, recipient_bank_code_2: string, recipient_counter_code_2: string, recipient_account_number_2: string, recipient_name_2: ?string, processing_center_code: ?string}
+ */
+final class Header extends Element implements JsonSerializable
 {
     public function __construct(
         private readonly int $sequenceNumber,
@@ -98,5 +103,36 @@ final class Header extends Element
     public function getProcessingCenterCode(): ?string
     {
         return $this->processingCenterCode;
+    }
+
+    /**
+     * The header as an array of scalars, for JSON: the amounts are the exact decimal strings, the dates are Y-m-d.
+     *
+     * @return HeaderArray
+     */
+    public function toArray(): array
+    {
+        return [
+            'sequence_number' => $this->sequenceNumber,
+            'operation_code' => $this->operationCode,
+            'prev_transaction_file_date' => $this->prevTransactionFileDate->format('Y-m-d'),
+            'currency_index' => $this->currencyIndex,
+            'recipient_bank_code_1' => $this->recipientBankCode1,
+            'recipient_counter_code_1' => $this->recipientCounterCode1,
+            'recipient_account_number_1' => $this->recipientAccountNumber1,
+            'recipient_name_1' => $this->recipientName1,
+            'recipient_bank_code_2' => $this->recipientBankCode2,
+            'recipient_counter_code_2' => $this->recipientCounterCode2,
+            'recipient_account_number_2' => $this->recipientAccountNumber2,
+            'recipient_name_2' => $this->recipientName2,
+            'processing_center_code' => $this->processingCenterCode,
+        ];
+    }
+
+    /** @return HeaderArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

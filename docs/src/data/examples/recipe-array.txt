@@ -1,61 +1,75 @@
-[
-    {
+{
+    "old_balance": {
+        "bank_code": "10278",
+        "desk_code": "02204",
         "account_number": "00012345603",
+        "currency_code": "EUR",
+        "date": "2020-04-06",
+        "amount": "16695.65"
+    },
+    "new_balance": {
+        "bank_code": "10278",
+        "desk_code": "02204",
+        "account_number": "00012345603",
+        "currency_code": "EUR",
         "date": "2020-04-07",
-        "opening_balance": 16695.65,
-        "closing_balance": 16672.86,
-        "operations": [
-            {
-                "date": "2020-04-07",
-                "value_date": "2020-04-07",
-                "amount": -22.79,
-                "label": "PRLV SEPA ONLINE SAS",
-                "reference": "0000000",
-                "bank_code": "10556",
-                "account_number": "00012345603"
-            }
-        ]
+        "amount": "16672.86"
     },
-    {
-        "account_number": "00020427603",
-        "date": "2020-04-08",
-        "opening_balance": 16672.86,
-        "closing_balance": 21632.64,
-        "operations": [
-            {
-                "date": "2020-04-08",
-                "value_date": "2020-04-08",
-                "amount": -20.11,
-                "label": "PRLV SEPA FREE MOBILE",
-                "reference": "0000000",
-                "bank_code": "10556",
-                "account_number": "00020427603"
-            },
-            {
-                "date": "2020-04-08",
-                "value_date": "2020-04-08",
-                "amount": 5000,
-                "label": "VIR JOHNDOE \/ FOOBAR",
-                "reference": "0000000",
-                "bank_code": "10278",
-                "account_number": "00020427603"
-            },
-            {
-                "date": "2020-04-08",
-                "value_date": "2020-04-08",
-                "amount": -20.11,
-                "label": "VIR BOR TEST \/ FOOBAR",
-                "reference": "0000000",
-                "bank_code": "10278",
-                "account_number": "00020427603"
+    "operations": [
+        {
+            "bank_code": "10556",
+            "desk_code": "02204",
+            "account_number": "00012345603",
+            "currency_code": "EUR",
+            "code": "B1",
+            "date": "2020-04-07",
+            "value_date": "2020-04-07",
+            "label": "PRLV SEPA ONLINE SAS",
+            "full_label": "PRLV SEPA ONLINE SAS DEDIBOX 3706114",
+            "reference": "0000000",
+            "amount": "-22.79",
+            "internal_code": "6772",
+            "reject_code": null,
+            "exempt_code": "0",
+            "bank_operation_reference": null,
+            "details": [
+                {
+                    "bank_code": "10556",
+                    "desk_code": "02204",
+                    "account_number": "00012345603",
+                    "code": "B1",
+                    "date": "2020-04-07",
+                    "qualifier": "LIB",
+                    "additional_information": "DEDIBOX 3706114",
+                    "internal_code": "6772",
+                    "currency_code": "EUR"
+                }
+            ],
+            "sepa_information": {
+                "payer_name": null,
+                "payer_id": null,
+                "payer_id_type": null,
+                "beneficiary_name": null,
+                "beneficiary_id": null,
+                "beneficiary_id_type": null,
+                "ultimate_debtor_name": null,
+                "ultimate_debtor_id": null,
+                "ultimate_debtor_id_type": null,
+                "ultimate_creditor_name": null,
+                "ultimate_creditor_id": null,
+                "ultimate_creditor_id_type": null,
+                "remittance_information": null,
+                "structured_remittance_information": null,
+                "end_to_end_reference": null,
+                "purpose": null,
+                "remittance_reference": null,
+                "transaction_reference": null,
+                "original_amount": null,
+                "beneficiary_account": null,
+                "mandate_reference": null,
+                "sequence_type": null,
+                "debtor_account": null
             }
-        ]
-    },
-    {
-        "account_number": "00020427603",
-        "date": "2020-04-09",
-        "opening_balance": 21632.64,
-        "closing_balance": 21632.64,
-        "operations": []
-    }
-]
+        }
+    ]
+}

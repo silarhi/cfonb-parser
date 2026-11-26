@@ -34,12 +34,12 @@ final class Line34ParserTest extends TestCase
         $balance = $this->parse('3400000220211220E0066149890000122140469732OFFICE NATL DU AAAAAAAA            300661077100020030401ZZZZZZZZ                                                                                                              211220      000000171200');
 
         self::assertNull($balance->getNationalIssuerNumber());
-        self::assertSame(1712.0, $balance->getTransactionAmount());
+        self::assertSame(1712.0, $balance->getAmount());
         self::assertNull($balance->getInitialOperationPresenterReference());
         self::assertNotNull($balance->getInitialTransactionSettlementDate());
         self::assertNull($balance->getDescription());
         self::assertNull($balance->getPresenterReference());
-        self::assertSame('E', $balance->getCurIndex());
+        self::assertSame('E', $balance->getCurrencyIndex());
         self::assertSame('2020-12-21', $balance->getSettlementDate()->format('Y-m-d'));
         self::assertSame('00001', $balance->getRecipientCounterCode1());
         self::assertSame('30066', $balance->getRecipientBankCode2());
@@ -53,12 +53,12 @@ final class Line34ParserTest extends TestCase
         $balance = $this->parse('3400000220211220E0066149890000122140469732OFFICE NATL DU AAAAAAAA            300661077100020030401ZZZZZZZZ                                                                                                                          000000171200');
 
         self::assertNull($balance->getNationalIssuerNumber());
-        self::assertSame(1712.0, $balance->getTransactionAmount());
+        self::assertSame(1712.0, $balance->getAmount());
         self::assertNull($balance->getInitialOperationPresenterReference());
         self::assertNull($balance->getInitialTransactionSettlementDate());
         self::assertNull($balance->getDescription());
         self::assertNull($balance->getPresenterReference());
-        self::assertSame('E', $balance->getCurIndex());
+        self::assertSame('E', $balance->getCurrencyIndex());
         self::assertSame('2020-12-21', $balance->getSettlementDate()->format('Y-m-d'));
         self::assertSame('00001', $balance->getRecipientCounterCode1());
         self::assertSame('30066', $balance->getRecipientBankCode2());

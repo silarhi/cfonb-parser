@@ -54,15 +54,36 @@ final class TotalTest extends TestCase
         self::assertSame('test10', $sUT->getRecipientAccountNumber2());
         self::assertSame('test11', $sUT->getRecipientName2());
         self::assertSame('test12', $sUT->getProcessingCenterCode());
-        self::assertSame(25.2, $sUT->getTotalAmount());
+        self::assertSame(25.2, $sUT->getAmount());
         // Built from a float: the decimal string that gives it back
-        self::assertSame('25.20', $sUT->getTotalAmount(true));
+        self::assertSame('25.20', $sUT->getAmount(true));
     }
 
     public function testExactAmount(): void
     {
         $sUT = new Total(1, null, new DateTimeImmutable(), 'E', 'test', 'test2', 'test3', null, 'test4', 'test5', 'test6', null, null, '4652.70');
 
+        self::assertSame('4652.70', $sUT->getAmount(true));
+    }
+
+    /** @psalm-suppress DeprecatedMethod the alias is deprecated since 6.7 */
+    public function testDeprecatedAlias(): void
+    {
+        $sUT = new Total(1, null, new DateTimeImmutable(), 'E', 'test', 'test2', 'test3', null, 'test4', 'test5', 'test6', null, null, '4652.70');
+
         self::assertSame('4652.70', $sUT->getTotalAmount(true));
+        self::assertSame(4652.7, $sUT->getTotalAmount());
+    }
+
+    public function testToArray(): void
+    {
+        $sUT = new Total(4, null, new DateTimeImmutable('2020-12-21'), 'E', '30066', '10771', '00020030401', null, '30066', '10771', '00020030401', null, null, '4652.70');
+
+        $array = $sUT->toArray();
+
+        self::assertSame(4, $array['sequence_number']);
+        self::assertSame('2020-12-21', $array['creation_transaction_file_date']);
+        self::assertSame('4652.70', $array['amount']);
+        self::assertSame($array, $sUT->jsonSerialize());
     }
 }

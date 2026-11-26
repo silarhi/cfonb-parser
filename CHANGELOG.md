@@ -1,3 +1,61 @@
+# 6.7
+
+## Added
+
+- SEPA information, decoded from the `05` detail records by their qualifier (CFONB, _Evolutions du relevé de compte 120
+  caractères_, version 2.0): `Operation::getSepaInformation()` returns a `SepaInformation` with the payer, the
+  beneficiary, the ultimate debtor and creditor (names, identifiers and their types), the remittance information (the
+  `LCC` and `LC2` lines joined, up to 140 characters), the structured remittance information, the end-to-end reference
+  and the purpose, the remittance and transaction references, the original amount and exchange rate of a transfer
+  (`OriginalAmount`), the accounts, and the mandate reference and sequence type of a direct debit. Each getter is `null`
+  when the bank sends no detail record of its qualifier
+- `Operation::getFullLabel()`: the label followed by the `LIB` detail lines. `Operation::getDetailsByQualifier()` and
+  `Operation::getDetail()` find the details of a qualifier, given as a string or a `DetailQualifier` enum, the 18
+  qualifiers of the CFONB with their French labels
+- `OperationDetail::getDetailQualifier()`, `OperationDetail::getAdditionalInformationField()` (a field of the
+  additional information at a fixed offset, for the qualifiers that hold two), and `OperationDetail::getOperationCode()`
+- The `OperationCode` enum, the CFONB operation codes of `CfonbCodes::$codes` with `label()`, `direction()` (a
+  `Direction` enum: `Debit`, `Credit`, `DebitOrCredit`, `CreditOrDebit`), `swiftCode()` and `swiftLabel()`.
+  `Operation::getOperationCode()` returns the case of an operation, `null` for a code the CFONB does not define
+- `Account`, built by `Statement::getAccount()`, `Balance::getAccount()` and `Operation::getAccount()`: the bank code,
+  desk code and account number, with the RIB key (`getRibKey()`), the BBAN and the IBAN (`getIban()`,
+  `getFormattedIban()`; `FR` by default, `MC` for Monaco)
+- `CfonbReader::parse()` reads a CFONB 120 or a CFONB 240 file, detected by the record code of its first line with the
+  new `CfonbFormat` enum (`CfonbFormat::fromContent()`, `tryFromContent()`)
+- `Cfonb120Reader::iterate()` and `Cfonb240Reader::iterate()` yield the statements and transfers one by one, each as soon
+  as its closing record is read. `iterateFile()` reads a file line by line, so that the memory used does not grow with
+  the size of the file, and throws a `RuntimeException` when the file cannot be opened
+- `toArray()` and `JsonSerializable` on `Statement`, `Balance`, `Operation`, `OperationDetail`, `Transfer`, `Header`,
+  `Transaction`, `Total`, `SepaInformation`, `OriginalAmount` and `Account`: snake_case keys, dates as `Y-m-d`, amounts
+  as exact decimal strings
+- Constructors that build a statement, a transfer or an operation at once: `new Statement($oldBalance, $newBalance,
+$operations)`, `new Transfer($header, $transactions, $total)`, and the details as the last argument of `Operation`.
+  `Operation::withDetails()` returns a copy with other details. The readers build them this way
+- `Transaction::getCurrencyIndex()`, `Transaction::getAmount()`, `Total::getAmount()` and
+  `OperationDetail::getAdditionalInformation()`, the names of the getters they replace (see Deprecated)
+
+## Changed
+
+- `parse()` returns a list (`list<Statement>`, `list<Transfer>`) for static analysis, and `getOperations()`,
+  `getDetails()` and `getTransactions()` too: the values are the same
+
+## Fixed
+
+- The label of the operation code `A5` is "Prélèvements SEPA – reversements émis (par le créancier ou sa banque)": it
+  was the label of `A6`, the business-to-business (_interentreprises_) one
+
+## Deprecated
+
+7.0 removes them:
+
+- `CfonbCodes`: use the `OperationCode` enum, `OperationCode::tryFrom($code)?->label()`
+- `Transaction::getCurIndex()`, `Transaction::getTransactionAmount()`, `Total::getTotalAmount()` and
+  `OperationDetail::getAdditionalInformations()`: use `getCurrencyIndex()`, `getAmount()` and
+  `getAdditionalInformation()`
+- The setters of the parsed objects, which 7.0 makes immutable: `Statement::setOldBalance()`, `setNewBalance()` and
+  `addOperation()`, `Transfer::setHeader()`, `addTransaction()` and `setTotal()`, `Operation::addDetails()`. Pass the
+  values to the constructors, or use `Operation::withDetails()`
+
 # 6.6
 
 ## Added

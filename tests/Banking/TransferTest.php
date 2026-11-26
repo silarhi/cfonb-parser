@@ -45,6 +45,37 @@ final class TransferTest extends TestCase
         $sUT->getTotal();
     }
 
+    public function testConstructor(): void
+    {
+        $header = self::header();
+        $transaction = self::transaction(2, 171200);
+        $total = self::total(171200);
+
+        $sUT = new Transfer($header, [5 => $transaction], $total);
+
+        self::assertSame($header, $sUT->getHeader());
+        self::assertSame([$transaction], $sUT->getTransactions());
+        self::assertSame($total, $sUT->getTotal());
+    }
+
+    public function testToArray(): void
+    {
+        $sUT = self::transfer(self::total(171200), self::transaction(2, 171200));
+
+        $array = $sUT->toArray();
+
+        self::assertSame('2020-12-18', $array['header']['prev_transaction_file_date']);
+        self::assertSame(self::ACCOUNT, $array['header']['recipient_account_number_1']);
+        self::assertCount(1, $array['transactions']);
+        self::assertSame('1712.00', $array['transactions'][0]['amount']);
+        self::assertSame('E', $array['transactions'][0]['currency_index']);
+        self::assertSame('2020-12-21', $array['transactions'][0]['settlement_date']);
+        self::assertNull($array['transactions'][0]['initial_transaction_settlement_date']);
+        self::assertSame('1712.00', $array['total']['amount']);
+        self::assertSame(json_encode($array, \JSON_THROW_ON_ERROR), json_encode($sUT, \JSON_THROW_ON_ERROR));
+    }
+
+    /** @psalm-suppress DeprecatedMethod the setters are deprecated since 6.7 */
     public function testOk(): void
     {
         $total = self::createStub(Total::class);
@@ -81,14 +112,7 @@ final class TransferTest extends TestCase
 
     private static function transfer(Total $total, Transaction ...$transactions): Transfer
     {
-        $transfer = new Transfer();
-        $transfer->setHeader(self::header());
-        foreach ($transactions as $transaction) {
-            $transfer->addTransaction($transaction);
-        }
-        $transfer->setTotal($total);
-
-        return $transfer;
+        return new Transfer(self::header(), $transactions, $total);
     }
 
     public function testValidate(): void
@@ -127,8 +151,7 @@ final class TransferTest extends TestCase
 
     public function testValidateFailsWithoutTotal(): void
     {
-        $sUT = new Transfer();
-        $sUT->setHeader(self::header());
+        $sUT = new Transfer(self::header());
 
         $this->expectException(TotalUnavailableException::class);
         $sUT->validate();

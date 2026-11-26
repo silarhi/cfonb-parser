@@ -12,7 +12,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-use Silarhi\Cfonb\CfonbCodes;
+use Silarhi\Cfonb\OperationCode;
 
 // Runs the examples of the documentation with the parser itself, so the output the pages show is what the library
 // really returns.
@@ -21,7 +21,7 @@ use Silarhi\Cfonb\CfonbCodes;
 //     php docs/scripts/render-examples.php --check    # fails when a committed output is missing or out of date (CI)
 //
 // Runs docs/examples/<example>.php from docs/examples/ (where the sample files are), writes its output to
-// docs/src/data/examples/<example>.txt. Also dumps the operation codes of CfonbCodes to docs/src/data/operation-codes.json.
+// docs/src/data/examples/<example>.txt. Also dumps the operation codes of OperationCode to docs/src/data/operation-codes.json.
 
 $examples = \dirname(__DIR__) . '/examples';
 $data = \dirname(__DIR__) . '/src/data';
@@ -71,8 +71,15 @@ foreach (false !== $files ? $files : [] as $file) {
 }
 // A list, not an object: JavaScript would order the numeric codes ("10") before the others ("01")
 $codes = [];
-foreach (CfonbCodes::$codes as $code => $description) {
-    $codes[] = ['code' => (string) $code] + $description;
+foreach (OperationCode::cases() as $code) {
+    $codes[] = [
+        'code' => $code->value,
+        'case' => $code->name,
+        'label' => $code->label(),
+        'direction' => $code->direction()->name,
+        'swift_code' => $code->swiftCode(),
+        'swift_label' => $code->swiftLabel(),
+    ];
 }
 $renders['operation-codes.json'] = json_encode($codes, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES | \JSON_THROW_ON_ERROR) . "\n";
 ksort($renders);

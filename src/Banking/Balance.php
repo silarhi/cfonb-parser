@@ -16,8 +16,13 @@ namespace Silarhi\Cfonb\Banking;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
+use JsonSerializable;
+use Override;
 
-final class Balance extends Element
+/**
+ * @phpstan-type BalanceArray array{bank_code: string, desk_code: string, account_number: string, currency_code: string, date: string, amount: string}
+ */
+final class Balance extends Element implements JsonSerializable
 {
     private readonly string $amount;
 
@@ -63,6 +68,12 @@ final class Balance extends Element
         return $this->date;
     }
 
+    /** The account of the balance, with its RIB key and IBAN */
+    public function getAccount(): Account
+    {
+        return new Account($this->bankCode, $this->deskCode, $this->accountNumber);
+    }
+
     /**
      * The amount as a float by default, rounded like any float: pass true for the exact amount as a decimal string,
      * "16695.65", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
@@ -72,5 +83,29 @@ final class Balance extends Element
     public function getAmount(bool $asString = false): float|string
     {
         return $asString ? $this->amount : (float) $this->amount;
+    }
+
+    /**
+     * The balance as an array of scalars, for JSON: the amount is the exact decimal string, the date is Y-m-d.
+     *
+     * @return BalanceArray
+     */
+    public function toArray(): array
+    {
+        return [
+            'bank_code' => $this->bankCode,
+            'desk_code' => $this->deskCode,
+            'account_number' => $this->accountNumber,
+            'currency_code' => $this->currencyCode,
+            'date' => $this->date->format('Y-m-d'),
+            'amount' => $this->amount,
+        ];
+    }
+
+    /** @return BalanceArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

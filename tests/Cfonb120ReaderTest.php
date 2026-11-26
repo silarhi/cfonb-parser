@@ -16,6 +16,8 @@ namespace Silarhi\Cfonb\Tests;
 
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use Silarhi\Cfonb\Banking\Statement;
 use Silarhi\Cfonb\Cfonb120Reader;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Exceptions\ValidationCheck;
@@ -136,6 +138,13 @@ final class Cfonb120ReaderTest extends CfonbTestCase
             } catch (ParseException $e) {
                 self::assertSame($message, $e->getMessage());
             }
+
+            try {
+                iterator_to_array($reader->iterateFile($this->temporaryFile(implode("\n", $lines)), $strict));
+                self::fail(sprintf('A ParseException should be thrown by iterateFile() in %s mode', $strict ? 'strict' : 'non-strict'));
+            } catch (ParseException $e) {
+                self::assertSame($message, $e->getMessage());
+            }
         }
     }
 
@@ -240,7 +249,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-22.79, $operation->getAmount());
         self::assertSame('PRLV SEPA ONLINE SAS', $operation->getLabel());
         self::assertCount(1, $operation->getDetails());
-        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(16672.86, $statement->getNewBalance()->getAmount());
 
@@ -297,7 +306,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-117.75, $operation->getAmount());
         self::assertSame('FACTURE SGT20022040001692', $operation->getLabel());
         self::assertCount(1, $operation->getDetails());
-        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
 
@@ -321,7 +330,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-50.25, $operation->getAmount());
         self::assertSame('PRLV SEPA OVH SAS', $operation->getLabel());
         self::assertCount(2, $operation->getDetails());
-        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
 
@@ -444,7 +453,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-22.79, $operation->getAmount());
         self::assertSame('PRLV SEPA ONLINE SAS', $operation->getLabel());
         self::assertCount(1, $operation->getDetails());
-        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(16672.86, $statement->getNewBalance()->getAmount());
 
@@ -494,7 +503,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-117.75, $operation->getAmount());
         self::assertSame('FACTURE SGT20022040001692', $operation->getLabel());
         self::assertCount(1, $operation->getDetails());
-        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
 
@@ -518,7 +527,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-50.25, $operation->getAmount());
         self::assertSame('PRLV SEPA OVH SAS', $operation->getLabel());
         self::assertCount(2, $operation->getDetails());
-        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
 
@@ -535,5 +544,68 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(584353.02, $statement->getOldBalance()->getAmount());
         self::assertCount(0, $statement->getOperations());
         self::assertSame(584353.02, $statement->getNewBalance()->getAmount());
+    }
+
+    /** @return iterable<string, array{string, bool}> */
+    public static function provideFileCase(): iterable
+    {
+        foreach (['simple-test.txt', 'complex-test.txt', 'sepa-test.txt', 'test-unused-parts.txt'] as $file) {
+            $content = self::loadFixture($file, false);
+            yield "{$file}, lf" => [$content, true];
+            yield "{$file}, crlf" => [str_replace("\n", "\r\n", $content), true];
+            yield "{$file}, cr" => [str_replace("\n", "\r", $content), true];
+            yield "{$file}, without line breaks" => [self::loadFixture($file, true), true];
+            yield "{$file}, empty lines around" => ["\n\n" . $content . "\n\n", true];
+        }
+        yield 'non-strict-test.txt' => [self::loadFixture('non-strict-test.txt', false), false];
+    }
+
+    #[DataProvider('provideFileCase')]
+    public function testIterateSameAsParse(string $content, bool $strict): void
+    {
+        $reader = new Cfonb120Reader();
+        $expected = json_encode($reader->parse($content, $strict), \JSON_THROW_ON_ERROR);
+
+        self::assertSame($expected, json_encode(iterator_to_array($reader->iterate($content, $strict), false), \JSON_THROW_ON_ERROR));
+        self::assertSame($expected, json_encode(iterator_to_array($reader->iterateFile($this->temporaryFile($content), $strict), false), \JSON_THROW_ON_ERROR));
+    }
+
+    public function testIterateYieldsTheStatementsBeforeAnError(): void
+    {
+        $statements = (new Cfonb120Reader())->iterate(implode("\n", [self::OLD_BALANCE, self::OPERATION, self::NEW_BALANCE, self::OLD_BALANCE, self::OPERATION]));
+
+        // The first statement is complete: it is yielded before the error on the second one
+        $first = null;
+        foreach ($statements as $statement) {
+            $first = $statement;
+            break;
+        }
+        self::assertInstanceOf(Statement::class, $first);
+        self::assertCount(1, $first->getOperations());
+
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Unable to close the statement of account 00012345603 opened on 2020-04-06: missing "07" new balance record at the end of the file');
+
+        $statements->next();
+    }
+
+    public function testIterateFileThatDoesNotExist(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unable to open the CFONB file "/does/not/exist.txt": it does not exist or cannot be read');
+
+        // Thrown by the call, before the first statement is read
+        (new Cfonb120Reader())->iterateFile('/does/not/exist.txt');
+    }
+
+    public function testDetailsOfTheLastOperation(): void
+    {
+        $statements = (new Cfonb120Reader())->parse(implode("\n", [self::OLD_BALANCE, self::OPERATION, self::DETAIL, self::DETAIL, self::OPERATION, self::DETAIL, self::NEW_BALANCE]));
+
+        $operations = $statements[0]->getOperations();
+        self::assertCount(2, $operations);
+        self::assertCount(2, $operations[0]->getDetails());
+        self::assertCount(1, $operations[1]->getDetails());
+        self::assertSame('PRLV SEPA ONLINE SAS DEDIBOX 3706114 DEDIBOX 3706114', $operations[0]->getFullLabel());
     }
 }

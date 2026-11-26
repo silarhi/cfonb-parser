@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Silarhi\Cfonb\Banking;
 
+use JsonSerializable;
+use Override;
 use Silarhi\Cfonb\Exceptions\HeaderUnavailableException;
 use Silarhi\Cfonb\Exceptions\TotalUnavailableException;
 use Silarhi\Cfonb\Exceptions\ValidationCheck;
@@ -21,17 +23,32 @@ use Silarhi\Cfonb\Exceptions\ValidationException;
 
 use function sprintf;
 
-final class Transfer extends Element
+/**
+ * @phpstan-import-type HeaderArray from Header
+ * @phpstan-import-type TransactionArray from Transaction
+ * @phpstan-import-type TotalArray from Total
+ *
+ * @phpstan-type TransferArray array{header: HeaderArray, transactions: list<TransactionArray>, total: TotalArray}
+ */
+final class Transfer extends Element implements JsonSerializable
 {
-    private ?Header $header = null;
+    /** @var list<Transaction> */
+    private array $transactions;
 
     /**
-     * @var Transaction[]
+     * @param Transaction[] $transactions
      */
-    private array $transactions = [];
+    public function __construct(
+        private ?Header $header = null,
+        array $transactions = [],
+        private ?Total $total = null,
+    ) {
+        $this->transactions = array_values($transactions);
+    }
 
-    private ?Total $total = null;
-
+    /**
+     * @deprecated since 6.7, pass the header to the constructor. 7.0 makes the transfer immutable
+     */
     public function setHeader(Header $header): void
     {
         $this->header = $header;
@@ -46,17 +63,23 @@ final class Transfer extends Element
         return $this->header;
     }
 
+    /**
+     * @deprecated since 6.7, pass the transactions to the constructor. 7.0 makes the transfer immutable
+     */
     public function addTransaction(Transaction $operation): void
     {
         $this->transactions[] = $operation;
     }
 
-    /** @return Transaction[] */
+    /** @return list<Transaction> */
     public function getTransactions(): array
     {
         return $this->transactions;
     }
 
+    /**
+     * @deprecated since 6.7, pass the total to the constructor. 7.0 makes the transfer immutable
+     */
     public function setTotal(Total $total): void
     {
         $this->total = $total;
@@ -95,13 +118,13 @@ final class Transfer extends Element
         $number = 0;
         foreach ($this->transactions as $transaction) {
             $record = sprintf('the transaction %d (sequence number %d)', ++$number, $transaction->getSequenceNumber());
-            $this->assertSameField(ValidationCheck::Currency, 'currency index', $header->getCurrencyIndex(), $transaction->getCurIndex(), $record);
+            $this->assertSameField(ValidationCheck::Currency, 'currency index', $header->getCurrencyIndex(), $transaction->getCurrencyIndex(), $record);
 
-            $amounts[] = $transaction->getTransactionAmount(true);
+            $amounts[] = $transaction->getAmount(true);
         }
 
-        $decimals = ExactAmount::decimals($total->getTotalAmount(true), ...$amounts);
-        $expected = ExactAmount::toMinorUnits($total->getTotalAmount(true), $decimals);
+        $decimals = ExactAmount::decimals($total->getAmount(true), ...$amounts);
+        $expected = ExactAmount::toMinorUnits($total->getAmount(true), $decimals);
         $sum = 0;
         foreach ($amounts as $amount) {
             $sum += ExactAmount::toMinorUnits($amount, $decimals);
@@ -109,6 +132,30 @@ final class Transfer extends Element
         if ($sum !== $expected) {
             throw new ValidationException(ValidationCheck::Total, sprintf('%s: the sum of the transactions (%s) is not the "39" total (%s)', $this->describe(), ExactAmount::fromMinorUnits($sum, $decimals), ExactAmount::fromMinorUnits($expected, $decimals)));
         }
+    }
+
+    /**
+     * The transfer as an array of scalars, for JSON: the amounts are the exact decimal strings, the dates are Y-m-d.
+     *
+     * @return TransferArray
+     *
+     * @throws HeaderUnavailableException on a transfer built by hand without its header
+     * @throws TotalUnavailableException  on a transfer built by hand without its total
+     */
+    public function toArray(): array
+    {
+        return [
+            'header' => $this->getHeader()->toArray(),
+            'transactions' => array_map(static fn (Transaction $transaction): array => $transaction->toArray(), $this->transactions),
+            'total' => $this->getTotal()->toArray(),
+        ];
+    }
+
+    /** @return TransferArray */
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     private function assertSameField(ValidationCheck $check, string $field, string $expected, string $actual, string $record): void
