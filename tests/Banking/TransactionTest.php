@@ -49,7 +49,7 @@ final class TransactionTest extends TestCase
         self::assertSame(10, $sUT->getSequenceNumber());
         self::assertSame('test2', $sUT->getOperationCode());
         self::assertSame($date, $sUT->getSettlementDate());
-        self::assertSame('test3', $sUT->getCurIndex());
+        self::assertSame('test3', $sUT->getCurrencyIndex());
         self::assertSame('test4', $sUT->getRecipientBankCode1());
         self::assertSame('test5', $sUT->getRecipientCounterCode1());
         self::assertSame('test6', $sUT->getRecipientAccountNumber1());
@@ -63,9 +63,9 @@ final class TransactionTest extends TestCase
         self::assertSame('test14', $sUT->getDescription());
         self::assertSame($date2, $sUT->getInitialTransactionSettlementDate());
         self::assertSame('test15', $sUT->getInitialOperationPresenterReference());
-        self::assertSame(12.25, $sUT->getTransactionAmount());
+        self::assertSame(12.25, $sUT->getAmount());
         // Built from a float: the decimal string that gives it back
-        self::assertSame('12.25', $sUT->getTransactionAmount(true));
+        self::assertSame('12.25', $sUT->getAmount(true));
     }
 
     public function testExactAmount(): void
@@ -74,10 +74,20 @@ final class TransactionTest extends TestCase
 
         $sUT = new Transaction(1, null, $date, 'E', 'test', 'test2', null, null, null, 'test3', 'test4', 'test5', null, null, null, null, null, '1712.00');
 
-        self::assertSame('1712.00', $sUT->getTransactionAmount(true));
+        self::assertSame('1712.00', $sUT->getAmount(true));
 
         $sUT = new Transaction(1, null, $date, 'E', 'test', 'test2', null, null, null, 'test3', 'test4', 'test5', null, null, null, null, null, 0.29);
 
-        self::assertSame('0.29', $sUT->getTransactionAmount(true));
+        self::assertSame('0.29', $sUT->getAmount(true));
+    }
+
+    /** @psalm-suppress DeprecatedMethod the aliases are deprecated since 6.7 */
+    public function testDeprecatedAliases(): void
+    {
+        $sUT = new Transaction(1, null, new DateTimeImmutable(), 'E', 'test', 'test2', null, null, null, 'test3', 'test4', 'test5', null, null, null, null, null, '1712.00');
+
+        self::assertSame('E', $sUT->getCurIndex());
+        self::assertSame('1712.00', $sUT->getTransactionAmount(true));
+        self::assertSame(1712.0, $sUT->getTransactionAmount());
     }
 }

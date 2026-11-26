@@ -42,8 +42,16 @@ final class OperationDetailTest extends TestCase
         self::assertSame('test4', $sUT->getCode());
         self::assertSame($date, $sUT->getDate());
         self::assertSame('test5', $sUT->getQualifier());
-        self::assertSame('test6', $sUT->getAdditionalInformations());
+        self::assertSame('test6', $sUT->getAdditionalInformation());
         self::assertSame('test7', $sUT->getInternalCode());
         self::assertSame('test8', $sUT->getCurrencyCode());
+    }
+
+    /** @psalm-suppress DeprecatedMethod the alias is deprecated since 6.7 */
+    public function testDeprecatedAlias(): void
+    {
+        $sUT = new OperationDetail('10278', '02204', '00012345603', 'B1', new DateTimeImmutable(), 'LIB', 'DEDIBOX 3706114', null, 'EUR');
+
+        self::assertSame('DEDIBOX 3706114', $sUT->getAdditionalInformations());
     }
 }

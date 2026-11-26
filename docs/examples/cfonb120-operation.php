@@ -26,5 +26,5 @@ var_dump([
 ]);
 
 foreach ($operation->getDetails() as $detail) {
-    echo sprintf("Detail %s: %s\n", $detail->getQualifier(), $detail->getAdditionalInformations());
+    echo sprintf("Detail %s: %s\n", $detail->getQualifier(), $detail->getAdditionalInformation());
 }

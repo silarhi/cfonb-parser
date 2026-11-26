@@ -240,7 +240,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-22.79, $operation->getAmount());
         self::assertSame('PRLV SEPA ONLINE SAS', $operation->getLabel());
         self::assertCount(1, $operation->getDetails());
-        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(16672.86, $statement->getNewBalance()->getAmount());
 
@@ -297,7 +297,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-117.75, $operation->getAmount());
         self::assertSame('FACTURE SGT20022040001692', $operation->getLabel());
         self::assertCount(1, $operation->getDetails());
-        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
 
@@ -321,7 +321,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-50.25, $operation->getAmount());
         self::assertSame('PRLV SEPA OVH SAS', $operation->getLabel());
         self::assertCount(2, $operation->getDetails());
-        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
 
@@ -444,7 +444,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-22.79, $operation->getAmount());
         self::assertSame('PRLV SEPA ONLINE SAS', $operation->getLabel());
         self::assertCount(1, $operation->getDetails());
-        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('DEDIBOX 3706114', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(16672.86, $statement->getNewBalance()->getAmount());
 
@@ -494,7 +494,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-117.75, $operation->getAmount());
         self::assertSame('FACTURE SGT20022040001692', $operation->getLabel());
         self::assertCount(1, $operation->getDetails());
-        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('DONT TVA 11 39EUR', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(11535.0, $statement->getNewBalance()->getAmount());
 
@@ -518,7 +518,7 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertSame(-50.25, $operation->getAmount());
         self::assertSame('PRLV SEPA OVH SAS', $operation->getLabel());
         self::assertCount(2, $operation->getDetails());
-        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformations());
+        self::assertSame('PAYMENT ORDER 124359169', $operation->getDetails()[0]->getAdditionalInformation());
 
         self::assertSame(11484.75, $statement->getNewBalance()->getAmount());
 

@@ -95,13 +95,13 @@ final class Transfer extends Element
         $number = 0;
         foreach ($this->transactions as $transaction) {
             $record = sprintf('the transaction %d (sequence number %d)', ++$number, $transaction->getSequenceNumber());
-            $this->assertSameField(ValidationCheck::Currency, 'currency index', $header->getCurrencyIndex(), $transaction->getCurIndex(), $record);
+            $this->assertSameField(ValidationCheck::Currency, 'currency index', $header->getCurrencyIndex(), $transaction->getCurrencyIndex(), $record);
 
-            $amounts[] = $transaction->getTransactionAmount(true);
+            $amounts[] = $transaction->getAmount(true);
         }
 
-        $decimals = ExactAmount::decimals($total->getTotalAmount(true), ...$amounts);
-        $expected = ExactAmount::toMinorUnits($total->getTotalAmount(true), $decimals);
+        $decimals = ExactAmount::decimals($total->getAmount(true), ...$amounts);
+        $expected = ExactAmount::toMinorUnits($total->getAmount(true), $decimals);
         $sum = 0;
         foreach ($amounts as $amount) {
             $sum += ExactAmount::toMinorUnits($amount, $decimals);

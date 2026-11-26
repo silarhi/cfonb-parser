@@ -116,8 +116,21 @@ final class Total extends Element
      * "4652.70", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
      *
      * @return ($asString is true ? string : float)
+     *
+     * @deprecated since 6.7, use {@see getAmount()}. 7.0 removes it
      */
     public function getTotalAmount(bool $asString = false): float|string
+    {
+        return $asString ? $this->totalAmount : (float) $this->totalAmount;
+    }
+
+    /**
+     * The total amount as a float by default, rounded like any float: pass true for the exact amount as a decimal
+     * string, "4652.70", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asString is true ? string : float)
+     */
+    public function getAmount(bool $asString = false): float|string
     {
         return $asString ? $this->totalAmount : (float) $this->totalAmount;
     }

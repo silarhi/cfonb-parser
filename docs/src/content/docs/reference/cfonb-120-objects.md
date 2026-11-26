@@ -83,17 +83,17 @@ Since 6.7:
 
 A detail line (`05`), complementing the operation line before it.
 
-| Method                                 | Field                                    | Positions |
-| -------------------------------------- | ---------------------------------------- | --------- |
-| `getBankCode(): string`                | Bank code                                | 3–7       |
-| `getInternalCode(): ?string`           | Internal operation code of the bank      | 8–11      |
-| `getDeskCode(): string`                | Desk code                                | 12–16     |
-| `getCurrencyCode(): ?string`           | Currency, ISO                            | 17–19     |
-| `getAccountNumber(): string`           | Account number                           | 22–32     |
-| `getCode(): string`                    | Operation code                           | 33–34     |
-| `getDate(): DateTimeImmutable`         | Operation date                           | 35–40     |
-| `getQualifier(): string`               | Qualifier of the information, e.g. `LIB` | 46–48     |
-| `getAdditionalInformations(): ?string` | Additional information                   | 49–118    |
+| Method                                | Field                                    | Positions |
+| ------------------------------------- | ---------------------------------------- | --------- |
+| `getBankCode(): string`               | Bank code                                | 3–7       |
+| `getInternalCode(): ?string`          | Internal operation code of the bank      | 8–11      |
+| `getDeskCode(): string`               | Desk code                                | 12–16     |
+| `getCurrencyCode(): ?string`          | Currency, ISO                            | 17–19     |
+| `getAccountNumber(): string`          | Account number                           | 22–32     |
+| `getCode(): string`                   | Operation code                           | 33–34     |
+| `getDate(): DateTimeImmutable`        | Operation date                           | 35–40     |
+| `getQualifier(): string`              | Qualifier of the information, e.g. `LIB` | 46–48     |
+| `getAdditionalInformation(): ?string` | Additional information (since 6.7)       | 49–118    |
 
 ## Account
 

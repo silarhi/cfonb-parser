@@ -73,7 +73,16 @@ final class OperationDetail extends Element
         return OperationCode::tryFrom($this->code);
     }
 
+    /**
+     * @deprecated since 6.7, use {@see getAdditionalInformation()}. 7.0 removes it
+     */
     public function getAdditionalInformations(): ?string
+    {
+        return $this->additionalInformations;
+    }
+
+    /** The additional information, trimmed, null when blank */
+    public function getAdditionalInformation(): ?string
     {
         return $this->additionalInformations;
     }

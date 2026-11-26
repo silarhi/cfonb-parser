@@ -65,7 +65,15 @@ final class Transaction extends Element
         return $this->settlementDate;
     }
 
+    /**
+     * @deprecated since 6.7, use {@see getCurrencyIndex()}. 7.0 removes it
+     */
     public function getCurIndex(): string
+    {
+        return $this->curIndex;
+    }
+
+    public function getCurrencyIndex(): string
     {
         return $this->curIndex;
     }
@@ -140,8 +148,21 @@ final class Transaction extends Element
      * "1712.00", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
      *
      * @return ($asString is true ? string : float)
+     *
+     * @deprecated since 6.7, use {@see getAmount()}. 7.0 removes it
      */
     public function getTransactionAmount(bool $asString = false): float|string
+    {
+        return $asString ? $this->transactionAmount : (float) $this->transactionAmount;
+    }
+
+    /**
+     * The amount as a float by default, rounded like any float: pass true for the exact amount as a decimal string,
+     * "1712.00", to store in a DECIMAL column or add with bcmath. 7.0 returns the string only.
+     *
+     * @return ($asString is true ? string : float)
+     */
+    public function getAmount(bool $asString = false): float|string
     {
         return $asString ? $this->transactionAmount : (float) $this->transactionAmount;
     }

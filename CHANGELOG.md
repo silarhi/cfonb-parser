@@ -8,6 +8,8 @@
 - `Account`, built by `Statement::getAccount()`, `Balance::getAccount()` and `Operation::getAccount()`: the bank code,
   desk code and account number, with the RIB key (`getRibKey()`), the BBAN and the IBAN (`getIban()`,
   `getFormattedIban()`; `FR` by default, `MC` for Monaco)
+- `Transaction::getCurrencyIndex()`, `Transaction::getAmount()`, `Total::getAmount()` and
+  `OperationDetail::getAdditionalInformation()`, the names of the getters they replace (see Deprecated)
 
 ## Fixed
 
@@ -19,6 +21,9 @@
 7.0 removes them:
 
 - `CfonbCodes`: use the `OperationCode` enum, `OperationCode::tryFrom($code)?->label()`
+- `Transaction::getCurIndex()`, `Transaction::getTransactionAmount()`, `Total::getTotalAmount()` and
+  `OperationDetail::getAdditionalInformations()`: use `getCurrencyIndex()`, `getAmount()` and
+  `getAdditionalInformation()`
 
 # 6.6
 
