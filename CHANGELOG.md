@@ -1,3 +1,10 @@
+# 6.7.1
+
+## Fixed
+
+- `ext-ctype` is required: `SepaInformation` reads its amounts and rates with `ctype_digit()`, and nothing installed
+  the extension or its polyfill
+
 # 6.7
 
 ## Added
