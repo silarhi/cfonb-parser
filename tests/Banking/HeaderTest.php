@@ -54,4 +54,12 @@ final class HeaderTest extends TestCase
         self::assertSame('test11', $sUT->getRecipientName2());
         self::assertSame('test12', $sUT->getProcessingCenterCode());
     }
+
+    public function testJsonSerialize(): void
+    {
+        $sUT = new Header(10, 'test2', new DateTimeImmutable('2020-04-06'), 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9', 'test10', 'test11', 'test12');
+
+        self::assertSame('2020-04-06', $sUT->toArray()['prev_transaction_file_date']);
+        self::assertSame($sUT->toArray(), $sUT->jsonSerialize());
+    }
 }

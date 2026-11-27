@@ -64,6 +64,17 @@ final class StatementTest extends TestCase
         self::assertSame($oldBalance, $sUT->getOldBalance());
     }
 
+    /** @psalm-suppress DeprecatedMethod addOperation() is deprecated since 6.7 */
+    public function testAddOperation(): void
+    {
+        $first = self::operation(-2279);
+        $second = self::operation(29);
+        $sUT = new Statement(operations: [$first]);
+
+        self::assertSame($sUT, $sUT->addOperation($second));
+        self::assertSame([$first, $second], $sUT->getOperations());
+    }
+
     public function testFailGetOldBalance(): void
     {
         $sUT = new Statement();
