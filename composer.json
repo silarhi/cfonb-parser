@@ -17,6 +17,11 @@
         {
             "name": "SILARHI",
             "email": "hello@silarhi.fr"
+        },
+        {
+            "name": "Guillaume Sainthillier",
+            "homepage": "https://sainthillier.fr",
+            "role": "Maintainer"
         }
     ],
     "homepage": "https://cfonb-parser.silarhi.dev",

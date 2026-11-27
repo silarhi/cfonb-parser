@@ -106,6 +106,6 @@ MIT License. See [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-    Built with care by <a href="https://github.com/silarhi">SILARHI</a>.<br>
+    Built with care by <a href="https://github.com/silarhi">SILARHI</a>, maintained by <a href="https://sainthillier.fr">Guillaume Sainthillier</a>.<br>
     If CFONB Parser saves you time, consider giving it a star on GitHub.
 </p>
