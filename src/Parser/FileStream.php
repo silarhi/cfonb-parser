@@ -29,13 +29,9 @@ final class FileStream
      */
     public static function open(string $path)
     {
-        if (!is_file($path) || !is_readable($path)) {
-            throw new RuntimeException(sprintf('Unable to open the CFONB file "%s": it does not exist or cannot be read', $path));
-        }
-
-        $stream = fopen($path, 'r');
+        $stream = is_file($path) && is_readable($path) ? fopen($path, 'r') : false;
         if (false === $stream) {
-            throw new RuntimeException(sprintf('Unable to open the CFONB file "%s"', $path));
+            throw new RuntimeException(sprintf('Unable to open the CFONB file "%s": it does not exist or cannot be read', $path));
         }
 
         return $stream;

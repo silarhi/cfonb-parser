@@ -36,6 +36,14 @@ final class BalanceTest extends TestCase
         self::assertSame('16695.65', $sUT->getAmount(true));
     }
 
+    public function testJsonSerialize(): void
+    {
+        $sUT = new Balance('test', 'test2', 'test3', 'test4', new DateTimeImmutable('2020-04-06'), '16695.65');
+
+        self::assertSame(['bank_code' => 'test', 'desk_code' => 'test2', 'account_number' => 'test4', 'currency_code' => 'test3', 'date' => '2020-04-06', 'amount' => '16695.65'], $sUT->toArray());
+        self::assertSame($sUT->toArray(), $sUT->jsonSerialize());
+    }
+
     public function testAmountBuiltFromAFloat(): void
     {
         // The decimal string that gives the float back, at least 2 decimals: (int) (0.29 * 100) would be 28

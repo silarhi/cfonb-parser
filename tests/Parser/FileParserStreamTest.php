@@ -16,14 +16,14 @@ namespace Silarhi\Cfonb\Tests\Parser;
 
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Silarhi\Cfonb\Banking\Noop;
 use Silarhi\Cfonb\Contracts\ParserInterface;
 use Silarhi\Cfonb\Exceptions\ParseException;
 use Silarhi\Cfonb\Parser\FileParser;
+use Silarhi\Cfonb\Tests\CfonbTestCase;
 
-final class FileParserStreamTest extends TestCase
+final class FileParserStreamTest extends CfonbTestCase
 {
     /** @return resource */
     private function stream(string $content)
@@ -127,5 +127,25 @@ final class FileParserStreamTest extends TestCase
     public function testCrAtTheEndOfTheFile(): void
     {
         self::assertSame([['aaaa'], null], $this->parseLines("aaaa\r", 4, true));
+    }
+
+    public function testStreamThatCannotBeRead(): void
+    {
+        $stream = fopen($this->temporaryFile('aaaa'), 'w');
+        if (false === $stream) {
+            throw new RuntimeException('Unable to open a temporary file');
+        }
+
+        // fread() on a write-only stream raises a notice ("errno=9 Bad file descriptor") and returns false
+        set_error_handler(static fn (): bool => true, \E_NOTICE);
+        try {
+            (new FileParser())->parseStream($stream, 4, true)->current();
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertSame('Unable to read the CFONB file', $e->getMessage());
+        } finally {
+            restore_error_handler();
+            fclose($stream);
+        }
     }
 }
