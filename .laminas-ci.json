@@ -7,6 +7,9 @@
         {
             "name": "PHPUnit",
             "php": "8.6"
+        },
+        {
+            "name": "PHPStan"
         }
     ],
     "additional_checks": [
@@ -24,6 +27,14 @@
                 "php": "8.5",
                 "dependencies": "latest",
                 "command": "php docs/scripts/render-examples.php --check"
+            }
+        },
+        {
+            "name": "PHPStan on the latest PHP",
+            "job": {
+                "php": "@latest",
+                "dependencies": "latest",
+                "command": "vendor/bin/phpstan analyse --no-progress"
             }
         }
     ],
