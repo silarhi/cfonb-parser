@@ -72,27 +72,36 @@ final class Cfonb120ReaderTest extends CfonbTestCase
     {
         $reader = new Cfonb120Reader();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to attach a detail for operation with code B1');
-        $reader->parse('0510556677202204EUR2 00012345603B1070420     LIBDEDIBOX 3706114                                                         ');
+        try {
+            $reader->parse('0510556677202204EUR2 00012345603B1070420     LIBDEDIBOX 3706114                                                         ');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to attach a detail for operation with code B1', $e->getMessage());
+        }
     }
 
     public function testFailCauseOutOfRangeDate(): void
     {
         $reader = new Cfonb120Reader();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to parse date "320420"');
-        $reader->parse('0110278    02204EUR2 00012345603  320420                                                  0000000166956E060420070420    ');
+        try {
+            $reader->parse('0110278    02204EUR2 00012345603  320420                                                  0000000166956E060420070420    ');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to parse date "320420"', $e->getMessage());
+        }
     }
 
     public function testFailCauseZeroFilledValueDate(): void
     {
         $reader = new Cfonb120Reader();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to parse date "000000": the date is zero-filled (empty), but this field is mandatory');
-        $reader->parse(implode("\n", [self::OLD_BALANCE, substr_replace(self::OPERATION, '000000', 42, 6), self::NEW_BALANCE]));
+        try {
+            $reader->parse(implode("\n", [self::OLD_BALANCE, substr_replace(self::OPERATION, '000000', 42, 6), self::NEW_BALANCE]));
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to parse date "000000": the date is zero-filled (empty), but this field is mandatory', $e->getMessage());
+        }
     }
 
     /** @return iterable<string, array{list<string>, string}> */
@@ -402,9 +411,12 @@ final class Cfonb120ReaderTest extends CfonbTestCase
             }
         }
 
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Invalid statement opened on 2020-04-07: the "01" old balance (16672.86) plus the sum of the operations (-5040.22) is 11632.64, not the "07" new balance (11652.75)');
-        $statements[1]->validate();
+        try {
+            $statements[1]->validate();
+            self::fail('A ValidationException should be thrown');
+        } catch (ValidationException $e) {
+            self::assertStringContainsString('Invalid statement opened on 2020-04-07: the "01" old balance (16672.86) plus the sum of the operations (-5040.22) is 11632.64, not the "07" new balance (11652.75)', $e->getMessage());
+        }
     }
 
     public function testValidateOperationOfAnotherAccount(): void
@@ -583,19 +595,27 @@ final class Cfonb120ReaderTest extends CfonbTestCase
         self::assertInstanceOf(Statement::class, $first);
         self::assertCount(1, $first->getOperations());
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to close the statement of account 00012345603 opened on 2020-04-06: missing "07" new balance record at the end of the file');
-
-        $statements->next();
+        try {
+            $statements->next();
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to close the statement of account 00012345603 opened on 2020-04-06: missing "07" new balance record at the end of the file', $e->getMessage());
+        }
     }
 
     public function testIterateFileThatDoesNotExist(): void
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unable to open the CFONB file "/does/not/exist.txt": it does not exist or cannot be read');
+        try {
+            // Thrown by the call, before the first statement is read
+            (new Cfonb120Reader())->iterateFile('/does/not/exist.txt');
+        } catch (RuntimeException $e) {
+            self::assertStringContainsString('Unable to open the CFONB file "/does/not/exist.txt": it does not exist or cannot be read', $e->getMessage());
 
-        // Thrown by the call, before the first statement is read
-        (new Cfonb120Reader())->iterateFile('/does/not/exist.txt');
+            return;
+        }
+
+        // Out of the try: the AssertionFailedError thrown by fail() is a RuntimeException too
+        self::fail('A RuntimeException should be thrown');
     }
 
     public function testDetailsOfTheLastOperation(): void

@@ -79,20 +79,24 @@ final class StatementTest extends TestCase
     {
         $sUT = new Statement();
 
-        $this->expectException(BalanceUnavailableException::class);
-        $this->expectExceptionMessage('old balance is null');
-
-        $sUT->getOldBalance();
+        try {
+            $sUT->getOldBalance();
+            self::fail('A BalanceUnavailableException should be thrown');
+        } catch (BalanceUnavailableException $e) {
+            self::assertStringContainsString('old balance is null', $e->getMessage());
+        }
     }
 
     public function testFailGetNewBalance(): void
     {
         $sUT = new Statement();
 
-        $this->expectException(BalanceUnavailableException::class);
-        $this->expectExceptionMessage('new balance is null');
-
-        $sUT->getNewBalance();
+        try {
+            $sUT->getNewBalance();
+            self::fail('A BalanceUnavailableException should be thrown');
+        } catch (BalanceUnavailableException $e) {
+            self::assertStringContainsString('new balance is null', $e->getMessage());
+        }
     }
 
     private const ACCOUNT = '00012345603';

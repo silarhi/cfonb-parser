@@ -47,10 +47,12 @@ final class CfonbFormatTest extends CfonbTestCase
     {
         self::assertNull(CfonbFormat::tryFromContent("\n\n"));
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to detect the CFONB format: the content is empty');
-
-        CfonbFormat::fromContent("\r\n");
+        try {
+            CfonbFormat::fromContent("\r\n");
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to detect the CFONB format: the content is empty', $e->getMessage());
+        }
     }
 
     public function testUnknownRecordCode(): void

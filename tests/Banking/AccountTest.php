@@ -65,10 +65,12 @@ final class AccountTest extends TestCase
 
     public function testInvalidCountryCode(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The country code "fr" is not 2 capital letters.');
-
-        (new Account('10278', '02204', '00012345603'))->getIban('fr');
+        try {
+            (new Account('10278', '02204', '00012345603'))->getIban('fr');
+            self::fail('An InvalidArgumentException should be thrown');
+        } catch (InvalidArgumentException $e) {
+            self::assertStringContainsString('The country code "fr" is not 2 capital letters.', $e->getMessage());
+        }
     }
 
     /** @return iterable<string, array{string, string, string, string}> */
@@ -84,10 +86,12 @@ final class AccountTest extends TestCase
     #[DataProvider('provideInvalidCase')]
     public function testInvalid(string $bankCode, string $deskCode, string $accountNumber, string $message): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage($message);
-
-        new Account($bankCode, $deskCode, $accountNumber);
+        try {
+            new Account($bankCode, $deskCode, $accountNumber);
+            self::fail('An InvalidArgumentException should be thrown');
+        } catch (InvalidArgumentException $e) {
+            self::assertStringContainsString($message, $e->getMessage());
+        }
     }
 
     public function testBalanceAccount(): void

@@ -31,23 +31,32 @@ final class Cfonb240ReaderTest extends CfonbTestCase
 
     public function testFailUnknownLine(): void
     {
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to find a parser for the line 1: record code "ab", 4 characters');
-        (new Cfonb240Reader())->parse('abc ');
+        try {
+            (new Cfonb240Reader())->parse('abc ');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to find a parser for the line 1: record code "ab", 4 characters', $e->getMessage());
+        }
     }
 
     public function testFailCauseNoHeaderWithTotal(): void
     {
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to attach the total with sequence number 3: missing "31" header record before it');
-        (new Cfonb240Reader())->parse('3900000320221220E    300661077100020030401                                   300661077100020030401                                                                                                                                  000000063330');
+        try {
+            (new Cfonb240Reader())->parse('3900000320221220E    300661077100020030401                                   300661077100020030401                                                                                                                                  000000063330');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to attach the total with sequence number 3: missing "31" header record before it', $e->getMessage());
+        }
     }
 
     public function testFailCauseNoHeaderWithTransaction(): void
     {
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to attach the transaction with sequence number 2: missing "31" header record before it');
-        (new Cfonb240Reader())->parse('3400000220221220E0066300030302100020116383CHIC WWW WWWWWWW                   300661077100020030401ZZZZ ZZZZ                                             F2012017                                                        221220      000000011760');
+        try {
+            (new Cfonb240Reader())->parse('3400000220221220E0066300030302100020116383CHIC WWW WWWWWWW                   300661077100020030401ZZZZ ZZZZ                                             F2012017                                                        221220      000000011760');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to attach the transaction with sequence number 2: missing "31" header record before it', $e->getMessage());
+        }
     }
 
     public function testFailCauseTransactionAfterTotal(): void
@@ -56,9 +65,12 @@ final class Cfonb240ReaderTest extends CfonbTestCase
         // Move the second transfer's "31" header after its "34" detail record: the detail now follows the first "39" total.
         [$lines[4], $lines[5]] = [$lines[5], $lines[4]];
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to attach the transaction with sequence number 2: missing "31" header record before it');
-        (new Cfonb240Reader())->parse(implode("\n", $lines));
+        try {
+            (new Cfonb240Reader())->parse(implode("\n", $lines));
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to attach the transaction with sequence number 2: missing "31" header record before it', $e->getMessage());
+        }
     }
 
     public function testFailCauseTotalAfterTotal(): void
@@ -67,9 +79,12 @@ final class Cfonb240ReaderTest extends CfonbTestCase
         // Drop the second transfer's "31" header and "34" detail: its "39" total now follows the first "39" total.
         unset($lines[4], $lines[5]);
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to attach the total with sequence number 3: missing "31" header record before it');
-        (new Cfonb240Reader())->parse(implode("\n", $lines));
+        try {
+            (new Cfonb240Reader())->parse(implode("\n", $lines));
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to attach the total with sequence number 3: missing "31" header record before it', $e->getMessage());
+        }
     }
 
     public function testFailCauseHeaderAfterHeader(): void
@@ -78,9 +93,12 @@ final class Cfonb240ReaderTest extends CfonbTestCase
         // Drop the first transfer's "39" total: the second transfer's "31" header now follows an open transfer.
         unset($lines[3]);
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to start a transfer with the "31" header record of sequence number 1: the previous transfer has no "39" total record');
-        (new Cfonb240Reader())->parse(implode("\n", $lines));
+        try {
+            (new Cfonb240Reader())->parse(implode("\n", $lines));
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to start a transfer with the "31" header record of sequence number 1: the previous transfer has no "39" total record', $e->getMessage());
+        }
     }
 
     public function testFailCauseTransferNeverClosed(): void
@@ -89,9 +107,12 @@ final class Cfonb240ReaderTest extends CfonbTestCase
         // Drop the second transfer's "39" total, the last line of the file.
         array_pop($lines);
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to close the transfer of the "31" header record of sequence number 1: missing "39" total record at the end of the file');
-        (new Cfonb240Reader())->parse(implode("\n", $lines));
+        try {
+            (new Cfonb240Reader())->parse(implode("\n", $lines));
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to close the transfer of the "31" header record of sequence number 1: missing "39" total record at the end of the file', $e->getMessage());
+        }
     }
 
     public function testComplexTest(): void

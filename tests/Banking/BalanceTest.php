@@ -63,9 +63,11 @@ final class BalanceTest extends TestCase
 
     public function testRejectsAnExactAmountThatIsNotADecimal(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The exact amount "12,50" is not a decimal string such as "-22.79".');
-
-        new Balance('test', 'test2', 'test3', 'test4', new DateTimeImmutable(), '12,50');
+        try {
+            new Balance('test', 'test2', 'test3', 'test4', new DateTimeImmutable(), '12,50');
+            self::fail('An InvalidArgumentException should be thrown');
+        } catch (InvalidArgumentException $e) {
+            self::assertStringContainsString('The exact amount "12,50" is not a decimal string such as "-22.79".', $e->getMessage());
+        }
     }
 }

@@ -39,10 +39,12 @@ final class AmountParserTest extends TestCase
     {
         $sUT = new AmountParser();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to parse amount: its last character "t" is not a sign character');
-
-        $sUT->parseExact('test', 2);
+        try {
+            $sUT->parseExact('test', 2);
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to parse amount: its last character "t" is not a sign character', $e->getMessage());
+        }
     }
 
     /** @return iterable<int, array{string, int, float}> */
