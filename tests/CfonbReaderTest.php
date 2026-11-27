@@ -65,9 +65,11 @@ final class CfonbReaderTest extends CfonbTestCase
 
     public function testParseUnknownFormat(): void
     {
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to detect the CFONB format: the record code "99" of the first line');
-
-        (new CfonbReader())->parse('99');
+        try {
+            (new CfonbReader())->parse('99');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to detect the CFONB format: the record code "99" of the first line', $e->getMessage());
+        }
     }
 }

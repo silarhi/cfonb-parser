@@ -27,30 +27,36 @@ final class RegexMatchTest extends TestCase
     {
         $sUT = new RegexMatch([], []);
 
-        $this->expectException(KeyDoesNotExistException::class);
-        $this->expectExceptionMessage('key "test" does not exis');
-
-        $sUT->getStringOrNull('test');
+        try {
+            $sUT->getStringOrNull('test');
+            self::fail('A KeyDoesNotExistException should be thrown');
+        } catch (KeyDoesNotExistException $e) {
+            self::assertStringContainsString('key "test" does not exis', $e->getMessage());
+        }
     }
 
     public function testKeyDoesNotExistOnGetString(): void
     {
         $sUT = new RegexMatch([], []);
 
-        $this->expectException(KeyDoesNotExistException::class);
-        $this->expectExceptionMessage('key "test" does not exis');
-
-        $sUT->getString('test');
+        try {
+            $sUT->getString('test');
+            self::fail('A KeyDoesNotExistException should be thrown');
+        } catch (KeyDoesNotExistException $e) {
+            self::assertStringContainsString('key "test" does not exis', $e->getMessage());
+        }
     }
 
     public function testKeyDoesNotExistOnGetInt(): void
     {
         $sUT = new RegexMatch([], []);
 
-        $this->expectException(KeyDoesNotExistException::class);
-        $this->expectExceptionMessage('key "test" does not exist');
-
-        $sUT->getInt('test');
+        try {
+            $sUT->getInt('test');
+            self::fail('A KeyDoesNotExistException should be thrown');
+        } catch (KeyDoesNotExistException $e) {
+            self::assertStringContainsString('key "test" does not exist', $e->getMessage());
+        }
     }
 
     public function testFailOnConstruct(): void
@@ -58,10 +64,12 @@ final class RegexMatchTest extends TestCase
         $regexParts = $this->createMock(RegexParts::class);
         $regexParts->expects(self::once())->method('isMatching')->willReturn(true);
 
-        $this->expectException(KeyDoesNotExistException::class);
-        $this->expectExceptionMessage('key "1" does not exist');
-
-        new RegexMatch(['test' => $regexParts], ['']);
+        try {
+            new RegexMatch(['test' => $regexParts], ['']);
+            self::fail('A KeyDoesNotExistException should be thrown');
+        } catch (KeyDoesNotExistException $e) {
+            self::assertStringContainsString('key "1" does not exist', $e->getMessage());
+        }
     }
 
     public function testNonMatchingPartsAreSkipped(): void
@@ -76,10 +84,12 @@ final class RegexMatchTest extends TestCase
         self::assertSame('20041', $sUT->getString('bank'));
         self::assertSame('0123456789A', $sUT->getString('account'));
 
-        $this->expectException(KeyDoesNotExistException::class);
-        $this->expectExceptionMessage('key "reserved" does not exist');
-
-        $sUT->getStringOrNull('reserved');
+        try {
+            $sUT->getStringOrNull('reserved');
+            self::fail('A KeyDoesNotExistException should be thrown');
+        } catch (KeyDoesNotExistException $e) {
+            self::assertStringContainsString('key "reserved" does not exist', $e->getMessage());
+        }
     }
 
     public function testGetStringOrNullIsNull(): void
@@ -91,10 +101,12 @@ final class RegexMatchTest extends TestCase
 
         self::assertNull($sUT->getStringOrNull('test'));
 
-        $this->expectException(ValueOfKeyIsNotAStringException::class);
-        $this->expectExceptionMessage('The value of key "test" is not a string');
-
-        $sUT->getString('test');
+        try {
+            $sUT->getString('test');
+            self::fail('A ValueOfKeyIsNotAStringException should be thrown');
+        } catch (ValueOfKeyIsNotAStringException $e) {
+            self::assertStringContainsString('The value of key "test" is not a string', $e->getMessage());
+        }
     }
 
     public function testGetStringOk(): void
@@ -115,10 +127,12 @@ final class RegexMatchTest extends TestCase
 
         $sUT = new RegexMatch(['test' => $regexParts], [1 => 'test']);
 
-        $this->expectException(ValueOfKeyIsNotNumericException::class);
-        $this->expectExceptionMessage('The value of key "test" is not numeric');
-
-        $sUT->getInt('test');
+        try {
+            $sUT->getInt('test');
+            self::fail('A ValueOfKeyIsNotNumericException should be thrown');
+        } catch (ValueOfKeyIsNotNumericException $e) {
+            self::assertStringContainsString('The value of key "test" is not numeric', $e->getMessage());
+        }
     }
 
     public function testGetIntOk(): void
@@ -138,10 +152,12 @@ final class RegexMatchTest extends TestCase
 
         $sUT = new RegexMatch(['test' => $regexParts], [1 => 'test']);
 
-        $this->expectException(ValueOfKeyIsNotNumericException::class);
-        $this->expectExceptionMessage('The value of key "test" is not numeric');
-
-        $sUT->getFloat('test');
+        try {
+            $sUT->getFloat('test');
+            self::fail('A ValueOfKeyIsNotNumericException should be thrown');
+        } catch (ValueOfKeyIsNotNumericException $e) {
+            self::assertStringContainsString('The value of key "test" is not numeric', $e->getMessage());
+        }
     }
 
     public function testGetFloatOk(): void
@@ -164,9 +180,11 @@ final class RegexMatchTest extends TestCase
         self::assertTrue($sUT->isNull('test'));
         self::assertFalse($sUT->isNull('test2'));
 
-        $this->expectException(KeyDoesNotExistException::class);
-        $this->expectExceptionMessage('key "test3" does not exist');
-
-        $sUT->isNull('test3');
+        try {
+            $sUT->isNull('test3');
+            self::fail('A KeyDoesNotExistException should be thrown');
+        } catch (KeyDoesNotExistException $e) {
+            self::assertStringContainsString('key "test3" does not exist', $e->getMessage());
+        }
     }
 }

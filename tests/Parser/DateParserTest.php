@@ -28,10 +28,12 @@ final class DateParserTest extends TestCase
     {
         $sUT = new DateParser();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to parse date "test"');
-
-        $sUT->parse('test');
+        try {
+            $sUT->parse('test');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to parse date "test"', $e->getMessage());
+        }
     }
 
     /** @return iterable<string, array<string>> */
@@ -50,20 +52,24 @@ final class DateParserTest extends TestCase
     {
         $sUT = new DateParser();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage(sprintf('Unable to parse date "%s"', $content));
-
-        $sUT->parse($content);
+        try {
+            $sUT->parse($content);
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString(sprintf('Unable to parse date "%s"', $content), $e->getMessage());
+        }
     }
 
     public function testFailZeroFilled(): void
     {
         $sUT = new DateParser();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to parse date "000000": the date is zero-filled (empty), but this field is mandatory');
-
-        $sUT->parse('000000');
+        try {
+            $sUT->parse('000000');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to parse date "000000": the date is zero-filled (empty), but this field is mandatory', $e->getMessage());
+        }
     }
 
     public function testParseOrNull(): void
@@ -79,10 +85,12 @@ final class DateParserTest extends TestCase
     {
         $sUT = new DateParser();
 
-        $this->expectException(ParseException::class);
-        $this->expectExceptionMessage('Unable to parse date "320420"');
-
-        $sUT->parseOrNull('320420');
+        try {
+            $sUT->parseOrNull('320420');
+            self::fail('A ParseException should be thrown');
+        } catch (ParseException $e) {
+            self::assertStringContainsString('Unable to parse date "320420"', $e->getMessage());
+        }
     }
 
     /** @return Generator<int, array<int, string>> */

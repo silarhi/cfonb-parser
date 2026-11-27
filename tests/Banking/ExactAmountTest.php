@@ -80,10 +80,12 @@ final class ExactAmountTest extends TestCase
     #[DataProvider('provideNotFiniteCase')]
     public function testFromFloatRejectsNotFiniteAmounts(float $amount): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('is not a finite number.');
-
-        ExactAmount::fromFloat($amount);
+        try {
+            ExactAmount::fromFloat($amount);
+            self::fail('An InvalidArgumentException should be thrown');
+        } catch (InvalidArgumentException $e) {
+            self::assertStringContainsString('is not a finite number.', $e->getMessage());
+        }
     }
 
     /** @return iterable<string, array{int, int, string}> */
