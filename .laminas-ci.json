@@ -25,6 +25,14 @@
                 "dependencies": "latest",
                 "command": "php docs/scripts/render-examples.php --check"
             }
+        },
+        {
+            "name": "PHPStan on the latest PHP",
+            "job": {
+                "php": "8.5",
+                "dependencies": "latest",
+                "command": "vendor/bin/phpstan analyse --no-progress"
+            }
         }
     ],
     "ignore_php_platform_requirements": {
