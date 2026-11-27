@@ -26,7 +26,8 @@
         "docs": "https://cfonb-parser.silarhi.dev"
     },
     "require": {
-        "php": ">=8.2"
+        "php": ">=8.2",
+        "ext-ctype": "*"
     },
     "require-dev": {
         "dg/bypass-finals": "^1.11.1",
